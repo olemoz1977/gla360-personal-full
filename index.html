@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="lt">
 <head>
@@ -18,17 +17,32 @@
   <section class="card">
     <h2>Naujas vertinimas</h2>
     <p>1) Įveskite savo vardą ir projekto pavadinimą. 2) Nurodykite, kiek raterių kiekvienoje grupėje. 3) Spauskite <strong>Sukurti</strong> – gausite <em>Assessment ID</em> ir nuorodas.</p>
+
     <div class="grid2">
-      <label>Jūsų vardas<input id="leaderName" placeholder="Vardas Pavardė"></label>
-      <label>Projekto pavadinimas<input id="projectName" placeholder="pvz., 2025 Q4 lyderystės įsivertinimas"></label>
+      <label>Jūsų vardas
+        <input id="leaderName" placeholder="Vardas Pavardė" autocomplete="name">
+      </label>
+      <label>Projekto pavadinimas
+        <input id="projectName" placeholder="pvz., 2025 Q4 lyderystės įsivertinimas">
+      </label>
     </div>
+
     <div class="grid4">
-      <label>Vadovas (boss)<input id="nBoss" type="number" min="0" value="1"></label>
-      <label>Kolegos (peer)<input id="nPeers" type="number" min="0" value="3"></label>
-      <label>Pavaldiniai (report)<input id="nReports" type="number" min="0" value="4"></label>
-      <label>Kiti (other)<input id="nOthers" type="number" min="0" value="2"></label>
+      <label>Vadovas (boss)
+        <input id="nBoss" type="number" min="0" step="1" value="1" inputmode="numeric">
+      </label>
+      <label>Kolegos (peer)
+        <input id="nPeers" type="number" min="0" step="1" value="3" inputmode="numeric">
+      </label>
+      <label>Pavaldiniai (report)
+        <input id="nReports" type="number" min="0" step="1" value="4" inputmode="numeric">
+      </label>
+      <label>Kiti (other)
+        <input id="nOthers" type="number" min="0" step="1" value="2" inputmode="numeric">
+      </label>
     </div>
-    <button id="create">Sukurti vertinimą</button>
+
+    <button id="create" type="button">Sukurti vertinimą</button>
     <div id="links" class="mt"></div>
   </section>
 
@@ -45,44 +59,69 @@
   <section id="sources" class="card">
     <h2>Nuorodos</h2>
     <ul class="muted">
-      <li>Global Coach Group – GLA360 (aprašas, 15 kompetencijų, 72 klausimai, ataskaitos logika): <a href="https://globalcoachgroup.com/gla360/" target="_blank" rel="noopener">globalcoachgroup.com/gla360</a></li>
-      <li>LEAPING KOI – metodikos santrauka (norminė grupė, 72 Q, 5 klasteriai): <a href="https://www.leapingkoi.com/gla360.html" target="_blank" rel="noopener">leapingkoi.com/gla360.html</a></li>
-      <li>MGSCC – „From awareness to action“ (elgesių fokusas, radaro logika): <a href="https://mgscc.net/gla360/" target="_blank" rel="noopener">mgscc.net/gla360</a></li>
+      <li>Global Coach Group – GLA360 (aprašas, 15 kompetencijų, 72 klausimai, ataskaitos logika): https://globalcoachgroup.com/gla360/globalcoachgroup.com/gla360</a></li>
+      <li>LEAPING KOI – metodikos santrauka (norminė grupė, 72 Q, 5 klasteriai): https://www.leapingkoi.com/gla360.htmlleapingkoi.com/gla360.html</a></li>
+      <li>MGSCC – „From awareness to action“ (elgesių fokusas, radaro logika): https://mgscc.net/gla360/mgscc.net/gla360</a></li>
     </ul>
   </section>
 </main>
 
+<!-- Išorinis skriptas (jei turite GLA.newAssessmentId apibrėžimą) -->
 app.js</script>
+
 <script>
-document.getElementById('create').addEventListener('click', ()=>{
-  const leader = document.getElementById('leaderName').value.trim() || 'Lyderis';
-  const project = document.getElementById('projectName').value.trim() || 'Asmeninis 360 vertinimas';
-  const aid = GLA.newAssessmentId(leader, project);
+(function(){
+  // Atsarginis ID generatorius, jei GLA.newAssessmentId nėra apibrėžtas app.js
+  function fallbackId(leader, project){
+    const rand = Math.random().toString(36).slice(2,10);
+    const ts = new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,14);
+    return `${leader.replace(/\s+/g,'_')}-${ts}-${rand}`;
+  }
 
-  const n = {
-    boss: +document.getElementById('nBoss').value||0,
-    peer: +document.getElementById('nPeers').value||0,
-    report: +document.getElementById('nReports').value||0,
-    other: +document.getElementById('nOthers').value||0
-  };
+  const getId = (leader, project) => (window.GLA && typeof GLA.newAssessmentId === 'function')
+      ? GLA.newAssessmentId(leader, project)
+      : fallbackId(leader, project);
 
-  const base = location.href.replace(/index\.html.*$/,'').replace(/[#?].*$/,'');
-  const mk = (role, i)=> `${base}survey.html?aid=${encodeURIComponent(aid)}&role=${role}&i=${i}`;
+  const createBtn = document.getElementById('create');
+  const linksBox = document.getElementById('links');
 
-  let html = `<p><strong>Assessment ID:</strong> <code>${aid}</code></p>`;
-  html += `<p>${mk(Savivertinimo nuoroda (SELF)</a></p>`;
-  ['boss','peer','report','other'].forEach(role=>{
-    if(n[role]>0){
-      html += `<details><summary>${role} (${n[role]})</summary><ol>`;
-      for(let i=1;i<=n[role];i++) html += `<li>${mk(role,i)}${mk(role,i)}</a></li>`;
-      html += `</ol></details>`;
-    }
+  createBtn.addEventListener('click', () => {
+    const leader = (document.getElementById('leaderName').value || 'Lyderis').trim();
+    const project = (document.getElementById('projectName').value || 'Asmeninis 360 vertinimas').trim();
+    const aid = getId(leader, project);
+
+    const n = {
+      boss: Number(document.getElementById('nBoss').value) || 0,
+      peer: Number(document.getElementById('nPeers').value) || 0,
+      report: Number(document.getElementById('nReports').value) || 0,
+      other: Number(document.getElementById('nOthers').value) || 0
+    };
+
+    const base = location.href.replace(/index\.html.*$/,'').replace(/[#?].*$/,'');
+    const mk = (role, i) => `${base}survey.html?aid=${encodeURIComponent(aid)}&role=${encodeURIComponent(role)}${i?`&i=${i}`:''}`;
+
+    let html = `<p><strong>Assessment ID:</strong> <code>${aid}</code></p>`;
+
+    // SELF – viena savivertinimo nuoroda
+    const selfUrl = mk('self', 1);
+    html += `<p>📎 Savivertinimo nuoroda (SELF): ${selfUrl}${selfUrl}</a></p>`;
+
+    // Kitos grupės
+    ['boss','peer','report','other'].forEach(role => {
+      if(n[role] > 0){
+        html += `<details open><summary>${role} (${n[role]})</summary><ol>`;
+        for(let i=1; i<=n[role]; i++){
+          const url = mk(role, i);
+          html += `<li>${url}${url}</a></li>`;
+        }
+        html += `</ol></details>`;
+      }
+    });
+
+    html += `<p class="muted">Išsiųskite šias nuorodas savo rateriams el. paštu / žinute. Užpildę jie atsisiųs *.json ir atsiųs jums.</p>`;
+    linksBox.innerHTML = html;
   });
-  html += `<p class="muted">Išsiųskite šias nuorodas savo rateriams el. paštu / žinute. Užpildę jie atsisiunčia *.json ir atsiunčia jums.</p>`;
-
-  document.getElementById('links').innerHTML = html;
-});
+})();
 </script>
 </body>
 </html>
- 
