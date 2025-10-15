@@ -1,1 +1,924 @@
+Puiku, Olegai — padarau pilną, asmeninę 360‑tipo versiją („client‑only“, be serverio), kurią galite iškart publikuoti GitHub Pages.
+Ji apima:
 
+5 klasterius / 15 kompetencijų / 72 Likert teiginius + 3 atvirus klausimus.
+
+Raterių grupes: self, boss, peer, report, other.
+
+Unikalios apklausų nuorodos be prisijungimų.
+
+Atsakymai atsisiunčiami kaip JSON (respondentai atsiunčia jums).
+
+Ataskaita: Self vs Others (įsk. svorius pagal grupes), radaro diagrama, klasterių lentelė, Top 3 spragos/stiprybės, komentarų suvestinė, eksportas į JSON ir PDF (per „Print“).
+
+Vien tik naršyklėje – veikia GitHub Pages ir offline spausdinimui.
+
+Visa UI – lietuviškai.
+
+Nauja repo versija (ne taisymas).
+
+⚠️ Teisinė pastaba: tai ne oficialus GLA360 produktas ir nenaudoja licencijuotos medžiagos. Struktūra (5 klasteriai, 15 kompetencijų, ~72 klausimų idėja, radarai ir debrief akcentai) paremta viešai aprašyta GLA360 logika („Global Coach Group“, „LEAPING KOI“, „MGSCC“) skirta edukaciniam / asmeniniam naudojimui.
+
+ 
+
+📁 Projekto struktūra
+
+ 
+gla360-personal-full/
+├─ index.html        # Sukurti vertinimą, sugeneruoti nuorodas
+├─ survey.html       # Apklausos forma rateriams (self/boss/peer/report/other)
+├─ report.html       # Įkelti JSON failus ir sugeneruoti ataskaitą
+├─ styles.css        # Bendras stilius (tamsi/šviesi)
+├─ app.js            # Bendra logika (ID, apklausa, agregavimas, grafikai, eksportas)
+├─ bank/
+│  └─ questions.json # 15 kompetencijų, 72 teiginiai, 3 atviri klausimai
+└─ README.md         # Kaip paleisti/publikuoti
+ 
+
+Toliau – pilnas kodas kiekvienam failui. Tiesiog sukurkite naują repo (pvz.,  gla360-personal-full ), įkelkite šiuos failus ir įjunkite GitHub Pages.
+
+ 
+
+1)  index.html 
+
+ 
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GLA360 Personal (pilna versija) – pradėti vertinimą</title>
+  <meta name="description" content="Asmeninė 360° lyderystės apklausa be serverio – GitHub Pages. 5 klasteriai, 15 kompetencijų, 72 klausimai.">
+  styles.css
+</head>
+<body>
+<header class="head">
+  <h1>GLA360 Personal – <span class="badge">pilna versija</span></h1>
+  <p class="muted">Sukurkite vertinimą, išsiųskite nuorodas vertintojams, surinkite JSON failus ir sugeneruokite ataskaitą (Self vs Others, svoriai, radarai, komentarai).</p>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <h2>Naujas vertinimas</h2>
+    <p>1) Įveskite savo vardą ir projekto pavadinimą. 2) Nurodykite, kiek raterių kiekvienoje grupėje. 3) Spauskite <strong>Sukurti</strong> – gausite <em>Assessment ID</em> ir nuorodas.</p>
+    <div class="grid2">
+      <label>Jūsų vardas<input id="leaderName" placeholder="Vardas Pavardė"></label>
+      <label>Projekto pavadinimas<input id="projectName" placeholder="pvz., 2025 Q4 lyderystės įsivertinimas"></label>
+    </div>
+    <div class="grid4">
+      <label>Vadovas (boss)<input id="nBoss" type="number" min="0" value="1"></label>
+      <label>Kolegos (peer)<input id="nPeers" type="number" min="0" value="3"></label>
+      <label>Pavaldiniai (report)<input id="nReports" type="number" min="0" value="4"></label>
+      <label>Kiti (other)<input id="nOthers" type="number" min="0" value="2"></label>
+    </div>
+    <button id="create">Sukurti vertinimą</button>
+    <div id="links" class="mt"></div>
+  </section>
+
+  <section class="card">
+    <h2>Ataskaita</h2>
+    <p>Surinkus JSON failus iš vertintojų, atidarykite report.htmlreport.html</a> ir įkelkite juos. Galėsite nustatyti svorius grupėms, matyti radarą, klasterių lentelę, Top 3 spragas/stiprybes, komentarus ir eksportuoti į PDF/JSON.</p>
+  </section>
+
+  <section class="card">
+    <h2>Kas tai?</h2>
+    <p class="muted">Šis įrankis atkartoja 360 logiką (5 klasteriai, 15 kompetencijų, ~72 Likert klausimai ir radarinės vizualizacijos) asmeniniam naudojimui, remiantis viešai aprašyta GLA360 struktūra (Global Coach Group; LEAPING KOI; MGSCC). Tai <strong>ne oficialus</strong> GLA360 produktas ar ataskaita.</p>
+  </section>
+
+  <section id="sources" class="card">
+    <h2>Nuorodos</h2>
+    <ul class="muted">
+      <li>Global Coach Group – GLA360 (aprašas, 15 kompetencijų, 72 klausimai, ataskaitos logika): <a href="https://globalcoachgroup.com/gla360/" target="_blank" rel="noopener">globalcoachgroup.com/gla360</a></li>
+      <li>LEAPING KOI – metodikos santrauka (norminė grupė, 72 Q, 5 klasteriai): <a href="https://www.leapingkoi.com/gla360.html" target="_blank" rel="noopener">leapingkoi.com/gla360.html</a></li>
+      <li>MGSCC – „From awareness to action“ (elgesių fokusas, radaro logika): <a href="https://mgscc.net/gla360/" target="_blank" rel="noopener">mgscc.net/gla360</a></li>
+    </ul>
+  </section>
+</main>
+
+app.js</script>
+<script>
+document.getElementById('create').addEventListener('click', ()=>{
+  const leader = document.getElementById('leaderName').value.trim() || 'Lyderis';
+  const project = document.getElementById('projectName').value.trim() || 'Asmeninis 360 vertinimas';
+  const aid = GLA.newAssessmentId(leader, project);
+
+  const n = {
+    boss: +document.getElementById('nBoss').value||0,
+    peer: +document.getElementById('nPeers').value||0,
+    report: +document.getElementById('nReports').value||0,
+    other: +document.getElementById('nOthers').value||0
+  };
+
+  const base = location.href.replace(/index\.html.*$/,'').replace(/[#?].*$/,'');
+  const mk = (role, i)=> `${base}survey.html?aid=${encodeURIComponent(aid)}&role=${role}&i=${i}`;
+
+  let html = `<p><strong>Assessment ID:</strong> <code>${aid}</code></p>`;
+  html += `<p>${mk(Savivertinimo nuoroda (SELF)</a></p>`;
+  ['boss','peer','report','other'].forEach(role=>{
+    if(n[role]>0){
+      html += `<details><summary>${role} (${n[role]})</summary><ol>`;
+      for(let i=1;i<=n[role];i++) html += `<li>${mk(role,i)}${mk(role,i)}</a></li>`;
+      html += `</ol></details>`;
+    }
+  });
+  html += `<p class="muted">Išsiųskite šias nuorodas savo rateriams el. paštu / žinute. Užpildę jie atsisiunčia *.json ir atsiunčia jums.</p>`;
+
+  document.getElementById('links').innerHTML = html;
+});
+</script>
+</body>
+</html>
+ 
+
+ 
+
+2)  survey.html 
+
+ 
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GLA360 Personal – Apklausa (72 klausimai)</title>
+  styles.css
+</head>
+<body>
+<header class="head">
+  <h1>GLA360 Personal – apklausa</h1>
+  <p class="muted">Likerto skalė 1–5: 1 – „visiškai nesutinku“ (retai elgseną demonstruoja), 5 – „visiškai sutinku“ (nuosekliai demonstruoja).</p>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <div id="meta"></div>
+    <div id="form"></div>
+    <div class="mt">
+      <button id="finish">Baigti ir atsisiųsti JSON</button>
+      <button id="copy" class="secondary">Nukopijuoti JSON į iškarpinę</button>
+      <button id="share" class="secondary">Pasidalinti (jei įmanoma)</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Privatumas</h2>
+    <p class="muted">Atsakymai <strong>nesiunčiami</strong> į serverį. Viskas skaičiuojama naršyklėje. Baigę – atsisiųskite JSON ir perduokite lyderiui.</p>
+  </section>
+</main>
+
+app.js</script>
+<script>
+(async ()=>{
+  const params = new URLSearchParams(location.search);
+  const aid   = params.get('aid') || '(nežinomas)';
+  const role  = params.get('role') || 'peer';
+  const idx   = params.get('i') || '1';
+  const title = `${role.toUpperCase()} #${idx}`;
+  document.getElementById('meta').innerHTML = `
+    <p><strong>Assessment ID:</strong> <code>${aid}</code> | <strong>Vaidmuo:</strong> <code>${title}</code></p>
+  `;
+
+  const bank = await GLA.loadBank();
+  const el = document.getElementById('form');
+  el.appendChild(GLA.renderSurvey(bank));
+
+  function packageIt(){
+    const payload = GLA.collect(bank);
+    return GLA.packResponse({aid, role, idx, payload});
+  }
+
+  document.getElementById('finish').addEventListener('click', ()=>{
+    const pack = packageIt();
+    GLA.download(`${aid}_${role}_${idx}.json`, JSON.stringify(pack, null, 2));
+  });
+
+  document.getElementById('copy').addEventListener('click', async ()=>{
+    const pack = packageIt();
+    await navigator.clipboard.writeText(JSON.stringify(pack));
+    alert('JSON nukopijuotas į iškarpinę.');
+  });
+
+  document.getElementById('share').addEventListener('click', async ()=>{
+    const pack = packageIt();
+    const blob = new Blob([JSON.stringify(pack, null, 2)], {type:'application/json'});
+    const file = new File([blob], `${aid}_${role}_${idx}.json`, {type:'application/json'});
+    if(navigator.share){
+      try {
+        await navigator.share({title:'GLA360 JSON', text:`${aid} ${role}#${idx}`, files:[file]});
+      } catch(e){}
+    } else {
+      alert('Naršyklė nepalaiko Web Share API. Naudokite „Atsisiųsti JSON“.');
+    }
+  });
+})();
+</script>
+</body>
+</html>
+ 
+
+ 
+
+3)  report.html 
+
+ 
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GLA360 Personal – Ataskaita</title>
+  styles.css
+  https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js</script>
+</head>
+<body>
+<header class="head">
+  <h1>GLA360 Personal – ataskaita</h1>
+  <p class="muted">Įkelkite visų raterių *.json (įskaitant <em>self</em>). Pakoreguokite svorius, peržiūrėkite radarą, klasterius, spragas/stiprybes, komentarus ir eksportuokite.</p>
+</header>
+
+<main class="wrap">
+  <section class="card">
+    <input id="files" type="file" multiple accept="application/json">
+    <button id="analyze">Analizuoti</button>
+    <div id="aidBox" class="muted mt"></div>
+  </section>
+
+  <section class="card">
+    <h2>Svorio nustatymai</h2>
+    <div class="grid4">
+      <label>Boss svoris (0–1)<input id="wBoss" type="number" min="0" max="1" step="0.05" value="0.30"></label>
+      <label>Peers svoris<input id="wPeers" type="number" min="0" max="1" step="0.05" value="0.30"></label>
+      <label>Reports svoris<input id="wReports" type="number" min="0" max="1" step="0.05" value="0.30"></label>
+      <label>Others svoris<input id="wOthers" type="number" min="0" max="1" step="0.05" value="0.10"></label>
+    </div>
+    <p class="muted">Jei svorių suma ≠ 1, bus automatiškai perskaičiuota proporcingai.</p>
+  </section>
+
+  <section class="card">
+    <h2>Santrauka</h2>
+    <div id="summary"></div>
+  </section>
+
+  <section class="card">
+    <h2>Radaras: Self vs Others</h2>
+    <canvas id="radar"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Klasterių vidurkiai</h2>
+    <div id="clusters"></div>
+  </section>
+
+  <section class="card">
+    <h2>Top 3 spragos ir Top 3 stiprybės</h2>
+    <ol id="gaps"></ol>
+    <ol id="strengths"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Atviri komentarai</h2>
+    <ul id="comments"></ul>
+  </section>
+
+  <section class="card">
+    <h2>Eksportas</h2>
+    <button id="saveJson">Atsisiųsti agreguotą JSON</button>
+    <button onclick="window.print()">Spausdinti / PDF</button>
+  </section>
+</main>
+
+app.js</script>
+<script>
+let lastAgg=null;
+
+document.getElementById('analyze').addEventListener('click', async()=>{
+  const files = Array.from(document.getElementById('files').files||[]);
+  if(!files.length) return alert('Pasirinkite bent vieną JSON failą.');
+
+  const packs = [];
+  for(const f of files){
+    try {
+      const obj = JSON.parse(await f.text());
+      packs.push(GLA.unpackResponse(obj));
+    } catch(e){ console.warn('Negalima nuskaityti', f.name, e); }
+  }
+  if(!packs.length) return alert('Nepavyko nuskaityti failų.');
+
+  const aidSet = new Set(packs.map(p=>p.aid));
+  document.getElementById('aidBox').textContent =
+    aidSet.size===1 ? `Assessment ID: ${[...aidSet][0]}` :
+    `Dėmesio: rasti keli AID: ${[...aidSet].join(', ')}`;
+
+  const bank = await GLA.loadBank();
+  const w = {
+    boss: +document.getElementById('wBoss').value || 0.3,
+    peer: +document.getElementById('wPeers').value || 0.3,
+    report: +document.getElementById('wReports').value || 0.3,
+    other: +document.getElementById('wOthers').value || 0.1
+  };
+  lastAgg = GLA.aggregate(bank, packs, w);
+
+  document.getElementById('summary').innerHTML = GLA.renderSummary(lastAgg);
+  GLA.renderRadar('radar', lastAgg);
+  document.getElementById('clusters').innerHTML = GLA.renderClusters(lastAgg);
+  GLA.renderStrengthsGaps(lastAgg, 'strengths', 'gaps');
+  GLA.renderComments(lastAgg, 'comments');
+
+  document.getElementById('saveJson').onclick = ()=> GLA.download(`gla360_agg_${Date.now()}.json`, JSON.stringify(lastAgg, null, 2));
+});
+</script>
+</body>
+</html>
+ 
+
+ 
+
+4)  styles.css 
+
+ 
+:root{
+  --bg:#0b0c10; --card:#151820; --ink:#eaf0f8; --muted:#a9b4c4; --brand:#5ac8fa; --accent:#7ee081; --border: rgba(255,255,255,.08);
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f7fbff; --card:#ffffff; --ink:#0e1621; --muted:#415063; --brand:#0077ff; --accent:#0aa56b; --border:#e6eef7; }
+}
+*{box-sizing:border-box}
+body{margin:0; font:16px/1.55 system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink); background:var(--bg)}
+.head{padding:20px; max-width:1100px; margin:0 auto}
+.wrap{max-width:1100px; margin:0 auto; padding:10px 20px 60px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,.04), transparent 50%), var(--card);
+  border:1px solid var(--border); border-radius:14px; padding:16px; margin:12px 0}
+.badge{font-size:.9rem; opacity:.9}
+.muted{color:var(--muted)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+@media (max-width:800px){ .grid2,.grid4{grid-template-columns:1fr} }
+label{display:grid; gap:6px; font-weight:600}
+input, select, textarea{padding:.55rem .6rem; border-radius:10px; border:1px solid rgba(0,0,0,.15); background:rgba(255,255,255,.06); color:var(--ink)}
+button,.btn{background:var(--brand); color:white; border:none; padding:.6rem .9rem; border-radius:10px; cursor:pointer; font-weight:700; text-decoration:none; display:inline-block}
+button.secondary{background:transparent; color:var(--brand); border:1px solid rgba(90,200,250,.5)}
+.mt{margin-top:10px}
+fieldset{border:1px dashed var(--border); border-radius:12px; padding:8px 12px; margin:10px 0}
+legend{opacity:.8}
+.scale{display:flex; gap:8px; align-items:center}
+.scale input[type=range]{width:100%}
+.item{margin:6px 0; padding:8px; border-radius:10px; background:rgba(255,255,255,.03)}
+table{width:100%; border-collapse:collapse}
+th, td{padding:8px; border-bottom:1px solid var(--border); text-align:left}
+@media print{
+  body{background:white; color:#000}
+  .card{border:1px solid #ccc}
+  .head, .wrap{padding:0}
+  a.btn, button{display:none}
+}
+ 
+
+ 
+
+5)  app.js 
+
+ 
+// GLA360 Personal – pilna versija (client-only)
+// v1.0.0 (2025-10-15)
+
+const GLA = (()=>{
+  const roles = ['self','boss','peer','report','other'];
+  const clusters = [
+    { key:'COMM',  name:'Communication',        items:[0,1,2] },
+    { key:'ASSUR', name:'Assure Success',       items:[3,4,5] },
+    { key:'ENGAG', name:'Engaging People',      items:[6,7,8] },
+    { key:'CHANG', name:'Continuous Change',    items:[9,10,11] },
+    { key:'INCL',  name:'Boundary-less Inclusion', items:[12,13,14] },
+  ];
+
+  // --- Helpers
+  const uid = () => crypto.getRandomValues(new Uint32Array(4)).join('-');
+
+  function newAssessmentId(leader, project){
+    const base = `${leader}-${project}-${new Date().toISOString().slice(0,10)}`
+      .toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    return base + '-' + uid();
+  }
+
+  async function loadBank(){
+    const res = await fetch('bank/questions.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('Nepavyko įkelti klausimyno');
+    return await res.json();
+  }
+
+  // --- Survey render/collect
+  function renderSurvey(bank){
+    const frag = document.createDocumentFragment();
+
+    const who = document.createElement('fieldset');
+    who.innerHTML = `
+      <legend>Apie jus</legend>
+      <label>Jūsų vardas (nebūtina)<input id="raterName" placeholder="Vardas / slapyvardis (nebūtina)"></label>
+      <label>Kaip dažnai dirbate su vertinamu lyderiu?
+        <select id="freq">
+          <option>Kasdien</option>
+          <option>Kelis kartus per savaitę</option>
+          <option>Retai</option>
+        </select>
+      </label>`;
+    frag.appendChild(who);
+
+    bank.competencies.forEach((c,ci)=>{
+      const fs = document.createElement('fieldset');
+      fs.innerHTML = `<legend>${c.cluster} • ${c.name}</legend>`;
+      c.items.forEach((it,ii)=>{
+        const id = `q_${ci}_${ii}`;
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <div><strong>${it.stem}</strong></div>
+          <div class="scale">
+            <span class="badge">1</span>
+            <input type="range" id="${id}" min="1" max="5" value="3" />
+            <span class="badge">5</span>
+          </div>`;
+        fs.appendChild(div);
+      });
+      frag.appendChild(fs);
+    });
+
+    const open = document.createElement('fieldset');
+    open.innerHTML = `
+      <legend>Atviri klausimai</legend>
+      <label>Stiprybės
+        <textarea id="open_str" rows="3" placeholder="Kuo šis lyderis išsiskiria? Pavyzdžiai."></textarea>
+      </label>
+      <label>Kur tobulėti per 90 d.?
+        <textarea id="open_dev" rows="3" placeholder="Konkretūs elgesiai ir situacijos."></textarea>
+      </label>
+      <label>Kita
+        <textarea id="open_misc" rows="2" placeholder="Kas dar svarbu?"></textarea>
+      </label>`;
+    frag.appendChild(open);
+
+    return frag;
+  }
+
+  function collect(bank){
+    const answers = [];
+    bank.competencies.forEach((c,ci)=>{
+      c.items.forEach((it,ii)=>{
+        const id = `q_${ci}_${ii}`;
+        const v = Number(document.getElementById(id).value||3);
+        answers.push({compIndex:ci, itemIndex:ii, key:it.key, v});
+      });
+    });
+    const open = {
+      strengths: (document.getElementById('open_str')?.value||'').trim(),
+      develop:   (document.getElementById('open_dev')?.value||'').trim(),
+      misc:      (document.getElementById('open_misc')?.value||'').trim(),
+    };
+    const meta = {
+      raterName: (document.getElementById('raterName')?.value||'').trim(),
+      freq: (document.getElementById('freq')?.value||'').trim()
+    };
+    return {answers, open, meta, ts: new Date().toISOString()};
+  }
+
+  function packResponse({aid, role, idx, payload}){
+    return { schema:"gla360-personal-full@1", aid, role, idx, payload };
+  }
+  function unpackResponse(obj){
+    if(obj.schema!=="gla360-personal-full@1") throw new Error('Nekorektiškas schemos tipas');
+    return obj;
+  }
+
+  function download(filename, text){
+    const blob = new Blob([text], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = filename; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+  }
+
+  const avg = arr => arr.length? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+
+  // normalize weights to sum 1
+  function normWeights(w){
+    const keys = ['boss','peer','report','other'];
+    let s = keys.reduce((t,k)=>t+(Number(w[k])||0),0);
+    if(s<=0) s = 1;
+    const out = {};
+    keys.forEach(k => out[k] = (Number(w[k])||0)/s);
+    return out;
+  }
+
+  function aggregate(bank, packs, weights){
+    const compCount = bank.competencies.length; // 15
+    const w = normWeights(weights || {boss:.3, peer:.3, report:.3, other:.1});
+
+    // kolekcija: [role][compIndex] -> array of means
+    const byRole = {};
+    roles.forEach(r=> byRole[r] = Array.from({length:compCount}, ()=>[]));
+
+    const comments = [];
+    for(const p of packs){
+      const r = roles.includes(p.role)? p.role : 'other';
+      // suskaičiuojame vidurkį kiekvienai kompetencijai šiame viename atsakyme
+      const compSums = Array(compCount).fill(0);
+      const compNs   = Array(compCount).fill(0);
+      for(const a of p.payload.answers){
+        compSums[a.compIndex] += a.v;
+        compNs[a.compIndex]   += 1;
+      }
+      const compMeans = compSums.map((s,i)=> compNs[i]? s/compNs[i] : 0);
+      compMeans.forEach((m,i)=> byRole[r][i].push(m));
+
+      // komentarai
+      ['strengths','develop','misc'].forEach(k=>{
+        const txt = (p.payload.open?.[k]||'').trim();
+        if(txt) comments.push({role:r, idx:p.idx, type:k, text:txt});
+      });
+    }
+
+    // vidurkiai per role
+    const means = {};
+    roles.forEach(r=>{
+      means[r] = byRole[r].map(arr => avg(arr));
+    });
+
+    // Others (svorinė kombinacija be self)
+    const others = Array.from({length:compCount}, (_,i)=>{
+      return (means.boss[i]||0)*w.boss +
+             (means.peer[i]||0)*w.peer +
+             (means.report[i]||0)*w.report +
+             (means.other[i]||0)*w.other;
+    });
+
+    // klasterių vidurkiai Self vs Others
+    const clusterIdx = clusters.map(c=> c.items);
+    const clusterMeans = {
+      self:   clusterIdx.map(idxArr => avg(idxArr.map(i=> means.self[i]))),
+      others: clusterIdx.map(idxArr => avg(idxArr.map(i=> others[i])))
+    };
+
+    // difai Others - Self per kompetenciją
+    const diffs = Array.from({length:compCount}, (_,i)=>({
+      i,
+      name: bank.competencies[i].name,
+      cluster: bank.competencies[i].cluster,
+      self: means.self[i]||0,
+      others: others[i]||0,
+      diff: (others[i]||0)-(means.self[i]||0)
+    })).sort((a,b)=> a.diff - b.diff);
+
+    const gaps = diffs.slice(0,3);
+    const strengths = diffs.slice(-3).reverse();
+
+    return {
+      bankInfo: {version: bank.version, compCount, itemsPerComp: bank.competencies.map(c=>c.items.length)},
+      weights: w,
+      means, others, clusterMeans,
+      diffs, gaps, strengths,
+      comments,
+      packsCount: packs.length
+    };
+  }
+
+  function renderSummary(agg){
+    const items = agg.bankInfo.itemsPerComp.reduce((a,b)=>a+b,0);
+    return `
+      <p><strong>Raterių failų:</strong> ${agg.packsCount}</p>
+      <p><strong>Kompetencijų:</strong> ${agg.bankInfo.compCount} • <strong>Teiginių:</strong> ${items}</p>
+      <p><strong>Svorinė Others sudėtis:</strong>
+        Boss ${(agg.weights.boss*100).toFixed(0)}% •
+        Peers ${(agg.weights.peer*100).toFixed(0)}% •
+        Reports ${(agg.weights.report*100).toFixed(0)}% •
+        Others ${(agg.weights.other*100).toFixed(0)}%
+      </p>
+      <p><strong>Didžiausios spragos (Others – Self):</strong> ${agg.gaps.map(g=>`${g.name} (${g.diff.toFixed(2)})`).join(', ')}</p>
+    `;
+  }
+
+  function renderRadar(canvasId, agg){
+    if(!window.Chart) return;
+    const labels = agg.diffs.map(d=> d.name);
+    const self = agg.diffs.map(d=> d.self);
+    const others = agg.diffs.map(d=> d.others);
+    const ctx = document.getElementById(canvasId);
+    new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels,
+        datasets: [
+          {label:'Self', data:self, fill:true, backgroundColor:'rgba(0,119,255,.15)', borderColor:'rgba(0,119,255,.9)'},
+          {label:'Others (svorinė)', data:others, fill:true, backgroundColor:'rgba(10,165,107,.15)', borderColor:'rgba(10,165,107,.9)'}
+        ]
+      },
+      options: { scales:{ r:{ suggestedMin:1, suggestedMax:5, ticks:{stepSize:1} } }, plugins:{legend:{position:'bottom'}} }
+    });
+  }
+
+  function renderClusters(agg){
+    const rows = clusters.map((c,i)=> `
+      <tr><td>${c.name}</td><td>${agg.clusterMeans.self[i].toFixed(2)}</td><td>${agg.clusterMeans.others[i].toFixed(2)}</td></tr>
+    `).join('');
+    return `<table><thead><tr><th>Klasteris</th><th>Self</th><th>Others (sv.)</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  function renderStrengthsGaps(agg, idS, idG){
+    document.getElementById(idG).innerHTML = agg.gaps.map(g=> `<li><strong>${g.name}</strong> • tarpas <em>${g.diff.toFixed(2)}</em> • pasiūlymas: ${suggestion(g)}</li>`).join('');
+    document.getElementById(idS).innerHTML = agg.strengths.map(s=> `<li><strong>${s.name}</strong> • pranašumas <em>${s.diff.toFixed(2)}</em> • kaip kapitalizuoti: ${capitalize(s)}</li>`).join('');
+  }
+
+  function renderComments(agg, id){
+    document.getElementById(id).innerHTML = agg.comments.map(c=> `<li><span class="badge">${c.role}</span> ${escapeHtml(c.text)}</li>`).join('');
+  }
+
+  // Pasiūlymai pagal kompetenciją
+  function suggestion(g){
+    const map = {
+      "Communication: Demonstrating Integrity":"Suderinkite pažadus su kalendoriumi; savaitės pabaigoje – įsipareigojimų inventorius.",
+      "Communication: Encouraging Dialogue":"Įveskite 2 tylaus mąstymo minutes ir 1 „klausimų raundą“ kiekviename susitikime.",
+      "Communication: Creating Shared Vision":"Vienas vizijos šablonas: tikslas, vertė klientui, sėkmės metrika.",
+      "Assure Success: Developing Technological Savvy":"Kas 2 sav. 30 min. tech peržiūra + 1 pritaikymas komandoje.",
+      "Assure Success: Ensuring Customer Satisfaction":"Mėnesio ritmu aptarkite CSAT/NPS įžvalgas su komanda.",
+      "Assure Success: Maintaining Competitive Advantage":"Ketvirtį: 2 konkurentų „greitos analizės“ + 1 eksperimentas.",
+      "Engaging People: Developing People":"1:1 – konkreti kompetencijos praktika ir mikro‑elgesys kas 2 sav.",
+      "Engaging People: Building Partnerships":"Kas mėn. – 1 nauja ar sustiprinta partnerystė su aiškiu tikslu.",
+      "Engaging People: Sharing Leadership":"Deleguokite sprendimą su aiškiais rėmais ir sėkmės kriterijais.",
+      "Continuous Change: Achieving Personal Mastery":"Kasdien 10 min. refleksija + savaitinis prioritetų peržiūrėjimas.",
+      "Continuous Change: Anticipating Opportunities":"Du scenarijai (best/worst) su trigeriais trims svarbiausiems tikslams.",
+      "Continuous Change: Leading Change":"Kiekvienam pokyčiui – „kas/ką/kada/kodėl“ + 2 greiti laimėjimai.",
+      "Boundary-less Inclusion: Empowering People":"Suteikite autonomiją vienoje srityje + aiškūs sprendimo rėmai.",
+      "Boundary-less Inclusion: Thinking Globally":"Sprendimus tikrinkite per 3 rinkų/kultūrų perspektyvą.",
+      "Boundary-less Inclusion: Appreciating Diversity":"„Skirtumų vertė“ momentas kiekviename susitikime (2 min.)."
+    };
+    const key = `${g.cluster}: ${g.name}`;
+    return map[key] || "Apibrėžkite konkretų, matuojamą elgesį ir ritmą (30–60–90 d.).";
+  }
+  function capitalize(s){
+    return "Dokumentuokite gerąją praktiką ir padauginkite ją per shadowing / mini‑mokymą.";
+  }
+  function escapeHtml(t){ return t.replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+  return {
+    newAssessmentId, loadBank, renderSurvey, collect, packResponse, unpackResponse,
+    download, aggregate, renderSummary, renderRadar, renderClusters, renderStrengthsGaps, renderComments
+  };
+})();
+ 
+
+ 
+
+6)  bank/questions.json   (15 kompetencijų, 72 teiginiai)
+
+Struktūra: pirmoms 12 kompetencijų – po 5 teiginius, paskutinėms 3 – po 4. 12×5 + 3×4 = 72.
+
+ 
+{
+  "version": "1.0.0",
+  "competencies": [
+    {
+      "cluster": "Communication",
+      "name": "Demonstrating Integrity",
+      "items": [
+        {"key":"COMM_INT_1","stem":"Laikosi duotų įsipareigojimų ir terminų."},
+        {"key":"COMM_INT_2","stem":"Sprendimai atitinka deklaruojamas vertybes."},
+        {"key":"COMM_INT_3","stem":"Atvirai prisiima klaidas ir jas taiso."},
+        {"key":"COMM_INT_4","stem":"Pateikia kontekstą, kai tenka keisti kryptį."},
+        {"key":"COMM_INT_5","stem":"Viešai ir reguliariai praneša apie pažangos statusą ir rizikas."}
+      ]
+    },
+    {
+      "cluster": "Communication",
+      "name": "Encouraging Dialogue",
+      "items": [
+        {"key":"COMM_DIA_1","stem":"Sukuria saugią erdvę skirtingoms nuomonėms."},
+        {"key":"COMM_DIA_2","stem":"Aktyviai klausia ir įtraukia tyliau kalbančius."},
+        {"key":"COMM_DIA_3","stem":"Skatina ginčą dėl idėjų, ne dėl žmonių."},
+        {"key":"COMM_DIA_4","stem":"Apibendrina ir tikslina susitarimus raštu."},
+        {"key":"COMM_DIA_5","stem":"Sąmoningai balansuoja eterio laiką tarp dalyvių."}
+      ]
+    },
+    {
+      "cluster": "Communication",
+      "name": "Creating Shared Vision",
+      "items": [
+        {"key":"COMM_VSN_1","stem":"Aiškiai sieja tikslus su kliento verte."},
+        {"key":"COMM_VSN_2","stem":"Formuluoja sėkmės metrikas ir ribas."},
+        {"key":"COMM_VSN_3","stem":"Nuosekliai komunikuoja kryptį komandai."},
+        {"key":"COMM_VSN_4","stem":"Užtikrina, kad visi supranta „kodėl“."},
+        {"key":"COMM_VSN_5","stem":"Susieja viziją su kasdieniais pasirinkimais ir prioritetais."}
+      ]
+    },
+
+    {
+      "cluster": "Assure Success",
+      "name": "Developing Technological Savvy",
+      "items": [
+        {"key":"ASS_TECH_1","stem":"Domisi naujomis technologijomis savo srityje."},
+        {"key":"ASS_TECH_2","stem":"Greitai pritaiko įrankius produktyvumui didinti."},
+        {"key":"ASS_TECH_3","stem":"Dalijasi praktinėmis gairėmis komandai."},
+        {"key":"ASS_TECH_4","stem":"Vertina technologinių sprendimų rizikas/naudą."},
+        {"key":"ASS_TECH_5","stem":"Skatina pilotus (POC) ir mokosi iš jų rezultatų."}
+      ]
+    },
+    {
+      "cluster": "Assure Success",
+      "name": "Ensuring Customer Satisfaction",
+      "items": [
+        {"key":"ASS_CUST_1","stem":"Reguliariai telkia klientų įžvalgas sprendimams."},
+        {"key":"ASS_CUST_2","stem":"Greitai reaguoja į klientų skausmo taškus."},
+        {"key":"ASS_CUST_3","stem":"Matuoja pasitenkinimą (pvz., NPS/CSAT)."},
+        {"key":"ASS_CUST_4","stem":"Verčia įžvalgas konkrečiais veiksmais."},
+        {"key":"ASS_CUST_5","stem":"Užtikrina sisteminį atsiliepimų fiksavimą ir atsakymus klientams."}
+      ]
+    },
+    {
+      "cluster": "Assure Success",
+      "name": "Maintaining Competitive Advantage",
+      "items": [
+        {"key":"ASS_COMP_1","stem":"Stebi konkurentų veiksmus struktūruotai."},
+        {"key":"ASS_COMP_2","stem":"Generuoja atsako hipotezes ir eksperimentus."},
+        {"key":"ASS_COMP_3","stem":"Koncentruojasi į mūsų unikalų pasiūlymą."},
+        {"key":"ASS_COMP_4","stem":"Prioritizuoja iniciatyvas pagal ROI."},
+        {"key":"ASS_COMP_5","stem":"Reguliariai peržiūri strategines prielaidas ir adaptuoja kryptį."}
+      ]
+    },
+
+    {
+      "cluster": "Engaging People",
+      "name": "Developing People",
+      "items": [
+        {"key":"ENG_DEV_1","stem":"Kuria individualius augimo planus."},
+        {"key":"ENG_DEV_2","stem":"Duoda reguliarią, konkrečią grįžtamąją informaciją."},
+        {"key":"ENG_DEV_3","stem":"Suteikia praktines galimybes mokytis."},
+        {"key":"ENG_DEV_4","stem":"Švenčia progresą ir pasiekimus."},
+        {"key":"ENG_DEV_5","stem":"Skatina ir palaiko praktikos bendruomenes."}
+      ]
+    },
+    {
+      "cluster": "Engaging People",
+      "name": "Building Partnerships",
+      "items": [
+        {"key":"ENG_PAR_1","stem":"Mezga ryšius per funkcijas/organizacijas."},
+        {"key":"ENG_PAR_2","stem":"Aiškiai apibrėžia abipusę vertę."},
+        {"key":"ENG_PAR_3","stem":"Greitai sprendžia konfliktus be eskalacijos."},
+        {"key":"ENG_PAR_4","stem":"Dalijasi kreditais už rezultatus."},
+        {"key":"ENG_PAR_5","stem":"Nustato reguliarų partnerystės valdymo ritmą (tikslai, rodikliai)."}
+      ]
+    },
+    {
+      "cluster": "Engaging People",
+      "name": "Sharing Leadership",
+      "items": [
+        {"key":"ENG_SLD_1","stem":"Deleguoja sprendimus su aiškiais rėmais."},
+        {"key":"ENG_SLD_2","stem":"Suteikia autonomiją ir pasitiki."},
+        {"key":"ENG_SLD_3","stem":"Padeda komandos nariams „blizgėti“ viešai."},
+        {"key":"ENG_SLD_4","stem":"Klauso, o ne mikrovaldo."},
+        {"key":"ENG_SLD_5","stem":"Numato, kada pasitraukti iš sprendimų kelio ir netrukdyti."}
+      ]
+    },
+
+    {
+      "cluster": "Continuous Change",
+      "name": "Achieving Personal Mastery",
+      "items": [
+        {"key":"CHG_MAS_1","stem":"Laikosi produktyvumo ritualų ir ribų."},
+        {"key":"CHG_MAS_2","stem":"Reflektuoja ir mokosi iš klaidų."},
+        {"key":"CHG_MAS_3","stem":"Tvarko prioritetus pagal vertę."},
+        {"key":"CHG_MAS_4","stem":"Išlaiko ramybę spaudimo situacijose."},
+        {"key":"CHG_MAS_5","stem":"Valdo energiją/poilsį piko periodams."}
+      ]
+    },
+    {
+      "cluster": "Continuous Change",
+      "name": "Anticipating Opportunities",
+      "items": [
+        {"key":"CHG_ANT_1","stem":"Anksti pastebi tendencijas ir rizikas."},
+        {"key":"CHG_ANT_2","stem":"Kuria scenarijus ir pasirengimą."},
+        {"key":"CHG_ANT_3","stem":"Veikia proaktyviai prieš terminus."},
+        {"key":"CHG_ANT_4","stem":"Mato „didįjį paveikslą“ už savo funkcijos ribų."},
+        {"key":"CHG_ANT_5","stem":"Naudoja duomenis ankstyvų signalų aptikimui ir prioritetams."}
+      ]
+    },
+    {
+      "cluster": "Continuous Change",
+      "name": "Leading Change",
+      "items": [
+        {"key":"CHG_LEAD_1","stem":"Sutelkia komandą aiškiam pokyčio tikslui."},
+        {"key":"CHG_LEAD_2","stem":"Numato pasipriešinimą ir jį valdo."},
+        {"key":"CHG_LEAD_3","stem":"Greitai demonstruoja „greitus laimėjimus“."},
+        {"key":"CHG_LEAD_4","stem":"Įtvirtina pokyčius procesuose/standartuose."},
+        {"key":"CHG_LEAD_5","stem":"Anksti įtraukia kritikus ir skeptikus."}
+      ]
+    },
+
+    {
+      "cluster": "Boundary-less Inclusion",
+      "name": "Empowering People",
+      "items": [
+        {"key":"INC_EMP_1","stem":"Aiškiai apibrėžia sprendimo ribas komandai."},
+        {"key":"INC_EMP_2","stem":"Skatina iniciatyvą be baimės klysti."},
+        {"key":"INC_EMP_3","stem":"Užtikrina resursus ir kliūčių šalinimą."},
+        {"key":"INC_EMP_4","stem":"Pripažįsta indėlį viešai."}
+      ]
+    },
+    {
+      "cluster": "Boundary-less Inclusion",
+      "name": "Thinking Globally",
+      "items": [
+        {"key":"INC_GLB_1","stem":"Įvertina sprendimų pasekmes skirtingoms rinkoms."},
+        {"key":"INC_GLB_2","stem":"Derina standartizaciją su lokalizacija."},
+        {"key":"INC_GLB_3","stem":"Mąsto per kultūrinius kontekstus."},
+        {"key":"INC_GLB_4","stem":"Priima įrodymų pagrįstus sprendimus."}
+      ]
+    },
+    {
+      "cluster": "Boundary-less Inclusion",
+      "name": "Appreciating Diversity",
+      "items": [
+        {"key":"INC_DIV_1","stem":"Skatina skirtingas perspektyvas ir patirtis."},
+        {"key":"INC_DIV_2","stem":"Užtikrina lygias galimybes dalyvauti."},
+        {"key":"INC_DIV_3","stem":"Mato skirtumus kaip inovacijos šaltinį."},
+        {"key":"INC_DIV_4","stem":"Reaguoja į šališkumą ir jį mažina."}
+      ]
+    }
+  ]
+}
+ 
+
+ 
+
+7)  README.md 
+
+ 
+# GLA360 Personal – pilna versija (client-only)
+
+Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėje), tinkama **GitHub Pages**.
+
+## Funkcionalumas
+- 5 klasteriai / 15 kompetencijų / **72 Likert** + 3 atviri klausimai.
+- Raterių grupės: `self`, `boss`, `peer`, `report`, `other`.
+- Apklausos nuorodos su `aid`, `role`, `i`.
+- Atsakymai → **JSON** (vietoje).
+- Ataskaita: **svorinė Others** (Boss/Peers/Reports/Others), **radaras**, **klasterių vidurkiai**, **Top 3 spragos/stiprybės**, **komentarai**.
+- Eksportas: **JSON**, **Print to PDF**.
+
+## Paleidimas
+1. Sukurkite repo, pvz., `gla360-personal-full` ir įkelkite visus failus.
+2. **Settings → Pages**: Source = `Deploy from a branch`; Branch = `main / (root)`.
+3. Eikite į `index.html`, sukurkite vertinimą, išsiųskite nuorodas `survey.html`.
+4. Surinkus JSON failus → atidarykite `report.html` ir įkelkite juos.
+
+## Privatumas
+- Duomenys **neliečia serverių** – viskas vyksta naršyklėje, kol patys neišsiųsite JSON.
+
+## Teisinė pastaba
+Tai **ne oficialus GLA360** ir nenaudoja licencijuoto turinio. Struktūra remiasi viešais aprašais:
+- Global Coach Group – https://globalcoachgroup.com/gla360/
+- LEAPING KOI – https://www.leapingkoi.com/gla360.html
+- MGSCC – https://mgscc.net/gla360/
+ 
+
+ 
+
+🚀 Publikavimas (GitHub Pages)
+
+Sukurkite naują repo (pvz.,  gla360-personal-full ).
+
+Įkelkite visus aukščiau pateiktus failus „as‑is“.
+
+Settings → Pages → Deploy from a branch →  main  /  /root .
+
+Po 1–2 min. turėsite URL:  https://<jusu-username>.github.io/gla360-personal-full/ .
+
+ 
+
+✅ Ką ši „pilna“ versija jau daro
+
+72 klausimų apklausa (rateriams ir self).
+
+Unikalios nuorodos be prisijungimo.
+
+JSON atsisiuntimas + kopijavimas + „Share“ (jei palaikoma).
+
+Agregavimas su svoriais (Boss/Peers/Reports/Others).
+
+Radarai, klasterių lentelės, Top 3 spragos/stiprybės, komentarai.
+
+PDF (per Print) ir JSON eksportas.
+
+ 
+
+➕ Papildymai, kuriuos galime įdiegti, jei norėsite
+
+PWA (offline install) + šifruotas ZIP su visais JSON.
+
+Per‑item šilumos žemėlapis ir norminės grupės (jei turėsite savo normų duomenis).
+
+DOCX ataskaitos generavimas (Word) su jūsų logotipu.
+
+Kalbų perjungimas LT/EN ir jūsų brand’as.
+
+Automatinis surinkimas (Supabase/Firebase) – jei kada panorėsite serverio.
+
+ 
+
+Jei norite, galiu paruošti ZIP archyvą arba sukurti GitHub repo su pirma „release“ (v1.0.0) ir įjungtu Pages.
+Pasakykite savo GitHub username – padarysiu pull‑request su visais failais per 1 žingsnį.
