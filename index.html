@@ -52,3 +52,37 @@
   </section>
 </main>
 
+app.js</script>
+<script>
+document.getElementById('create').addEventListener('click', ()=>{
+  const leader = document.getElementById('leaderName').value.trim() || 'Lyderis';
+  const project = document.getElementById('projectName').value.trim() || 'Asmeninis 360 vertinimas';
+  const aid = GLA.newAssessmentId(leader, project);
+
+  const n = {
+    boss: +document.getElementById('nBoss').value||0,
+    peer: +document.getElementById('nPeers').value||0,
+    report: +document.getElementById('nReports').value||0,
+    other: +document.getElementById('nOthers').value||0
+  };
+
+  const base = location.href.replace(/index\.html.*$/,'').replace(/[#?].*$/,'');
+  const mk = (role, i)=> `${base}survey.html?aid=${encodeURIComponent(aid)}&role=${role}&i=${i}`;
+
+  let html = `<p><strong>Assessment ID:</strong> <code>${aid}</code></p>`;
+  html += `<p>${mk(Savivertinimo nuoroda (SELF)</a></p>`;
+  ['boss','peer','report','other'].forEach(role=>{
+    if(n[role]>0){
+      html += `<details><summary>${role} (${n[role]})</summary><ol>`;
+      for(let i=1;i<=n[role];i++) html += `<li>${mk(role,i)}${mk(role,i)}</a></li>`;
+      html += `</ol></details>`;
+    }
+  });
+  html += `<p class="muted">Išsiųskite šias nuorodas savo rateriams el. paštu / žinute. Užpildę jie atsisiunčia *.json ir atsiunčia jums.</p>`;
+
+  document.getElementById('links').innerHTML = html;
+});
+</script>
+</body>
+</html>
+ 
