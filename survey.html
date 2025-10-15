@@ -31,3 +31,52 @@
     <p class="muted">Atsakymai <strong>nesiunčiami</strong> į serverį. Viskas skaičiuojama naršyklėje. Baigę – atsisiųskite JSON ir perduokite lyderiui.</p>
   </section>
 </main>
+app.js</script>
+<script>
+(async ()=>{
+  const params = new URLSearchParams(location.search);
+  const aid   = params.get('aid') || '(nežinomas)';
+  const role  = params.get('role') || 'peer';
+  const idx   = params.get('i') || '1';
+  const title = `${role.toUpperCase()} #${idx}`;
+  document.getElementById('meta').innerHTML = `
+    <p><strong>Assessment ID:</strong> <code>${aid}</code> | <strong>Vaidmuo:</strong> <code>${title}</code></p>
+  `;
+
+  const bank = await GLA.loadBank();
+  const el = document.getElementById('form');
+  el.appendChild(GLA.renderSurvey(bank));
+
+  function packageIt(){
+    const payload = GLA.collect(bank);
+    return GLA.packResponse({aid, role, idx, payload});
+  }
+
+  document.getElementById('finish').addEventListener('click', ()=>{
+    const pack = packageIt();
+    GLA.download(`${aid}_${role}_${idx}.json`, JSON.stringify(pack, null, 2));
+  });
+
+  document.getElementById('copy').addEventListener('click', async ()=>{
+    const pack = packageIt();
+    await navigator.clipboard.writeText(JSON.stringify(pack));
+    alert('JSON nukopijuotas į iškarpinę.');
+  });
+
+  document.getElementById('share').addEventListener('click', async ()=>{
+    const pack = packageIt();
+    const blob = new Blob([JSON.stringify(pack, null, 2)], {type:'application/json'});
+    const file = new File([blob], `${aid}_${role}_${idx}.json`, {type:'application/json'});
+    if(navigator.share){
+      try {
+        await navigator.share({title:'GLA360 JSON', text:`${aid} ${role}#${idx}`, files:[file]});
+      } catch(e){}
+    } else {
+      alert('Naršyklė nepalaiko Web Share API. Naudokite „Atsisiųsti JSON“.');
+    }
+  });
+})();
+</script>
+</body>
+</html>
+ 
