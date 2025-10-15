@@ -3,39 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>GLA360 Personal (pilna versija) – pradėti vertinimą</title>
-  <meta name="description" content="Asmeninė 360° lyderystės apklausa be serverio – GitHub Pages. 5 klasteriai, 15 kompetencijų, 72 klausimai.">
-  styles.css
+  <title>GLA360 Personal – vieno failo versija</title>
+  <meta name="description" content="Asmeninė 360° apklausa viename faile. Be serverio, be priklausomybių. SELF ir kitos rolės per URL parametrus.">
   <style>
-    /* jei prireiktų minimalaus stiliaus kai kuriose vietose */
-    .wrap { max-width: 980px; margin: 0 auto; padding: 16px; }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .card { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:16px; margin:12px 0; }
-    .mt { margin-top: 12px; }
-    .muted { color:#6b7280; }
-    .badge { background:#eef2ff; color:#3730a3; padding:2px 8px; border-radius:999px; font-size:0.9em; }
-    details > summary { cursor: pointer; margin: 6px 0; }
-    code { background:#f3f4f6; padding: 2px 6px; border-radius: 4px; }
-    label input { display:block; width:100%; padding:8px; margin-top:4px; }
-    button { padding:10px 14px; border-radius:8px; border:1px solid #1f2937; background:#111827; color:#fff; cursor:pointer; }
-    button:hover { background:#0b1220; }
-    @media (max-width: 720px) {
-      .grid2 { grid-template-columns: 1fr; }
-      .grid4 { grid-template-columns: 1fr 1fr; }
-    }
+    :root { --fg:#111827; --muted:#6b7280; --b:#e5e7eb; --bg:#ffffff; --brand:#111827; --badgebg:#eef2ff; --badgefg:#3730a3;}
+    html,body{margin:0;padding:0;background:#f9fafb;color:var(--fg);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+    .wrap{max-width:980px;margin:0 auto;padding:16px;}
+    .card{background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:16px;margin:12px 0;}
+    .muted{color:var(--muted)}
+    .badge{background:var(--badgebg);color:var(--badgefg);padding:2px 8px;border-radius:999px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    label input{display:block;width:100%;padding:8px;margin-top:4px}
+    button{padding:10px 14px;border-radius:8px;border:1px solid #1f2937;background:var(--brand);color:#fff;cursor:pointer}
+    button:hover{opacity:.95}
+    details>summary{cursor:pointer;margin:6px 0}
+    code{background:#f3f4f6;padding:2px 6px;border-radius:4px}
+    .q{padding:12px;margin:10px 0;border:1px solid var(--b);border-radius:8px;background:#fff}
+    .scale{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    .likert input{margin-right:4px}
+    .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .mt{margin-top:12px}
+    .hidden{display:none !important}
+    @media (max-width:720px){.grid2{grid-template-columns:1fr}.grid4{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
-<header class="head wrap">
-  <h1>GLA360 Personal – <span class="badge">pilna versija</span></h1>
-  <p class="muted">Sukurkite vertinimą, išsiųskite nuorodas vertintojams, surinkite JSON failus ir sugeneruokite ataskaitą (Self vs Others, svoriai, radarai, komentarai).</p>
+<header class="wrap">
+  <h1>GLA360 Personal – <span class="badge">vieno failo versija</span></h1>
+  <p class="muted">Visas srautas viename faile: nuorodų generavimas → apklausa → JSON atsisiuntimas. (SELF / BOSS / PEER / REPORT / OTHER)</p>
 </header>
 
 <main class="wrap">
-  <section class="card">
+  <!-- SEKC. A: Pradžia / nuorodų generavimas -->
+  <section id="start" class="card">
     <h2>Naujas vertinimas</h2>
-    <p>1) Įveskite savo vardą ir projekto pavadinimą. 2) Nurodykite, kiek raterių kiekvienoje grupėje. 3) Spauskite <strong>Sukurti</strong> – gausite <em>Assessment ID</em> ir nuorodas.</p>
+    <p>1) Įveskite vardą ir projekto pavadinimą. 2) Nurodykite raterių skaičių. 3) Spauskite <strong>Sukurti</strong> – gausite <em>Assessment ID</em> ir nuorodas (į šį patį puslapį su parametrais).</p>
 
     <div class="grid2">
       <label>Jūsų vardas
@@ -61,100 +64,279 @@
       </label>
     </div>
 
-<button id="create" type="button">Sukurti vertinimą</button>
+    <div class="row mt">
+      <button id="create" type="button">Sukurti vertinimą</button>
+      <span class="muted">AID ir nuorodos atsiras žemiau.</span>
+    </div>
     <div id="links" class="mt"></div>
   </section>
 
-  <section class="card">
-    <h2>Ataskaita</h2>
-    <p>Surinkus JSON failus iš vertintojų, atidarykite report.htmlreport.html</a> ir įkelkite juos. Galėsite nustatyti svorius grupėms, matyti radarą, klasterių lentelę, Top 3 spragas/stiprybes, komentarus ir eksportuoti į PDF/JSON.</p>
+  <!-- SEKC. B: Apklausa (ta pati index.byla, su URL parametrais) -->
+  <section id="survey" class="card hidden">
+    <h2>Apklausa</h2>
+    <p class="muted">AID: <code id="aid">—</code> · Role: <code id="role">—</code></p>
+    <div id="surveyErrors" class="muted"></div>
+    <div id="questions"></div>
+    <div class="row mt">
+      <button id="finish" type="button">Baigti ir atsisiųsti JSON</button>
+      <button id="copy" type="button">Nukopijuoti JSON</button>
+    </div>
+    <p class="muted mt">Privatumas: atsakymai nesiunčiami į serverį; skaičiuojama naršyklėje. Pabaigoje atsisiųskite JSON ir perduokite lyderiui.</p>
   </section>
 
+  <!-- SEKC. C: Nuorodos į metodikos aprašus -->
   <section class="card">
-    <h2>Kas tai?</h2>
-    <p class="muted">Šis įrankis atkartoja 360 logiką (5 klasteriai, 15 kompetencijų, ~72 Likert klausimai ir radarinės vizualizacijos) asmeniniam naudojimui, remiantis viešai aprašyta GLA360 struktūra (Global Coach Group; LEAPING KOI; MGSCC). Tai <strong>ne oficialus</strong> GLA360 produktas ar ataskaita.</p>
-  </section>
-
-  <section id="sources" class="card">
-    <h2>Nuorodos</h2>
+    <h2>Apie metodiką</h2>
     <ul class="muted">
-      <li>Global Coach Group – GLA360: https://globalcoachgroup.com/gla360/globalcoachgroup.com/gla360</a></li>
-      <li>LEAPING KOI – metodikos santrauka: <a href="https://www.leapingkoi.com/gla360.html" target="_blank" rel="noopener  <li>MGSCC – „From awareness to action“: https://mgscc.net/gla360/mgscc.net/gla360</a></li>
+      <li><a href="https://globalcoachgroup.com/gla360/" target="_ GLA360</a></li>
+      <li><a href="https://www.leapingkoi.com/glLEAPING KOI – GLA360 santrauka</a></li>
+      <li><a href="https:///gla360/MGSCC – From awareness to action</a></li>
     </ul>
+    <p class="muted">Tai <strong>ne oficialus</strong> GLA360 produktas ar ataskaita.</p>
   </section>
 </main>
 
-<!-- Jei turi app.global-init.js, galima įtraukti čia; bet šiam puslapiui nebūtina -->
 <script>
 (function(){
-  // Konfigūracija: kurią survey versiją atidarinėti (hybrid rekomenduojama)
-  const SURVEY_PAGE = 'survey.hybrid.html'; // jei reikia, pakeisk į 'survey.html'
-
-  function fallbackId(leader, project){
+  // ---------- Bendri utilitai ----------
+  function $(id){ return document.getElementById(id); }
+  function nowStamp(){ return new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,14); }
+  function genAid(leader){
+    const init = (leader||'').trim().split(/\s+/).map(s=>s[0]).join('').toUpperCase() || 'A';
     const rand = Math.random().toString(36).slice(2,10);
-    const ts = new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,14);
-    return `${leader.replace(/\s+/g,'_')}-${ts}-${rand}`;
+    return `${init}-${nowStamp()}-${rand}`;
   }
-  const getId = (leader, project) => (window.GLA && typeof GLA.newAssessmentId === 'function')
-      ? GLA.newAssessmentId(leader, project)
-      : fallbackId(leader, project);
-
-  function getBaseDir(){
-    // Robustiškai suformuojame bazinį katalogą su „/“ gale
-    const url = new URL(location.href);
-    // jei baigiasi ne „/“, nuimame failo pavadinimą (pvz., index.html)
-    if (!url.pathname.endsWith('/')) {
-      url.pathname = url.pathname.split('/').slice(0, -1).join('/') + '/';
-    }
-    url.search = ''; url.hash = '';
-    return url.toString();
+  function baseUrl(){
+    const u = new URL(location.href);
+    // visada rodome tą patį failą
+    u.search=''; u.hash='';
+    return u;
   }
-
-  function mkUrl(base, role, i, aid){
-    const u = new URL(SURVEY_PAGE, base);
+  function mkUrl(aid, role, i){
+    const u = new URL(baseUrl());
     u.searchParams.set('aid', aid);
     u.searchParams.set('role', role);
     if (i) u.searchParams.set('i', i);
     return u.toString();
   }
-
-  document.getElementById('create').addEventListener('click', () => {
-    const leader = (document.getElementById('leaderName').value || 'Lyderis').trim();
-    const project = (document.getElementById('projectName').value || 'Asmeninis 360 vertinimas').trim();
-    const aid = getId(leader, project);
-
-    const n = {
-      boss: Number(document.getElementById('nBoss').value) || 0,
-      peer: Number(document.getElementById('nPeers').value) || 0,
-      report: Number(document.getElementById('nReports').value) || 0,
-      other: Number(document.getElementById('nOthers').value) || 0
+  function parseQuery(){
+    let raw = location.search || '';
+    if (raw.includes('http')) raw = raw.split('http')[0];
+    if (raw && !raw.startsWith('?')) raw = '?' + raw;
+    const qs = new URLSearchParams(raw);
+    return {
+      aid: (qs.get('aid')||'').trim(),
+      role: (qs.get('role')||'').trim().toLowerCase(),
+      i: Number(qs.get('i')||1) || 1
     };
+  }
+  function show(id){ $(id)?.classList.remove('hidden'); }
+  function hide(id){ $(id)?.classList.add('hidden'); }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-    const base = getBaseDir();
-    const mk = (role, i) => mkUrl(base, role, i, aid);
+  // ---------- A. Pradžios ekranas: nuorodų generavimas ----------
+  function initStart(){
+    const btn = $('create');
+    const links = $('links');
+    if(!btn || !links) return;
 
-    let html = `<p><strong>Assessment ID:</strong> <code>${aid}</code></p>`;
+    btn.addEventListener('click', ()=>{
+      const leader  = ($('leaderName')?.value || 'Lyderis').trim();
+      const project = ($('projectName')?.value || 'Asmeninis 360 vertinimas').trim();
+      const aid = genAid(leader);
 
-    // SELF – viena savivertinimo nuoroda
-    const selfUrl = mk('self', 1);
-    html += `<p>📎 Savivertinimo nuoroda (SELF): ${selfUrl}${selfUrl}</a></p>`;
+      const n = {
+        boss:   Number($('nBoss')?.value)    || 0,
+        peer:   Number($('nPeers')?.value)   || 0,
+        report: Number($('nReports')?.value) || 0,
+        other:  Number($('nOthers')?.value)  || 0
+      };
 
-    // Kitos grupės
-    ['boss','peer','report','other'].forEach(role => {
-      if (n[role] > 0) {
-        html += `<details open><summary>${role} (${n[role]})</summary><ol>`;
-        for (let i = 1; i <= n[role]; i++) {
-          const url = mk(role, i);
-          html += `<li>${url}${url}</a></li>`;
+      let html = `<p><strong>Assessment ID:</strong> <code>${aid}</code></p>`;
+      const selfUrl = mkUrl(aid, 'self', 1);
+      html += `<p>📎 Savivertinimo nuoroda (SELF): ${selfUrl}${selfUrl}</a></p>`;
+
+      ['boss','peer','report','other'].forEach(role=>{
+        if(n[role] > 0){
+          html += `<details open><summary>${role} (${n[role]})</summary><ol>`;
+          for(let i=1;i<=n[role];i++){
+            const url = mkUrl(aid, role, i);
+            html += `<li>${url}${url}</a></li>`;
+          }
+          html += `</ol></details>`;
         }
-        html += `</ol></details>`;
-      }
-    });
+      });
 
-    html += `<p class="muted">Išsiųskite šias nuorodas savo rateriams el. paštu / žinute. Užpildę jie atsisiųs *.json ir atsiųs jums.</p>`;
-    document.getElementById('links').innerHTML = html;
-  });
+      html += `<p class="muted">Išsiųskite šias nuorodas rateriams. Užpildę – atsisiųs *.json ir atsiųs jums.</p>`;
+      links.innerHTML = html;
+      // automatiškai nuscrollinam iki nuorodų
+      links.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  }
+
+  // ---------- B. Klausimų krovimas (su fallback'u) ----------
+  async function fetchJsonSafe(url){
+    try{
+      const res = await fetch(url + (url.includes('?') ? '&' : '?') + 'v=' + Date.now(), { cache:'no-store' });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    }catch(e){
+      console.warn('Nepavyko įkelti', url, e);
+      return null;
+    }
+  }
+
+  function normalizeQuestions(data){
+    if(!data) return [];
+    if(Array.isArray(data.questions) && data.questions.length){
+      return data.questions.map((q, i)=>({
+        id: q.id || `Q${i+1}`,
+        text: q.text_lt || q.text || q.stem || `Klausimas ${i+1}`,
+        cluster: q.cluster || null,
+        competency: q.competency || null,
+        reverse: !!q.reverse
+      }));
+    }
+    if(Array.isArray(data.Competencies) && data.Competencies.length){
+      const out=[];
+      data.Competencies.forEach((comp,ci)=>{
+        const compName = comp.name || `Kompetencija ${ci+1}`;
+        const cluster = comp.cluster || null;
+        (comp.items||[]).forEach((item,ii)=>{
+          out.push({
+            id: item.key || `C${ci+1}_${ii+1}`,
+            text: item.stem || item.text_lt || item.text || `Klausimas ${ci+1}.${ii+1}`,
+            cluster, competency: compName, reverse: !!item.reverse
+          });
+        });
+      });
+      return out;
+    }
+    return [];
+  }
+
+  // Minimalus įmontuotas fallback rinkinys (jei bank/questions.json tuščias/404)
+  const EMBEDDED_QUESTIONS = [
+    { id:'Q1', text:'Aiškiai suprantu savo stiprybes ir tobulintinas sritis darbe.', cluster:'C1', competency:'Self-Awareness' },
+    { id:'Q2', text:'Efektyviai valdau laiką ir prioritetus spaudimo sąlygomis.', cluster:'C1', competency:'Self-Management' },
+    { id:'Q3', text:'Aiškiai ir laiku komunikuoju lūkesčius komandai.', cluster:'C2', competency:'Communication' },
+    { id:'Q4', text:'Kuriu pasitikėjimu grįstą bendradarbiavimą.', cluster:'C2', competency:'Collaboration' },
+    { id:'Q5', text:'Reguliariai teikiu konstruktyvų grįžtamąjį ryšį.', cluster:'C2', competency:'Coaching' }
+  ];
+
+  async function loadAllQuestions(){
+    // Bandome iš bank/questions.json
+    const data = await fetchJsonSafe('bank/questions.json');
+    const q1 = normalizeQuestions(data);
+    if(q1.length) return q1;
+    // Jei nepavyko – naudoti įmontuotą fallback
+    return EMBEDDED_QUESTIONS;
+  }
+
+  // ---------- C. Apklausa (renderis + eksportas) ----------
+  function renderSurvey(questions){
+    const host = $('questions');
+    if(!questions.length){
+      $('surveyErrors').innerHTML = 'Nerasta klausimų (bank/questions.json tuščias?). Naudokite įmontuotą fallback arba pataisykite JSON.';
+      host.innerHTML = '';
+      return;
+    }
+    const scale=[1,2,3,4,5];
+    const html = `
+      <div class="muted">Klausimų: ${questions.length}</div>
+      <div class="q-list">
+        ${questions.map((q,i)=>`
+          <div class="q" data-qid="${q.id}">
+            <div class="stem"><strong>${i+1}.</strong> ${escapeHtml(q.text)}</div>
+            <div class="scale">
+              ${scale.map(v=>`
+                <label class="likert">
+                  <input type="radio" name="${q.id}" value="${v}" required>
+                  <span>${v}</span>
+                </label>
+              `).join('')}
+            </div>
+            ${(q.competency||q.cluster)?`<div class="muted">${q.competency?`Kompetencija: ${escapeHtml(q.competency)}`:''}${q.competency&&q.cluster?' · ':''}${q.cluster?`Klasteris: ${escapeHtml(q.cluster)}`:''}</div>`:''}
+          </div>
+        `).join('')}
+      </div>`;
+    host.innerHTML = html;
+  }
+
+  function collectAnswers(){
+    const out={};
+    document.querySelectorAll('.q[data-qid]').forEach(el=>{
+      const id = el.getAttribute('data-qid');
+      const checked = el.querySelector(`input[name="${CSS.escape(id)}"]:checked`);
+      out[id] = checked ? Number(checked.value) : null;
+    });
+    return out;
+  }
+
+  function downloadJSON(filename, obj){
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function initSurveyScene(params){
+    $('aid').textContent = params.aid || '—';
+    $('role').textContent = (params.role||'self').toUpperCase();
+
+    loadAllQuestions().then(qs=>{
+      renderSurvey(qs);
+      $('finish').onclick = ()=>{
+        const answers = collectAnswers();
+        const missing = Object.values(answers).filter(v => v==null).length;
+        if(missing){
+          alert(`Neužpildyti ${missing} teiginiai. Užpildykite visus.`);
+          return;
+        }
+        const payload = {
+          aid: params.aid || '(nenurodytas)',
+          role: (params.role||'self').toUpperCase(),
+          ts: new Date().toISOString(),
+          answers
+        };
+        const fname = `${(params.role||'self').toUpperCase()}-${params.aid || 'AID'}.json`;
+        downloadJSON(fname, payload);
+      };
+      $('copy').onclick = ()=>{
+        const payload = {
+          aid: params.aid || '(nenurodytas)',
+          role: (params.role||'self').toUpperCase(),
+          ts: new Date().toISOString(),
+          answers: collectAnswers()
+        };
+        navigator.clipboard.writeText(JSON.stringify(payload, null, 2))
+          .then(()=>alert('JSON nukopijuotas į iškarpinę.'))
+          .catch(()=>alert('Nepavyko nukopijuoti.'));
+      };
+    });
+  }
+
+  // ---------- D. Router'is: tas pats failas, 2 režimai ----------
+  function initRouter(){
+    const p = parseQuery();
+    const isSurvey = !!(p.aid && p.role); // jeigu yra aid+role → apklausa
+    if(isSurvey){
+      hide('start'); show('survey');
+      initSurveyScene(p);
+    }else{
+      show('start'); hide('survey');
+      initStart();
+    }
+  }
+
+  // start
+  document.addEventListener('DOMContentLoaded', initRouter);
 })();
-index.fix.js?v=1</script>
+</script>
 </body>
 </html>
+``
