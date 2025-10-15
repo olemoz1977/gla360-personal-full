@@ -1,1 +1,40 @@
+4)  styles.css 
+
+ 
+:root{
+  --bg:#0b0c10; --card:#151820; --ink:#eaf0f8; --muted:#a9b4c4; --brand:#5ac8fa; --accent:#7ee081; --border: rgba(255,255,255,.08);
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f7fbff; --card:#ffffff; --ink:#0e1621; --muted:#415063; --brand:#0077ff; --accent:#0aa56b; --border:#e6eef7; }
+}
+*{box-sizing:border-box}
+body{margin:0; font:16px/1.55 system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink); background:var(--bg)}
+.head{padding:20px; max-width:1100px; margin:0 auto}
+.wrap{max-width:1100px; margin:0 auto; padding:10px 20px 60px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,.04), transparent 50%), var(--card);
+  border:1px solid var(--border); border-radius:14px; padding:16px; margin:12px 0}
+.badge{font-size:.9rem; opacity:.9}
+.muted{color:var(--muted)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+@media (max-width:800px){ .grid2,.grid4{grid-template-columns:1fr} }
+label{display:grid; gap:6px; font-weight:600}
+input, select, textarea{padding:.55rem .6rem; border-radius:10px; border:1px solid rgba(0,0,0,.15); background:rgba(255,255,255,.06); color:var(--ink)}
+button,.btn{background:var(--brand); color:white; border:none; padding:.6rem .9rem; border-radius:10px; cursor:pointer; font-weight:700; text-decoration:none; display:inline-block}
+button.secondary{background:transparent; color:var(--brand); border:1px solid rgba(90,200,250,.5)}
+.mt{margin-top:10px}
+fieldset{border:1px dashed var(--border); border-radius:12px; padding:8px 12px; margin:10px 0}
+legend{opacity:.8}
+.scale{display:flex; gap:8px; align-items:center}
+.scale input[type=range]{width:100%}
+.item{margin:6px 0; padding:8px; border-radius:10px; background:rgba(255,255,255,.03)}
+table{width:100%; border-collapse:collapse}
+th, td{padding:8px; border-bottom:1px solid var(--border); text-align:left}
+@media print{
+  body{background:white; color:#000}
+  .card{border:1px solid #ccc}
+  .head, .wrap{padding:0}
+  a.btn, button{display:none}
+}
+ 
 
