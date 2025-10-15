@@ -1,47 +1,4 @@
-Puiku, Olegai — padarau pilną, asmeninę 360‑tipo versiją („client‑only“, be serverio), kurią galite iškart publikuoti GitHub Pages.
-Ji apima:
 
-5 klasterius / 15 kompetencijų / 72 Likert teiginius + 3 atvirus klausimus.
-
-Raterių grupes: self, boss, peer, report, other.
-
-Unikalios apklausų nuorodos be prisijungimų.
-
-Atsakymai atsisiunčiami kaip JSON (respondentai atsiunčia jums).
-
-Ataskaita: Self vs Others (įsk. svorius pagal grupes), radaro diagrama, klasterių lentelė, Top 3 spragos/stiprybės, komentarų suvestinė, eksportas į JSON ir PDF (per „Print“).
-
-Vien tik naršyklėje – veikia GitHub Pages ir offline spausdinimui.
-
-Visa UI – lietuviškai.
-
-Nauja repo versija (ne taisymas).
-
-⚠️ Teisinė pastaba: tai ne oficialus GLA360 produktas ir nenaudoja licencijuotos medžiagos. Struktūra (5 klasteriai, 15 kompetencijų, ~72 klausimų idėja, radarai ir debrief akcentai) paremta viešai aprašyta GLA360 logika („Global Coach Group“, „LEAPING KOI“, „MGSCC“) skirta edukaciniam / asmeniniam naudojimui.
-
- 
-
-📁 Projekto struktūra
-
- 
-gla360-personal-full/
-├─ index.html        # Sukurti vertinimą, sugeneruoti nuorodas
-├─ survey.html       # Apklausos forma rateriams (self/boss/peer/report/other)
-├─ report.html       # Įkelti JSON failus ir sugeneruoti ataskaitą
-├─ styles.css        # Bendras stilius (tamsi/šviesi)
-├─ app.js            # Bendra logika (ID, apklausa, agregavimas, grafikai, eksportas)
-├─ bank/
-│  └─ questions.json # 15 kompetencijų, 72 teiginiai, 3 atviri klausimai
-└─ README.md         # Kaip paleisti/publikuoti
- 
-
-Toliau – pilnas kodas kiekvienam failui. Tiesiog sukurkite naują repo (pvz.,  gla360-personal-full ), įkelkite šiuos failus ir įjunkite GitHub Pages.
-
- 
-
-1)  index.html 
-
- 
 <!doctype html>
 <html lang="lt">
 <head>
@@ -132,39 +89,7 @@ document.getElementById('create').addEventListener('click', ()=>{
 
  
 
-2)  survey.html 
 
- 
-<!doctype html>
-<html lang="lt">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>GLA360 Personal – Apklausa (72 klausimai)</title>
-  styles.css
-</head>
-<body>
-<header class="head">
-  <h1>GLA360 Personal – apklausa</h1>
-  <p class="muted">Likerto skalė 1–5: 1 – „visiškai nesutinku“ (retai elgseną demonstruoja), 5 – „visiškai sutinku“ (nuosekliai demonstruoja).</p>
-</header>
-
-<main class="wrap">
-  <section class="card">
-    <div id="meta"></div>
-    <div id="form"></div>
-    <div class="mt">
-      <button id="finish">Baigti ir atsisiųsti JSON</button>
-      <button id="copy" class="secondary">Nukopijuoti JSON į iškarpinę</button>
-      <button id="share" class="secondary">Pasidalinti (jei įmanoma)</button>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Privatumas</h2>
-    <p class="muted">Atsakymai <strong>nesiunčiami</strong> į serverį. Viskas skaičiuojama naršyklėje. Baigę – atsisiųskite JSON ir perduokite lyderiui.</p>
-  </section>
-</main>
 
 app.js</script>
 <script>
