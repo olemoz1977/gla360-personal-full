@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GLA360 Personal – apklausa (v2)</title>
+  styles.css
+  <style>
+    .q { padding: 12px; margin: 10px 0; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .scale { display:flex; gap:8px; margin-top:8px; }
+    .likert input { margin-right:4px; }
+    .alert.error { color:#b91c1c; background:#fee2e2; padding:8px; border-radius:6px; }
+    .muted { color:#6b7280; }
+  </style>
+</head>
+<body>
+<header class="head">
+  <h1>GLA360 Personal – apklausa (v2)</h1>
+  <p class="muted">Likerto skalė 1–5. AID: <code id="aid">—</code> · ROLE: <code id="role">—</code></p>
+</header>
+
+<main class="wrap">
+  <div id="surveyErrors" class="muted"></div>
+  <div id="questions"></div>
+
+  <div class="actions mt">
+    <button id="finish" type="button">Baigti ir atsisiųsti JSON</button>
+    <button id="copy" type="button">Nukopijuoti JSON</button>
+  </div>
+
+  <p class="muted mt">Privatumas: atsakymai nesiunčiami į serverį; skaičiuojama naršyklėje. Pabaigoje atsisiųskite JSON ir perduokite lyderiui.</p>
+</main>
+
+<script>
+(function(){
+  // -------- 1) Robustus parametrų parsing (apsauga nuo suklijuotų URL) --------
+  function parseQuery(){
+    let raw = location.search || '';
+    if (raw.includes('http')) raw = raw.split('http')[0];
+    if (raw && !raw.startsWith('?')) raw = '?' + raw;
+    const qs = new URLSearchParams(raw);
+    const aid = (qs.get('aid') || '').trim();
+    const role = (qs.get('role') || 'self').toLowerCase();
+    const i = Number(qs.get('i')) || 1;
+    return { aid, role, i };
+  }
+
+  // -------- 2) Klausimų įkėlimas + cache busting --------
+  async function loadQuestions(url = 'bank/questions.json'){
+    const bust = `v=${Date.now()}`;
+    const sep = url.includes('?') ? '&' : '?';
+    try {
+      const res = await fetch(`${url}${sep}${bust}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+      return await res.json();
+    } catch (e) {
+      console.error('❌ Nepavyko įkelti bank/questions.json:', e);
+      return null;
+    }
+  }
+
+  // -------- 3) Normalizacija (palaiko TAVO „Competencies[].items[]“ IR „questions[]“) --------
+  function normalizeQuestions(data){
+    if (!data) return [];
+    if (Array.isArray(data.questions) && data.questions.length){
+      return data.questions.map((q, idx) => ({
+        id: q.id || `Q${idx+1}`,
+        text: q.text_lt || q.text || q.stem || `Klausimas ${idx+1}`,
+        cluster: q.cluster || null,
+        competency: q.competency || null,
+        reverse: !!q.reverse
+      }));
+    }
+    if (Array.isArray(data.Competencies) && data.Competencies.length){
+      const out = [];
+      data.Competencies.forEach((comp, cIdx) => {
+        const compName = comp.name || `Kompetencija ${cIdx+1}`;
+        const cluster = comp.cluster || null;
+        (comp.items || []).forEach((item, iIdx) => {
+          out.push({
+            id: item.key || `C${cIdx+1}_${iIdx+1}`,
+            text: item.stem || item.text_lt || item.text || `Klausimas ${cIdx+1}.${iIdx+1}`,
+            cluster,
+            competency: compName,
+            reverse: !!item.reverse
+          });
+        });
+      });
+      return out;
+    }
+    return [];
+  }
+
+  // -------- 4) Rendereris (sukuria name=id, kad neliktų autofill įspėjimų) --------
+  function renderSurvey(questions, mount){
+    const host = mount || document.getElementById('questions');
+    if (!questions.length){
+      host.innerHTML = `<div class="alert error">Nerasta įkeltų klausimų. Patikrink <code>bank/questions.json</code> struktūrą.</div>`;
+      return;
+    }
+    const scale = [1,2,3,4,5];
+    host.innerHTML = `
+      <div class="progress muted">Klausimų: ${questions.length}</div>
+      <div class="q-list">
+        ${questions.map((q, idx) => `
+          <div class="q" data-qid="${q.id}">
+            <div class="stem"><strong>${idx+1}.</strong> ${escapeHtml(q.text)}</div>
+            <div class="scale">
+              ${scale.map(v => `
+                <label class="likert">
+                  <input type="radio" name="${q.id}" value="${v}" required>
+                  <span>${v}</span>
+                </label>
+              `).join('')}
+            </div>
+            ${q.competency || q.cluster ? `<div class="meta muted">${q.competency ? `Kompetencija: ${escapeHtml(q.competency)}` : ''}${q.competency && q.cluster ? ' · ' : ''}${q.cluster ? `Klasteris: ${escapeHtml(q.cluster)}` : ''}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  // -------- 5) Atsakymų surinkimas ir eksportas --------
+  function collectAnswers(){
+    const result = {};
+    document.querySelectorAll('.q[data-qid]').forEach(q => {
+      const qid = q.getAttribute('data-qid');
+      const checked = q.querySelector(`input[name="${CSS.escape(qid)}"]:checked`);
+      result[qid] = checked ? Number(checked.value) : null;
+    });
+    return result;
+  }
+
+  function downloadJSON(filename, obj){
+    const blob = new Blob([JSON.stringify(obj, null, 2)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+  }
+
+  async function init(){
+    const { aid, role } = parseQuery();
+    document.getElementById('aid').textContent = aid || '—';
+    document.getElementById('role').textContent = (role || 'self').toUpperCase();
+
+    const data = await loadQuestions('bank/questions.json');
+    const qs = normalizeQuestions(data);
+    renderSurvey(qs, document.getElementById('questions'));
+
+    const finishBtn = document.getElementById('finish');
+    const copyBtn = document.getElementById('copy');
+
+    finishBtn.addEventListener('click', () => {
+      // Validacija: patikrinam ar nėra nepripildytų
+      const answers = collectAnswers();
+      const missing = Object.entries(answers).filter(([_, v]) => v == null).map(([k]) => k);
+      if (missing.length){
+        alert(`Nepasirikti atsakymai: ${missing.length}. Prašau užpildyti visus teiginius.`);
+        // galima būtų ir paryškinti UI – jei reikės, pridėsiu
+        return;
+      }
+      const payload = {
+        aid: aid || '(nenurodytas)',
+        role: (role || 'self').toUpperCase(),
+        ts: new Date().toISOString(),
+        answers
+      };
+      const fname = `${(role || 'self').toUpperCase()}-${aid || 'AID'}.json`;
+      downloadJSON(fname, payload);
+    });
+
+    copyBtn.addEventListener('click', () => {
+      const payload = {
+        aid: aid || '(nenurodytas)',
+        role: (role || 'self').toUpperCase(),
+        ts: new Date().toISOString(),
+        answers: collectAnswers()
+      };
+      const txt = JSON.stringify(payload, null, 2);
+      navigator.clipboard.writeText(txt).then(
+        () => alert('JSON nukopijuotas į iškarpinę.'),
+        () => alert('Nepavyko nukopijuoti.'))
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
