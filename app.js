@@ -237,7 +237,7 @@ const GLA = (()=>{
       })
     };
 
-    // Diffs per competency (others - self), sorted ascending (biggest gaps first)
+    // Diffs per competency (others - self), sorted ascending (most negative = biggest gap first)
     const diffs = bank.competencies.map((comp, ci) => ({
       ci,
       name: comp.name,
@@ -249,8 +249,16 @@ const GLA = (()=>{
                 : null
     })).filter(d => d.diff !== null).sort((a,b) => a.diff - b.diff);
 
-    const gaps      = diffs.slice(0, 3);
-    const strengths = diffs.slice(-3).reverse();
+    // Gaps: Others scored lower than Self (negative diff)
+    const gaps = diffs.filter(d => d.diff < 0).slice(0, 3);
+
+    // True strengths: Others scored higher than Self (positive diff)
+    const trueStrengths = diffs.filter(d => d.diff > 0).slice(-3).reverse();
+
+    // If no positive diffs, show least-negative as relative strengths
+    const strengths = trueStrengths.length > 0
+      ? trueStrengths
+      : diffs.slice(-3).reverse().map(s => ({ ...s, _relative: true }));
 
     return {
       bank,
@@ -340,40 +348,67 @@ const GLA = (()=>{
 
   function renderStrengthsGaps(agg, strengthsId, gapsId){
     const SUGGESTIONS = {
-      'Demonstrating Integrity':      'Savaitiniai įsipareigojimų apžvalgos ritualai; viešas statuso ataskaitos šablonas.',
-      'Encouraging Dialogue':         'Įveskite 2 min. tylos + „klausimų raundą" kiekviename susitikime.',
-      'Creating Shared Vision':       'Vienas vizijos šablonas: tikslas → kliento vertė → sėkmės metrika.',
+      'Demonstrating Integrity':       'Savaitiniai įsipareigojimų apžvalgos ritualai; viešas statuso ataskaitos šablonas.',
+      'Encouraging Dialogue':          'Įveskite 2 min. tylos + klausimų raundą kiekviename susitikime.',
+      'Creating Shared Vision':        'Vienas vizijos šablonas: tikslas → kliento vertė → sėkmės metrika.',
       'Developing Technological Savvy':'Kas 2 savaitės 30 min. tech peržiūra + 1 pritaikymas komandoje.',
       'Ensuring Customer Satisfaction':'Mėnesio ritmas: CSAT/NPS įžvalgos → konkretūs veiksmai.',
       'Maintaining Competitive Advantage':'Ketvirtis: 2 konkurentų analizės + 1 eksperimentas.',
-      'Developing People':            '1:1 – konkreti kompetencijos praktika ir mikro‑elgesys kas 2 sav.',
-      'Building Partnerships':        'Kas mėnesį – 1 nauja partnerystė su aiškiu abipusės vertės tikslu.',
-      'Sharing Leadership':           'Deleguokite sprendimą su aiškiais rėmais ir sėkmės kriterijais.',
-      'Achieving Personal Mastery':   'Kasdien 10 min. refleksija + savaitinis prioritetų peržiūrėjimas.',
-      'Anticipating Opportunities':   'Du scenarijai (geriausias/blogiausias) su trigeriais trims tikslams.',
-      'Leading Change':               'Kiekvienam pokyčiui: kas/ką/kada/kodėl + 2 greiti laimėjimai.',
-      'Empowering People':            'Suteikite autonomiją vienoje srityje su aiškiais sprendimo rėmais.',
-      'Thinking Globally':            'Sprendimus tikrinkite per 3 rinkų ar kultūrų perspektyvą.',
-      'Appreciating Diversity':       '„Skirtumų vertė" – 2 min. momentas kiekviename susitikime.'
+      'Developing People':             '1:1 – konkreti kompetencijos praktika ir mikro‑elgesys kas 2 sav.',
+      'Building Partnerships':         'Kas mėnesį – 1 nauja partnerystė su aiškiu abipusės vertės tikslu.',
+      'Sharing Leadership':            'Deleguokite sprendimą su aiškiais rėmais ir sėkmės kriterijais.',
+      'Achieving Personal Mastery':    'Kasdien 10 min. refleksija + savaitinis prioritetų peržiūrėjimas.',
+      'Anticipating Opportunities':    'Du scenarijai (geriausias/blogiausias) su trigeriais trims tikslams.',
+      'Leading Change':                'Kiekvienam pokyčiui: kas/ką/kada/kodėl + 2 greiti laimėjimai.',
+      'Empowering People':             'Suteikite autonomiją vienoje srityje su aiškiais sprendimo rėmais.',
+      'Thinking Globally':             'Sprendimus tikrinkite per 3 rinkų ar kultūrų perspektyvą.',
+      'Appreciating Diversity':        'Skirtumų vertė – 2 min. momentas kiekviename susitikime.'
     };
+    const CAPITALIZE = 'Dokumentuokite gerąją praktiką ir dalinkitės per shadowing ar mini‑mokymą.';
 
     if(gapsId){
-      document.getElementById(gapsId).innerHTML = agg.gaps.map((g,n) => `
-        <li>
-          <strong>${esc(g.name)}</strong>
-          <span class="badge">${esc(g.cluster)}</span>
-          <span class="neg">Tarpas: ${g.diff.toFixed(2)}</span>
-          <div class="suggest">💡 ${esc(SUGGESTIONS[g.name] || 'Apibrėžkite konkretų, matuojamą elgesį.')}</div>
-        </li>`).join('');
+      const el = document.getElementById(gapsId);
+      if(!agg.gaps.length){
+        el.innerHTML = '<li class="muted">Reikšmingų spragų nerasta – puiku!</li>';
+      } else {
+        el.innerHTML = agg.gaps.map(g => `
+          <li>
+            <div class="sg-title">
+              <strong>${esc(g.name)}</strong>
+              <span class="badge">${esc(g.cluster)}</span>
+              <span class="score-chip neg">Others ${g.others !== null ? g.others.toFixed(2) : '—'} · Self ${g.self !== null ? g.self.toFixed(2) : '—'} · Tarpas ${g.diff.toFixed(2)}</span>
+            </div>
+            <div class="suggest">💡 ${esc(SUGGESTIONS[g.name] || 'Apibrėžkite konkretų, matuojamą elgesį ir 30/60/90 d. planą.')}</div>
+          </li>`).join('');
+      }
     }
+
     if(strengthsId){
-      document.getElementById(strengthsId).innerHTML = agg.strengths.map(s => `
-        <li>
-          <strong>${esc(s.name)}</strong>
-          <span class="badge">${esc(s.cluster)}</span>
-          <span class="pos">Pranašumas: ${s.diff.toFixed(2)}</span>
-          <div class="suggest">🚀 Dokumentuokite gerąją praktiką ir dalinkitės per shadowing ar mini‑mokymą.</div>
-        </li>`).join('');
+      const el = document.getElementById(strengthsId);
+      const isRelative = agg.strengths.length > 0 && agg.strengths[0]._relative;
+      if(isRelative){
+        el.innerHTML = `<li class="alert info" style="list-style:none;margin-bottom:8px;">
+          ℹ️ Rateriai visose kompetencijose įvertino žemiau nei Self. Žemiau – santykinai stipriausios sritys.
+        </li>` + agg.strengths.map(s => `
+          <li>
+            <div class="sg-title">
+              <strong>${esc(s.name)}</strong>
+              <span class="badge">${esc(s.cluster)}</span>
+              <span class="score-chip neutral">Others ${s.others !== null ? s.others.toFixed(2) : '—'} · Self ${s.self !== null ? s.self.toFixed(2) : '—'} · ${s.diff.toFixed(2)}</span>
+            </div>
+            <div class="suggest">🚀 ${esc(CAPITALIZE)}</div>
+          </li>`).join('');
+      } else {
+        el.innerHTML = agg.strengths.map(s => `
+          <li>
+            <div class="sg-title">
+              <strong>${esc(s.name)}</strong>
+              <span class="badge">${esc(s.cluster)}</span>
+              <span class="score-chip pos">Others ${s.others !== null ? s.others.toFixed(2) : '—'} · Self ${s.self !== null ? s.self.toFixed(2) : '—'} · +${s.diff.toFixed(2)}</span>
+            </div>
+            <div class="suggest">🚀 ${esc(CAPITALIZE)}</div>
+          </li>`).join('');
+      }
     }
   }
 
