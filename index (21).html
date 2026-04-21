@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GLA360 Personal – Pradžia</title>
+  <meta name="description" content="Asmeninė 360° lyderystės apklausa. Be serverio, GitHub Pages.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="head">
+  <h1>GLA360 Personal</h1>
+  <p>360° lyderystės apklausa · 5 klasteriai · 15 kompetencijų · 75 klausimai · be serverio</p>
+</header>
+
+<main class="wrap">
+
+  <section class="card">
+    <h2>Naujas vertinimas</h2>
+    <p class="muted">Įveskite savo vardą, nurodykite kiek žmonių vertins kiekvienoje grupėje ir spauskite <strong>Sukurti</strong>. Gausite nuorodas, kurias išsiųsite vertintojams.</p>
+
+    <div class="grid2 mt">
+      <label>Jūsų vardas
+        <input type="text" id="leaderName" placeholder="Vardas Pavardė" autocomplete="name">
+      </label>
+      <label>Projekto pavadinimas <span style="font-weight:400">(nebūtina)</span>
+        <input type="text" id="projectName" placeholder="pvz., 2025 Q4 vertinimas">
+      </label>
+    </div>
+
+    <div class="grid4 mt">
+      <label>Vadovas (boss)
+        <input type="number" id="nBoss" min="0" step="1" value="1" inputmode="numeric">
+      </label>
+      <label>Kolegos (peer)
+        <input type="number" id="nPeers" min="0" step="1" value="3" inputmode="numeric">
+      </label>
+      <label>Pavaldiniai (report)
+        <input type="number" id="nReports" min="0" step="1" value="4" inputmode="numeric">
+      </label>
+      <label>Kiti (other)
+        <input type="number" id="nOthers" min="0" step="1" value="2" inputmode="numeric">
+      </label>
+    </div>
+
+    <div class="mt">
+      <button id="create" type="button">Sukurti vertinimą</button>
+    </div>
+
+    <div id="links" class="mt"></div>
+  </section>
+
+  <section class="card">
+    <h2>Kaip tai veikia?</h2>
+    <ol style="padding-left:18px; line-height:2;">
+      <li>Sukurkite vertinimą aukščiau → gausite <strong>Assessment ID</strong> ir nuorodas.</li>
+      <li>Išsiųskite nuorodas savo rateriams el. paštu arba žinute.</li>
+      <li>Kiekvienas rateris atsakys į klausimus naršyklėje ir atsisiųs <code>*.json</code> failą.</li>
+      <li>Surinkite visus <code>*.json</code> failus ir atidarykite <a href="report.html">report.html</a>.</li>
+      <li>Peržiūrėkite rezultatus: radaras, klasteriai, Top 3 spragos ir stiprybės.</li>
+    </ol>
+    <p class="muted mt">🔒 Privatumas: jokių duomenų į serverį. Viskas vyksta naršyklėje.</p>
+  </section>
+
+  <section class="card">
+    <h2>Teisinė pastaba</h2>
+    <p class="muted">Tai <strong>ne oficialus</strong> GLA360 produktas. Struktūra remiasi viešais aprašais:
+      <a href="https://globalcoachgroup.com/gla360/" target="_blank" rel="noopener">Global Coach Group</a> ·
+      <a href="https://www.leapingkoi.com/gla360.html" target="_blank" rel="noopener">LEAPING KOI</a> ·
+      <a href="https://mgscc.net/gla360/" target="_blank" rel="noopener">MGSCC</a>.
+    </p>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+<script>
+(function(){
+  document.getElementById('create').addEventListener('click', function(){
+    const leader  = (document.getElementById('leaderName').value  || 'Lyderis').trim();
+    const project = (document.getElementById('projectName').value || '').trim();
+    const aid = GLA.newAssessmentId(leader);
+
+    const n = {
+      boss:   Number(document.getElementById('nBoss').value)    || 0,
+      peer:   Number(document.getElementById('nPeers').value)   || 0,
+      report: Number(document.getElementById('nReports').value) || 0,
+      other:  Number(document.getElementById('nOthers').value)  || 0
+    };
+
+    // Build base URL (same directory, survey.html)
+    const base = new URL(location.href);
+    base.search = ''; base.hash = '';
+    const dir = base.pathname.endsWith('/')
+      ? base.href
+      : base.href.substring(0, base.href.lastIndexOf('/') + 1);
+
+    function mkUrl(role, i){
+      const u = new URL('survey.html', dir);
+      u.searchParams.set('aid', aid);
+      u.searchParams.set('role', role);
+      u.searchParams.set('i', i);
+      return u.toString();
+    }
+
+    let html = `
+      <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
+      <p><strong>Assessment ID:</strong> <code>${aid}</code></p>`;
+
+    if(project) html += `<p class="muted">Projektas: ${project}</p>`;
+
+    // SELF link
+    const selfUrl = mkUrl('self', 1);
+    html += `
+      <div style="margin:10px 0;">
+        <strong>📎 Savivertinimas (SELF):</strong><br>
+        <ul class="link-list"><li><a href="${selfUrl}" target="_blank">${selfUrl}</a></li></ul>
+      </div>`;
+
+    // Other roles
+    const roleLabels = { boss:'Vadovas (boss)', peer:'Kolega (peer)', report:'Pavaldinys (report)', other:'Kitas (other)' };
+    ['boss','peer','report','other'].forEach(role => {
+      if(n[role] > 0){
+        html += `<details open><summary>${roleLabels[role]} – ${n[role]} nuoroda(-os)</summary><ul class="link-list">`;
+        for(let i = 1; i <= n[role]; i++){
+          const url = mkUrl(role, i);
+          html += `<li><a href="${url}" target="_blank">${url}</a></li>`;
+        }
+        html += `</ul></details>`;
+      }
+    });
+
+    html += `<p class="muted mt">Išsiųskite šias nuorodas rateriams. Užpildę jie atsisiųs <code>*.json</code> ir atsiųs jums.</p>`;
+    document.getElementById('links').innerHTML = html;
+    document.getElementById('links').scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+})();
+</script>
+</body>
+</html>
