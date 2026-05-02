@@ -112,11 +112,13 @@ const GLA = (()=>{
   // This protects anonymity – the leader cannot identify which peer is which.
   // 'i' is only used in the URL to generate unique survey links.
   function packResponse({ aid, role, answers, open }){
+    // ts rounded to date only (not hour/minute) – protects anonymity
+    const dateOnly = new Date().toISOString().slice(0, 10);
     return {
       schema: 'gla360-personal@2',
       aid,
       role: role.toUpperCase(),
-      ts: new Date().toISOString(),
+      ts: dateOnly,
       answers,   // { "COMM_INT_1": 4, ... }
       open: open || {}
     };
