@@ -1,23 +1,71 @@
 # GLA360 Personal – pilna versija (client-only)
 
-Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėje).
+Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėje), tinkama GitHub Pages.
+
 ---
 
 ## Kas tai?
 
-Šis įrankis leidžia vadovui/-ei gauti struktūruotą grįžtamąjį ryšį iš aplinkinių (vadovo/-ės, kolegų, pavaldinių) ir palyginti jį su savivertinimu. Rezultatas — radarinė diagrama, klasterių lentelė, Top 3 spragos su patarimais ir automatiškai sugeneruotas **90 dienų tobulėjimo planas**.
+Šis įrankis leidžia vadovui gauti struktūruotą grįžtamąjį ryšį iš aplinkinių (vadovo, kolegų, pavaldinių) ir palyginti jį su savivertinimu. Rezultatas — radarinė diagrama, klasterių lentelė, Top 3 spragos su patarimais ir automatiškai sugeneruotas **90 dienų tobulėjimo planas**.
 
 > ⚠️ Tai **ne oficialus** GLA360 produktas. Struktūra remiasi viešais aprašais:
 > [Global Coach Group](https://globalcoachgroup.com/gla360/) · [LEAPING KOI](https://www.leapingkoi.com/gla360.html) · [MGSCC](https://mgscc.net/gla360/)
 
+---
+
+## Failų struktūra
+
+```
+├── index.html          ← Pradžia: sukurti vertinimą, generuoti nuorodas
+├── survey.html         ← Apklausa: rateriai užpildo ir atsisiunčia JSON
+├── report.html         ← Ataskaita: įkelti JSON, matyti rezultatus
+├── plan.html           ← 90 dienų tobulėjimo planas
+├── app.js              ← Visa logika (bendrai naudojama)
+├── styles.css          ← Stiliai
+└── bank/
+    └── questions.json  ← 75 klausimai (15 kompetencijų × 5)
+```
+
+---
+
+## Paleidimas (GitHub Pages)
+
+### Struktūra su `/public` aplanku (dabartinė)
+
+```
+repo/
+├── README.md          ← pagrindinis puslapis (GitHub Pages rodo šį)
+├── PRIVACY.md
+├── .nojekyll          ← BŪTINAS: išjungia Jekyll, leidžia veikti /public
+└── public/
+    ├── index.html
+    ├── survey.html
+    ├── report.html
+    ├── plan.html
+    ├── app.js
+    ├── styles.css
+    └── bank/
+        └── questions.json
+```
+
+**Nustatymai:**
+1. **Settings → Pages**: Source = `Deploy from a branch` · Branch = `main / (root)`.
+2. Įsitikinkite, kad repozitorijoje yra `.nojekyll` failas šaknyje (root).
+3. README.md nuoroda į programą: `[Atidaryti GLA360](public/index.html)` (be `/` pradžioje).
+
+### Struktūra su failais šaknyje (alternatyva)
+
+1. Sukurkite repo ir įkelkite visus failus į root išlaikant struktūrą (`bank/` aplankas būtinas).
+2. **Settings → Pages**: Source = `Deploy from a branch` · Branch = `main / (root)`.
+3. Eikite į `index.html` ir pradėkite.
 
 ---
 
 ## Pilnas proceso aprašas
 
-### 1 žingsnis — Sukurti vertinimą 
+### 1 žingsnis — Sukurti vertinimą (`index.html`)
 
-1. Atidarykite [ Apklausa ](https://olemoz1977.github.io/gla360-personal-full/public).
+1. Atidarykite `index.html`.
 2. Įveskite savo vardą ir projekto pavadinimą.
 3. Nurodykite kiek žmonių vertins kiekvienoje grupėje.
 4. Spauskite **Sukurti** — gausite unikalų **Assessment ID** ir nuorodas kiekvienam rateriui.
@@ -27,13 +75,13 @@ Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėj
 
 ### 2 žingsnis — Anonimiškumas ir Anonimiškumo sargas
 
-#### Kodėl reikia Anonimiškumo sargo?
+#### Kodėl reikia Sargas?
 
 Kai rateris užpildo apklausą, jis atsisiunčia `*.json` failą ir turi jį kažkaip perduoti lyderiui. Jei siunčia el. paštu — siuntėjo adresas matomas. Tai pažeidžia anonimiškumą.
 
 **Sprendimas: Anonimiškumo sargas (Anonymity Guardian)**
 
-Tai patikimas žmogus — dažniausiai HR specialistas/-ė, komandos administratorius/-ė ar kitas kolega/-ė — kuris:
+Tai patikimas žmogus — dažniausiai HR specialistas, komandos administratorius ar kitas kolega — kuris:
 
 - Gauna visus `*.json` failus iš raterių
 - Patikrina ar visi atsiuntė (bet nenagrinėja turinio)
@@ -68,22 +116,21 @@ Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.
 
 ---
 
-### 3 žingsnis — Rateriai užpildo apklausą 
+### 3 žingsnis — Rateriai užpildo apklausą (`survey.html`)
 
 1. Rateris atidaro gautą nuorodą naršyklėje.
 2. Atsako į 75 klausimus (Likerto skalė 1–5) ir neprivalomą atvirą dalį.
 3. Spauskia **Baigti ir atsisiųsti JSON** — failas išsaugomas lokaliai.
 4. Failą siunčia **Sargas** (ne lyderiui tiesiogiai).
 
-> 🔒 Duomenys nesiunčiami į jokį serverį. Viskas vyksta naršyklėje. Plačiau apie [Privatumas](https://olemoz1977.github.io/gla360-personal-full/PRIVACY.md)
-
+> 🔒 Duomenys nesiunčiami į jokį serverį. Viskas vyksta naršyklėje.
 
 ---
 
-### 4 žingsnis — Ataskaita
+### 4 žingsnis — Ataskaita (`report.html`)
 
-1. Anonimiškumo sargas perduoda visus `*.json` failus lyderiui.
-2. Lyderis atidaro Ataskaita.
+1. Sargas perduoda visus `*.json` failus lyderiui.
+2. Lyderis atidaro `report.html`.
 3. Įkelia visus failus (drag & drop arba per mygtuką).
 4. Pakoreguoja svorius jei reikia (numatyta: Boss 30%, Peer 30%, Report 30%, Other 10%).
 5. Spauskia **Analizuoti**.
@@ -99,13 +146,13 @@ Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.
 
 ---
 
-### 5 žingsnis — 90 dienų planas 
+### 5 žingsnis — 90 dienų planas (`plan.html`)
 
-1. Iš Ataskaita atsisiųskite agreguotą JSON (mygtukas **Atsisiųsti JSON**).
-2. Atidarykite 90 d.planas.
+1. Iš `report.html` atsisiųskite agreguotą JSON (mygtukas **Atsisiųsti JSON**).
+2. Atidarykite `plan.html`.
 3. Įkelkite agreguotą JSON — planas sugeneruojamas automatiškai pagal jūsų Top 3 spragas.
-4. Spausdinkite į PDF arba žymimais langeliais sukurtkite sau failą, kurį sugeneravus galite atidaryti ir sukelti planą į savo kalendorių.
-   
+4. Spausdinkite į PDF arba naudokite interaktyviai su žymimais langeliais.
+
 **Plano struktūra:**
 - **Fazė 1 (1–30 d.):** Suvokimas ir diagnozė
 - **Fazė 2 (31–60 d.):** Eksperimentai ir praktika
@@ -146,6 +193,16 @@ Jei viena grupė nedalyvauja — jos svoris perskirstomas proporcingai tarp liku
 
 ---
 
+## Klaidų šalinimas
+
+| Problema | Sprendimas |
+|---|---|
+| Klausimai neįkeliami | Patikrinkite ar `bank/questions.json` yra repozitorijoje |
+| JSON neįkeliamas ataskaitoje | Failas turi būti `schema: gla360-personal@2` formato (naujas) |
+| Senas formatas (Q1, Q2...) | Rateris turi užpildyti iš naujo naudodamas naują survey.html |
+| Stiprybės rodo neigiamus skaičius | Visi rateriai įvertino žemiau nei Self — normalu, matosi info pranešimas |
+
+---
 
 ## Licencija
 
