@@ -102,10 +102,10 @@ Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.
 ### 5 žingsnis — 90 dienų planas 
 
 1. Iš Ataskaita atsisiųskite agreguotą JSON (mygtukas **Atsisiųsti JSON**).
-2. Atidarykite 90 dienų planas.
+2. Atidarykite 90 d.planas.
 3. Įkelkite agreguotą JSON — planas sugeneruojamas automatiškai pagal jūsų Top 3 spragas.
-4. Spausdinkite į PDF arba naudokite interaktyviai su žymimais langeliais.
-
+4. Spausdinkite į PDF arba žymimais langeliais sukurtkite sau failą, kurį sugeneravus galite atidaryti ir sukelti planą į savo kalendorių.
+   
 **Plano struktūra:**
 - **Fazė 1 (1–30 d.):** Suvokimas ir diagnozė
 - **Fazė 2 (31–60 d.):** Eksperimentai ir praktika
