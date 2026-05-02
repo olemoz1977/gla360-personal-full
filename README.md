@@ -6,7 +6,7 @@ Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėj
 
 ## Kas tai?
 
-Šis įrankis leidžia vadovui gauti struktūruotą grįžtamąjį ryšį iš aplinkinių (vadovo, kolegų, pavaldinių) ir palyginti jį su savivertinimu. Rezultatas — radarinė diagrama, klasterių lentelė, Top 3 spragos su patarimais ir automatiškai sugeneruotas **90 dienų tobulėjimo planas**.
+Šis įrankis leidžia vadovui/-ei gauti struktūruotą grįžtamąjį ryšį iš aplinkinių (vadovo/-ės, kolegų, pavaldinių) ir palyginti jį su savivertinimu. Rezultatas — radarinė diagrama, klasterių lentelė, Top 3 spragos su patarimais ir automatiškai sugeneruotas **90 dienų tobulėjimo planas**.
 
 > ⚠️ Tai **ne oficialus** GLA360 produktas. Struktūra remiasi viešais aprašais:
 > [Global Coach Group](https://globalcoachgroup.com/gla360/) · [LEAPING KOI](https://www.leapingkoi.com/gla360.html) · [MGSCC](https://mgscc.net/gla360/)
@@ -50,13 +50,13 @@ Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėj
 
 ### 2 žingsnis — Anonimiškumas ir Anonimiškumo sargas
 
-#### Kodėl reikia Sargas?
+#### Kodėl reikia Anonimiškumo sargo?
 
 Kai rateris užpildo apklausą, jis atsisiunčia `*.json` failą ir turi jį kažkaip perduoti lyderiui. Jei siunčia el. paštu — siuntėjo adresas matomas. Tai pažeidžia anonimiškumą.
 
 **Sprendimas: Anonimiškumo sargas (Anonymity Guardian)**
 
-Tai patikimas žmogus — dažniausiai HR specialistas, komandos administratorius ar kitas kolega — kuris:
+Tai patikimas žmogus — dažniausiai HR specialistas/-ė, komandos administratorius/-ė ar kitas kolega/-ė — kuris:
 
 - Gauna visus `*.json` failus iš raterių
 - Patikrina ar visi atsiuntė (bet nenagrinėja turinio)
@@ -104,7 +104,7 @@ Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.
 
 ### 4 žingsnis — Ataskaita (`report.html`)
 
-1. Sargas perduoda visus `*.json` failus lyderiui.
+1. Anonimiškumo sargas perduoda visus `*.json` failus lyderiui.
 2. Lyderis atidaro `report.html`.
 3. Įkelia visus failus (drag & drop arba per mygtuką).
 4. Pakoreguoja svorius jei reikia (numatyta: Boss 30%, Peer 30%, Report 30%, Other 10%).
