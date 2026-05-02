@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GLA360 – 90 dienų tobulėjimo planas</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .plan-phase {
+      border-left: 3px solid var(--brand);
+      padding-left: 16px;
+      margin: 18px 0;
+    }
+    .plan-phase.phase2 { border-color: var(--accent); }
+    .plan-phase.phase3 { border-color: var(--warn); }
+    .phase-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .phase-days {
+      font-size: .78rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: var(--surface2);
+      color: var(--muted);
+    }
+    .action-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .action-item:last-child { border-bottom: none; }
+    .action-cb {
+      flex-shrink: 0;
+      width: 18px; height: 18px;
+      margin-top: 2px;
+      accent-color: var(--brand);
+    }
+    .action-text { font-size: .92rem; line-height: 1.5; }
+    .action-freq {
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--brand);
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .comp-gap-card {
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 10px 0;
+    }
+    .comp-gap-title {
+      font-weight: 700;
+      font-size: .95rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .upload-hint {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+    .upload-hint .big-icon { font-size: 3rem; margin-bottom: 10px; }
+    @media print {
+      .no-print { display: none !important; }
+      .plan-phase { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
+  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
+    <a href="report.html" style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
+    <a href="plan.html" style="color:var(--brand);text-decoration:none;font-weight:600;">📋 90 d. planas</a>
+  </div>
+</nav>
+<header class="head">
+  <h1>GLA360 – 90 dienų tobulėjimo planas</h1>
+  <p>Įkelkite agreguotą JSON iš ataskaitos arba pasirinkite spragų kompetencijas rankiniu būdu.</p>
+</header>
+
+<main class="wrap">
+
+  <!-- Input section -->
+  <section class="card no-print">
+    <h2>Duomenų šaltinis</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" class="source-grid">
+
+      <!-- Option A: upload agg JSON -->
+      <div>
+        <p style="font-weight:700;margin-bottom:8px;">A) Įkelti agreguotą JSON</p>
+        <p class="muted" style="font-size:.88rem;margin-bottom:10px;">Atsisiųskite iš report.html → „Atsisiųsti JSON", tada įkelkite čia.</p>
+        <label class="file-drop" id="aggDrop" style="padding:16px;">
+          <input id="aggFile" type="file" accept="application/json" style="display:none">
+          <span class="file-drop-icon">📄</span>
+          <span class="file-drop-text" style="font-size:.85rem;">Įkelti gla360_ataskaita_*.json</span>
+          <span id="aggFileInfo" class="file-drop-count"></span>
+        </label>
+      </div>
+
+      <!-- Option B: manual -->
+      <div>
+        <p style="font-weight:700;margin-bottom:8px;">B) Pasirinkti rankiniu būdu</p>
+        <p class="muted" style="font-size:.88rem;margin-bottom:10px;">Pasirinkite iki 3 kompetencijų, kurioms generuoti planą.</p>
+        <div id="manualPicker"></div>
+      </div>
+
+    </div>
+
+    <div class="mt" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <label style="font-weight:600;">Lyderio vardas
+        <input type="text" id="leaderNamePlan" placeholder="Vardas Pavardė" style="width:200px;display:inline-block;margin-left:8px;">
+      </label>
+    </div>
+
+    <div class="mt">
+      <button id="generateBtn" type="button">📋 Generuoti 90 d. planą</button>
+    </div>
+  </section>
+
+  <!-- Plan output -->
+  <div id="planOutput" style="display:none;">
+
+    <section class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+        <div>
+          <h2 id="planTitle">90 dienų lyderystės tobulėjimo planas</h2>
+          <p class="muted" id="planMeta"></p>
+        </div>
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="exportIcs" type="button">📅 Eksportuoti į kalendorių (.ics)</button>
+          <button onclick="window.print()" class="secondary">🖨 Spausdinti / PDF</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gaps summary -->
+    <section class="card">
+      <h2>Tobulintinos sritys</h2>
+      <div id="planGapsSummary"></div>
+    </section>
+
+    <!-- Phase 1 -->
+    <section class="card">
+      <div class="plan-phase phase1">
+        <div class="phase-title">
+          🔍 1 fazė – Suvokimas ir diagnozė
+          <span class="phase-days">1–30 dienos</span>
+        </div>
+        <p class="muted" style="font-size:.88rem;margin-bottom:12px;">Tikslas: suprasti, kodėl spraga egzistuoja. Rinkti duomenis, kalbėtis su komanda, nustatyti pradinius elgesio šablonus.</p>
+        <div id="phase1Actions"></div>
+      </div>
+    </section>
+
+    <!-- Phase 2 -->
+    <section class="card">
+      <div class="plan-phase phase2">
+        <div class="phase-title">
+          🛠 2 fazė – Eksperimentai ir praktika
+          <span class="phase-days">31–60 dienos</span>
+        </div>
+        <p class="muted" style="font-size:.88rem;margin-bottom:12px;">Tikslas: išbandyti konkrečius naujus elgesius. Kiekvienas veiksmas turi būti matomas komandai.</p>
+        <div id="phase2Actions"></div>
+      </div>
+    </section>
+
+    <!-- Phase 3 -->
+    <section class="card">
+      <div class="plan-phase phase3">
+        <div class="phase-title">
+          📈 3 fazė – Įtvirtinimas ir peržiūra
+          <span class="phase-days">61–90 dienos</span>
+        </div>
+        <p class="muted" style="font-size:.88rem;margin-bottom:12px;">Tikslas: paversti naujus elgesius įpročiu. Gauti grįžtamąjį ryšį, fiksuoti pažangą.</p>
+        <div id="phase3Actions"></div>
+      </div>
+    </section>
+
+    <!-- Habits -->
+    <section class="card">
+      <h2>📅 Savaitinis ritmas (visa 90 d.)</h2>
+      <div id="weeklyHabits"></div>
+    </section>
+
+    <!-- Success metrics -->
+    <section class="card">
+      <h2>✅ Sėkmės rodikliai po 90 dienų</h2>
+      <div id="successMetrics"></div>
+    </section>
+
+  </div>
+</main>
+
+<script src="app.js"></script>
+<script>
+(function(){
+
+  // ── Plan database: actions per competency, per phase ────────────────────
+  const PLAN_DB = {
+    'Demonstrating Integrity': {
+      p1: [
+        { text: 'Peržiūrėkite paskutinius 30 d. įsipareigojimus – kurių neįvykdėte ir kodėl?', freq: 'Vieną kartą' },
+        { text: 'Paprašykite artimiausio kolegos ar vadovo: "Ar mano žodžiai atitinka veiksmus?"', freq: 'Vieną kartą' },
+        { text: 'Sukurkite asmeninį įsipareigojimų žurnalą (skaičiuoklė ar Notion).', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvieną pirmadienį viešai paskelbia komandai 3 svarbiausius savaitės įsipareigojimus.', freq: 'Kas savaitę' },
+        { text: 'Kai tenka keisti planą – iš karto paaiškina kontekstą el. paštu / susitikime.', freq: 'Kiekvieną kartą' },
+        { text: 'Penktadieniais 10 min. refleksija: "Ką pažadėjau? Ką įvykdžiau?"', freq: 'Kas savaitę' },
+      ],
+      p3: [
+        { text: 'Paprašykite 360° mini-grįžtamojo ryšio iš 2 kolegų: "Ar pastebėjote pokyčių?"', freq: '70-iąją dieną' },
+        { text: 'Pristatykite komandai mėnesio rezultatus vs. pradžioje paskelbtus tikslus.', freq: 'Kas mėnesį' },
+        { text: 'Fiksuokite įvykdytų įsipareigojimų procentą (tikslas: >85%).', freq: 'Kas savaitę' },
+      ],
+      weekly: 'Pirmadienio ryto 5 min.: paskelbi 3 savaitės įsipareigojimus. Penktadienis: pasižymi kurie įvykdyti.',
+      metrics: ['Įvykdytų įsipareigojimų rodiklis >85% per 90 d.', 'Komanda praneša, kad pokyčiai pastebimi (mini-apklausa)', 'Nė vienas terminas nepermestas be išankstinio pranešimo']
+    },
+
+    'Encouraging Dialogue': {
+      p1: [
+        { text: 'Stebėkite kitus 3 susitikimus: kas kalba daugiausiai? Fiksuokite minutėmis.', freq: 'Vieną kartą' },
+        { text: 'Paprašykite komandos anoniminės apklausos: "Ar jaučiatės išgirsti susitikimuose?"', freq: 'Vieną kartą' },
+        { text: 'Išmokite 3 atvirus klausimus: "Ką mes praleidžiame?", "Kas dar turi nuomonę?", "Kur neatitikimas?"', freq: 'Išmokti' },
+      ],
+      p2: [
+        { text: 'Kiekviename susitikime: 2 min. tylaus mąstymo prieš diskusiją (visi rašo idėjas).', freq: 'Kas susitikimas' },
+        { text: 'Aktyviai kvieskite tyliai sėdinčius: "Tomas, ką tu manai apie tai?"', freq: 'Kas susitikimas' },
+        { text: 'Susitikimų pabaigoje: "Ar kas nors norėtų pridurti ką nors, ko nepasakė?"', freq: 'Kas susitikimas' },
+      ],
+      p3: [
+        { text: 'Pakartokite anoniminę apklausą: "Ar jaučiatės išgirsti?" ir palyginkite rezultatus.', freq: '80-ąją dieną' },
+        { text: 'Stebėkite kalbėjimo laiko pasiskirstymą – ar pasikeitė?', freq: 'Kas mėnesį' },
+        { text: 'Pristatykite komandai, ką pakeitėte ir ko išmokote.', freq: '90-ąją dieną' },
+      ],
+      weekly: 'Kiekviename susitikime: 2 min. tylos pradžioje + bent 1 atviras klausimas tyliau kalbančiam.',
+      metrics: ['Kalbėjimo laikas paskirstytas tolygiau (ne >50% vieno žmogaus)', 'Komanda praneša, kad jaučiasi išgirsta', 'Naujų idėjų skaičius susitikimuose padidėjo']
+    },
+
+    'Creating Shared Vision': {
+      p1: [
+        { text: 'Parašykite dabartinius komandos tikslus vienu sakiniu – ar visi komandoje pasakytų tą patį?', freq: 'Vieną kartą' },
+        { text: 'Apklauskite 3 komandos narius: "Kokia mūsų komandos misija šiam ketvirtaliui?"', freq: 'Vieną kartą' },
+        { text: 'Sukurkite "vizijos šabloną": Tikslas → Kliento vertė → Sėkmės metrika.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvieno projekto pradžioje prieš bet ką kitą pristatykite "kodėl" per 3 min.', freq: 'Kiekvienam projektui' },
+        { text: 'Mėnesio susitikime: 10 min. vizijos priminimas ir ryšys su kasdieniais darbais.', freq: 'Kas mėnesį' },
+        { text: 'Sukurkite komandos vizualų (1 puslapis): tikslai + rodikliai + kas ką daro.', freq: 'Vieną kartą' },
+      ],
+      p3: [
+        { text: 'Pakartokite apklausą: "Kokia mūsų misija?" – ar atsakymai sulygiuoti?', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite vizijos šabloną – ar tikslai pasikeitę? Atnaujinkite.', freq: 'Kas ketvirtį' },
+        { text: 'Komandos retrospektyva: ką pasiekėme vs. planą?', freq: '90-ąją dieną' },
+      ],
+      weekly: 'Pirmadienio "5 min. vizijos priminimas": kaip šios savaitės užduotys susijusios su bendru tikslu.',
+      metrics: ['100% komandos narių gali pasakyti tikslą vienu sakiniu', 'Rodikliai reguliariai atnaujinami ir matomi komandai', 'Sprendimai susieti su vizija, ne tik operatyviniais poreikiais']
+    },
+
+    'Developing Technological Savvy': {
+      p1: [
+        { text: 'Sudarykite sąrašą: kokie įrankiai/technologijos aktualiausios jūsų srityje 2025–2026?', freq: 'Vieną kartą' },
+        { text: 'Pasirinkite 1 naują įrankį ir išmokite jį per 2 savaites (30 min./d.).', freq: 'Kasdien 30 min.' },
+        { text: 'Paklauskite komandos: "Kokie įrankiai mums padėtų dirbti greičiau?"', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas 2 savaites 30 min. "tech peržiūra": vienas naujas įrankis/metodas pristatomas komandai.', freq: 'Kas 2 sav.' },
+        { text: 'Paleiskite 1 pilotą (POC) su nauju įrankiu su aiškiu rezultato matavimu.', freq: 'Per 30–60 d.' },
+        { text: 'Dalijatės 1 tech įžvalga per savaitę komandos kanale (naujiena, straipsnis, eksperimentas).', freq: 'Kas savaitę' },
+      ],
+      p3: [
+        { text: 'Įvertinkite piloto rezultatus: ar įrankis padidino produktyvumą? Dokumentuokite.', freq: '60-ąją dieną' },
+        { text: 'Pristatykite komandai 3 išmoktus dalykus per 90 d.', freq: '90-ąją dieną' },
+        { text: 'Nustatykite reguliarų tech-peržiūros ritmą (kas mėnesį).', freq: 'Kas mėnesį' },
+      ],
+      weekly: 'Penktadienį: perskaitykite 1 tech naujienlaiškį. Savaitę: pabandykite 1 naują funkciją naudojamo įrankio.',
+      metrics: ['Išbandytas ir pristatytas komandai bent 1 naujas įrankis', 'Komanda praneša apie produktyvumo padidėjimą', 'Reguliarus tech-peržiūros ritmas įtvirtintas kalendoriuje']
+    },
+
+    'Ensuring Customer Satisfaction': {
+      p1: [
+        { text: 'Peržiūrėkite paskutinių 30 d. klientų atsiliepimus – kas kartojasi?', freq: 'Vieną kartą' },
+        { text: 'Surinkite NPS arba CSAT duomenis jei neturite – sukurkite paprastą apklausą.', freq: 'Vieną kartą' },
+        { text: 'Išsirinkite 1 "skausmo tašką" kurį galite išspręsti per 30 d.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas mėnesį 30 min. susitikimas su komanda: "Ką klientai sako?" → konkretūs veiksmai.', freq: 'Kas mėnesį' },
+        { text: 'Kiekvieną savaitę 1 klientų atsiliepimas pasidalinamas su komanda.', freq: 'Kas savaitę' },
+        { text: 'Nustatykite atsakymo klientams terminą (pvz., 24h) ir stebėkite jo laikymąsi.', freq: 'Stebėti' },
+      ],
+      p3: [
+        { text: 'Palyginkite NPS/CSAT prieš ir po – ar pagerėjo?', freq: '85-ąją dieną' },
+        { text: 'Dokumentuokite 3 išspręstus klientų skausmo taškus.', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite mėnesio klientų peržiūros susitikimą kaip standartą.', freq: 'Nuolat' },
+      ],
+      weekly: 'Pirmadienį: 1 klientų atsiliepimo peržiūra. Penktadienį: ar visi klientų klausimai atsakyti?',
+      metrics: ['NPS/CSAT pagerėjo lyginant su pradiniu matavimu', 'Visi klientų klausimai atsakomi per 24h', 'Mėnesio klientų peržiūra tapo komandos standartu']
+    },
+
+    'Maintaining Competitive Advantage': {
+      p1: [
+        { text: 'Sudarykite 5 pagrindinių konkurentų sąrašą ir jų naujausias žinias.', freq: 'Vieną kartą' },
+        { text: 'Apklauskite klientus: "Kodėl pasirinktumėte mus, o ne X?"', freq: 'Vieną kartą' },
+        { text: 'Apibrėžkite savo unikalų pasiūlymą (USP) vienu sakiniu.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas 2 savaites 30 min. konkurentų peržiūra – kas naujo? Dokumentuokite.', freq: 'Kas 2 sav.' },
+        { text: 'Sugeneruokite 1 hipotezę ir 1 eksperimentą kaip atsakyti į konkurentų žingsnius.', freq: 'Kas mėnesį' },
+        { text: 'Prioritizuokite iniciatyvas pagal ROI – eliminuokite mažiausiai vertingas.', freq: 'Kas mėnesį' },
+      ],
+      p3: [
+        { text: 'Peržiūrėkite strategines prielaidas – ar jos vis dar teisingos?', freq: '75-ąją dieną' },
+        { text: 'Pristatykite komandai: "Ką išmokome apie konkurentus per 90 d."', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite ketvirtinę strategijos peržiūrą.', freq: 'Kas ketvirtį' },
+      ],
+      weekly: 'Penktadienį: 15 min. konkurentų naujienų peržiūra. Rezultatus – į komandos kanalą.',
+      metrics: ['Reguliari konkurentų stebėjimo sistema sukurta ir veikia', 'Bent 1 eksperimentas išbandytas ir įvertintas', 'USP aiškiai komunikuojamas komandai ir klientams']
+    },
+
+    'Developing People': {
+      p1: [
+        { text: 'Su kiekvienu komandos nariu surengite 1:1 ir paklauskite: "Kur nori augti per 90 d.?"', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite, ar reguliariai teikiate konkrečią grįžtamąją informaciją – ar ne tik bendrą?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite paprastą augimo šabloną kiekvienam: Tikslas → Veiksmai → Terminas.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas 2 savaites 1:1 su kiekvienu: 1 konkreti grįžtamoji informacija + 1 augimo klausimas.', freq: 'Kas 2 sav.' },
+        { text: 'Deleguokite 1 naują atsakomybę kiekvienam nariui su aiškiais rėmais.', freq: 'Per 30–45 d.' },
+        { text: 'Viešai švęskite komandos nario pažangą susitikimuose.', freq: 'Kiekvieną kartą' },
+      ],
+      p3: [
+        { text: 'Paklauskite kiekvieno nario: "Ar jaučiatės, kad augate?" – anoniminė mini-apklausa.', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite augimo planus: kas pasiekta? Kas atnaujintina?', freq: '90-ąją dieną' },
+        { text: 'Padėkokite viešai tiems, kurių augimas buvo labiausiai matomas.', freq: '90-ąją dieną' },
+      ],
+      weekly: 'Pirmadienį: patikrinkite augimo planus. Penktadienį: ar davėte bent vienam nariui konkrečią grįžtamąją informaciją?',
+      metrics: ['100% komandos narių turi augimo planą', 'Nariai praneša, kad jaučiasi labiau palaikomi', 'Bent 2 nariai gavo naują atsakomybę ir ją sėkmingai valdo']
+    },
+
+    'Building Partnerships': {
+      p1: [
+        { text: 'Sudarykite partnerystės žemėlapį: kas svarbiausi vidiniai ir išoriniai partneriai?', freq: 'Vieną kartą' },
+        { text: 'Suraskite 1 neišnaudotą partnerystę – su kuo turėtumėte bendradarbiauti, bet nedarote?', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite 1 esamą konfliktą ar įtampą – kas ją sukelia?', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Susitikite su 1 nauju partneriu – aiškiai apibrėžkite abipusę vertę.', freq: 'Per 30 d.' },
+        { text: 'Nustatykite mėnesio partnerystės rytmetinį (30 min.) su pagrindiniais partneriais.', freq: 'Kas mėnesį' },
+        { text: 'Kai pasiekiamas rezultatas kartu – viešai dalinkitės kreditu su partneriu.', freq: 'Kiekvieną kartą' },
+      ],
+      p3: [
+        { text: 'Įvertinkite partnerystes: ar jos suteikia abipusę vertę? Kurių nebereikia?', freq: '80-ąją dieną' },
+        { text: 'Paklauskite partnerių: "Kaip galime geriau dirbti kartu?"', freq: '75-ąją dieną' },
+        { text: 'Dokumentuokite 3 partnerystės sėkmės istorijas.', freq: '90-ąją dieną' },
+      ],
+      weekly: 'Trečiadienį: 1 partnerystės el. laiškas ar žinutė – palaikykite ryšį.',
+      metrics: ['Sukurta bent 1 nauja, vertinga partnerystė', 'Esami partneriai praneša apie geresnį bendradarbiavimą', 'Konfliktai sprendžiami greičiau, be eskalacijos']
+    },
+
+    'Sharing Leadership': {
+      p1: [
+        { text: 'Fiksuokite savaitę: kiek sprendimų priėmėte patys, o kiek delegavote?', freq: '1 savaitę' },
+        { text: 'Paklauskite komandos: "Ar jaučiatės, kad galite priimti sprendimus savarankiškai?"', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 sprendimus, kuriuos galite perduoti komandai su aiškiais rėmais.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Delegavimo šablonas: kiekvienam deleguotam sprendimui – tikslas, rėmai, terminas, kaip matuosime.', freq: 'Kiekvieną kartą' },
+        { text: 'Susitikimuose: pirmiausia klausiate komandos nuomonės – nesakote savo pirmi.', freq: 'Kas susitikimas' },
+        { text: 'Leiskite komandai priimti netobulą sprendimą – tik stebėkite ir palaikykite.', freq: 'Bent 2 kartus' },
+      ],
+      p3: [
+        { text: 'Pakartokite klausimą: "Ar jaučiatės, kad galite priimti sprendimus?" – palyginkite.', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite: kiek sprendimų deleguota lyginant su pradiniu matavimu?', freq: '90-ąją dieną' },
+        { text: 'Komandos nariai pristato savo sprendimų rezultatus – ne jūs už juos.', freq: 'Nuolat' },
+      ],
+      weekly: 'Pirmadienį: išsirinkite 1 sprendimą, kurį atiduosite komandai šią savaitę.',
+      metrics: ['Delegavimo rodiklis padidėjo >30%', 'Komanda praneša, kad jaučiasi labiau įgalinta', 'Mažiau sprendimų "grįžta" atgal pas lyderį']
+    },
+
+    'Achieving Personal Mastery': {
+      p1: [
+        { text: 'Stebėkite savaitę: kada jaučiate daugiausiai energijos? Kada – mažiausiai?', freq: '1 savaitę' },
+        { text: 'Identifikuokite 3 produktyvumo "vagis" (el. laiškai, susitikimai, trukdžiai).', freq: 'Vieną kartą' },
+        { text: 'Nustatykite savo 3 svarbiausius prioritetus šiems 90 dienų.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kasdien 10 min. rytinis planavimas: "Ką šiandien PRIVALAU padaryti?" (tik 3 dalykai).', freq: 'Kasdien' },
+        { text: 'Penktadieniais 15 min. savaitės refleksija: "Ką išmokau? Ką darysiu kitaip?"', freq: 'Kas savaitę' },
+        { text: 'Blokuokite "gilaus darbo" laiką kalendoriuje – mažiausiai 2 val./d.', freq: 'Kasdien' },
+      ],
+      p3: [
+        { text: 'Palyginkite energijos lygį ir produktyvumą su pradiniu matavimu.', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite: ar prioritetai pasikeitė? Kaip valdote pokyčius?', freq: '90-ąją dieną' },
+        { text: 'Pasidalinkite su komanda, ką išmokote apie savo produktyvumą.', freq: '90-ąją dieną' },
+      ],
+      weekly: 'Pirmadienio rytas: 3 savaitės prioritetai. Penktadienis: refleksija kas pavyko.',
+      metrics: ['Rytinis planavimas tapo kasdieniu įpročiu', 'Gilaus darbo blokai apsaugoti kalendoriuje', 'Energijos ir produktyvumo lygis pagerėjo (subjektyvi vertė)']
+    },
+
+    'Anticipating Opportunities': {
+      p1: [
+        { text: 'Peržiūrėkite paskutinių 6 mėn. tendencijas savo srityje – ko nepastebėjote laiku?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite 2 scenarijus (optimistinį ir pesimistinį) svarbiausiam tikslui.', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 "ankstyvo signalo" šaltinius (įrankiai, naujienlaišiai, tinklai).', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas savaitę 15 min. tendencijų peržiūra iš pasirinktų šaltinių.', freq: 'Kas savaitę' },
+        { text: 'Mėnesio pabaigoje: ar įvyko tai, ko tikėjotės? Ko nepastebėjote?', freq: 'Kas mėnesį' },
+        { text: 'Pristatykite komandai 1 ankstyvo signalo įžvalgą – ką tai reiškia mums?', freq: 'Kas mėnesį' },
+      ],
+      p3: [
+        { text: 'Peržiūrėkite scenarijus – ar jie vis dar aktualūs? Atnaujinkite.', freq: '75-ąją dieną' },
+        { text: 'Identifikuokite 1 galimybę, kurią pastebėjote anksčiau dėl geresnio stebėjimo.', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite ankstyvo signalo peržiūrą kaip mėnesio standartą.', freq: 'Nuolat' },
+      ],
+      weekly: 'Trečiadienį: 15 min. tendencijų naujienų peržiūra. Pastabas – į asmeninį žurnalą.',
+      metrics: ['Tendencijų stebėjimo sistema veikia reguliariai', 'Bent 1 galimybė pastebėta ir išnaudota anksčiau nei konkurentai', 'Scenarijų planavimas tapo ketvirtiniu standartu']
+    },
+
+    'Leading Change': {
+      p1: [
+        { text: 'Identifikuokite 1 svarbų pokyčio projektą – kas jį labiausiai priešinasi ir kodėl?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite pokyčio šabloną: Kas keičiasi → Kodėl → Kas laimi → Kokie rūpesčiai.', freq: 'Vieną kartą' },
+        { text: 'Suraskite 2–3 "ankstyvuosius pritariančiuosius" – pradėkite nuo jų.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvienam pokyčiui: aiški komunikacija "kas/ką/kada/kodėl" PRIEŠ pradedant.', freq: 'Kiekvienam pokyčiui' },
+        { text: 'Per pirmąsias 2 savaites: demonstruokite 1–2 "greitą laimėjimą" (matomas rezultatas).', freq: 'Per 30 d.' },
+        { text: 'Reguliariai kalbėkite su skeptikais – supraskite jų rūpesčius, o ne ignoruokite.', freq: 'Kas 2 sav.' },
+      ],
+      p3: [
+        { text: 'Įtvirtinkite pokyčius procesuose ir standartuose – ne tik kaip "projektą".', freq: '60–90 d.' },
+        { text: 'Komandos retrospektyva: "Kas buvo sunku? Ko išmokome apie pokyčių valdymą?"', freq: '90-ąją dieną' },
+        { text: 'Dokumentuokite pokyčių vadybos metodiką – naudokite ateityje.', freq: '90-ąją dieną' },
+      ],
+      weekly: 'Pirmadienį: ar esame iš kelio? Kas atsispiriama? Kaip reaguosime?',
+      metrics: ['Pokyčio projektas įgyvendintas laiku su komandos palaikymu', 'Skeptikai tapo neutraliais ar pritariančiais', 'Pokyčiai įtvirtinti procesuose, o ne tik žmonių atmintyje']
+    },
+
+    'Empowering People': {
+      p1: [
+        { text: 'Paklauskite komandos: "Kur jaučiate, kad negalite veikti savarankiškai?"', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite: kur jūs esate nereikalingas sprendimų grandinėje?', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 kliūtis, kurias galite pašalinti šią savaitę.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvienam komandos nariui: aiškiai apibrėžkite sprendimų ribas raštu.', freq: 'Vieną kartą' },
+        { text: 'Pašalinkite bent 1 biurokratinę kliūtį per savaitę.', freq: 'Kas savaitę' },
+        { text: 'Kai narys imasi iniciatyvos – viešai palaikykite, net jei sprendimas netobulas.', freq: 'Kiekvieną kartą' },
+      ],
+      p3: [
+        { text: 'Pakartokite klausimą: "Ar jaučiate, kad galite veikti savarankiškai?"', freq: '80-ąją dieną' },
+        { text: 'Suskaičiuokite: kiek kliūčių pašalinta per 90 d.?', freq: '90-ąją dieną' },
+        { text: 'Sukurkite "kliūčių šalinimo" procesą kaip komandos standartą.', freq: 'Nuolat' },
+      ],
+      weekly: 'Pirmadienį: "Kokia viena kliūtis labiausiai trukdo komandai šią savaitę?" – ir pašalinkite ją.',
+      metrics: ['Komanda praneša apie didesnę autonomiją', 'Kliūčių skaičius sumažėjęs (galima matuoti)', 'Iniciatyvų skaičius iš komandos padidėjęs']
+    },
+
+    'Thinking Globally': {
+      p1: [
+        { text: 'Identifikuokite 3 rinkas ar kultūrines grupes, kurioms labiausiai turi įtakos jūsų sprendimai.', freq: 'Vieną kartą' },
+        { text: 'Raskite 1 kolegą iš kitos kultūros ar rinkos – paklauskite kaip jie mato jūsų sritį.', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite 1 neseniai priimtą sprendimą – kaip jis veikia skirtingas grupes?', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvieną svarbų sprendimą tikrinkite per 3 perspektyvas: kaip tai atrodytų iš Lietuvos, Vokietijos, Azijos?', freq: 'Kiekvienam sprendimui' },
+        { text: 'Kas mėnesį 1 valanda: paskaita, podkastas ar straipsnis apie globalias tendencijas jūsų srityje.', freq: 'Kas mėnesį' },
+        { text: 'Bendradarbiaujant su skirtingomis kultūromis – pirmiausia klausiate, o tik tada siūlote.', freq: 'Nuolat' },
+      ],
+      p3: [
+        { text: 'Ar sprendimai tapo labiau subalansuoti skirtingoms grupėms? Paklauskite paveiktų šalių.', freq: '80-ąją dieną' },
+        { text: 'Pristatykite komandai 3 globalaus mąstymo įžvalgas, kurias įgijote per 90 d.', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite "globalios perspektyvos" klausimą į sprendimų priėmimo procesą.', freq: 'Nuolat' },
+      ],
+      weekly: 'Trečiadienį: 1 straipsnis ar naujiena iš globalios perspektyvos jūsų srityje.',
+      metrics: ['Sprendimai dokumentuojami su "globalios įtakos" analize', 'Paveiktos šalys praneša apie geresnį atsižvelgimą', 'Globalaus mąstymo klausimas įtrauktas į sprendimų šabloną']
+    },
+
+    'Appreciating Diversity': {
+      p1: [
+        { text: 'Peržiūrėkite komandos sudėtį: ar įvairios perspektyvos atstovaujamos sprendimų procese?', freq: 'Vieną kartą' },
+        { text: 'Stebėkite susitikimą: kas kalba? Kieno idėjos priimamos? Ar yra šablonų?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite tyliau kalbančio nario: "Ką tu manai? Man svarbu išgirsti."', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekviename susitikime: "Skirtumų vertė" – 2 min. klausimas "Ką mes galime praleisti dėl vienodos perspektyvos?"', freq: 'Kas susitikimas' },
+        { text: 'Aktyviai kvieskite skirtingų patirčių žmones į sprendimų diskusijas.', freq: 'Nuolat' },
+        { text: 'Kai pastebite šališkumą – nedelsdami ir pagarbiai reaguokite.', freq: 'Kiekvieną kartą' },
+      ],
+      p3: [
+        { text: 'Paklauskite komandos: "Ar jaučiatės, kad jūsų skirtingumas yra vertybė, ne kliūtis?"', freq: '80-ąją dieną' },
+        { text: 'Dokumentuokite atvejus, kai įvairi perspektyva padėjo priimti geresnį sprendimą.', freq: '90-ąją dieną' },
+        { text: 'Pristatykite komandai, kaip pasikeitė įtraukimas per 90 d.', freq: '90-ąją dieną' },
+      ],
+      weekly: 'Kiekvienam susitikimui: "Kas čia atstovauja skirtingą perspektyvą? Ar visi turi balsą?"',
+      metrics: ['Komanda praneša apie didesnį įtraukimą ir vertinimą', 'Daugiau skirtingų perspektyvų atstovaujama sprendimų procese', 'Šališkumo epizodai sprendžiami greičiau ir efektyviau']
+    }
+  };
+
+  // Universal habits for all leaders
+  const UNIVERSAL_HABITS = [
+    { text: 'Pirmadienio 5 min. ritualas: 3 savaitės prioritetai → komandos kanalas', freq: 'Kas pirmadienį' },
+    { text: 'Penktadienio 10 min. refleksija: ko išmokau? Ką darysiu kitaip?', freq: 'Kas penktadienį' },
+    { text: '1:1 su kiekvienu komandos nariu bent kas 2 savaites', freq: 'Kas 2 sav.' },
+  ];
+
+  // ── Load competency list for manual picker ───────────────────────────────
+  async function initManualPicker(){
+    let bank;
+    try { bank = await GLA.loadBank(); } catch(e) { return; }
+    const picker = document.getElementById('manualPicker');
+    picker.innerHTML = bank.competencies.map((c,i) => `
+      <label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.88rem;font-weight:400;cursor:pointer;">
+        <input type="checkbox" class="manual-comp" value="${c.name}" style="accent-color:var(--brand);">
+        <span><strong>${c.name}</strong> <span class="muted">${c.cluster}</span></span>
+      </label>`).join('');
+    // Limit to 3
+    picker.addEventListener('change', () => {
+      const checked = picker.querySelectorAll('.manual-comp:checked');
+      if(checked.length > 3){
+        checked[checked.length-1].checked = false;
+        alert('Pasirinkite ne daugiau 3 kompetencijų.');
+      }
+    });
+  }
+
+  // ── File drop ────────────────────────────────────────────────────────────
+  const aggFile = document.getElementById('aggFile');
+  const aggDrop = document.getElementById('aggDrop');
+  aggDrop.addEventListener('click', () => aggFile.click());
+  aggDrop.addEventListener('dragover',  e => { e.preventDefault(); aggDrop.classList.add('drag-over'); });
+  aggDrop.addEventListener('dragleave', () => aggDrop.classList.remove('drag-over'));
+  aggDrop.addEventListener('drop', e => {
+    e.preventDefault(); aggDrop.classList.remove('drag-over');
+    aggFile.files = e.dataTransfer.files;
+    document.getElementById('aggFileInfo').textContent = aggFile.files[0]?.name || '';
+  });
+  aggFile.addEventListener('change', () => {
+    document.getElementById('aggFileInfo').textContent = aggFile.files[0]?.name || '';
+  });
+
+  // ── Generate plan ────────────────────────────────────────────────────────
+  document.getElementById('generateBtn').addEventListener('click', async () => {
+    const leader = (document.getElementById('leaderNamePlan').value || 'Lyderis').trim();
+    let targetComps = [];
+
+    // Try JSON file first
+    if(aggFile.files && aggFile.files[0]){
+      try {
+        const agg = JSON.parse(await aggFile.files[0].text());
+        // Extract top 3 gaps
+        if(agg.gaps && agg.gaps.length){
+          targetComps = agg.gaps.slice(0,3).map(g => g.name);
+        } else if(agg.diffs){
+          targetComps = agg.diffs.filter(d=>d.diff<0).slice(0,3).map(d=>d.name);
+        }
+      } catch(e) { alert('Nepavyko nuskaityti JSON: ' + e.message); return; }
+    }
+
+    // Fallback to manual
+    if(!targetComps.length){
+      const checked = document.querySelectorAll('.manual-comp:checked');
+      targetComps = Array.from(checked).map(cb => cb.value);
+    }
+
+    if(!targetComps.length){
+      alert('Įkelkite agreguotą JSON arba pasirinkite kompetencijas rankiniu būdu.');
+      return;
+    }
+
+    renderPlan(leader, targetComps);
+  });
+
+  function renderPlan(leader, comps){
+    const today = new Date();
+    planStartDate = today; // store for ICS export
+    const todayStr = today.toLocaleDateString('lt-LT');
+    document.getElementById('planTitle').textContent = `${leader} – 90 dienų tobulėjimo planas`;
+    document.getElementById('planMeta').textContent = `Pradžia: ${todayStr} · Pabaiga: ${dateAddDays(today,90).toLocaleDateString('lt-LT')} · Kompetencijos: ${comps.join(', ')}`;
+
+    // Gaps summary
+    document.getElementById('planGapsSummary').innerHTML = comps.map(name => {
+      const db = PLAN_DB[name];
+      return `<div class="comp-gap-card">
+        <div class="comp-gap-title">
+          <span class="score-chip neg">🎯 Tobulinti</span>
+          <strong>${name}</strong>
+        </div>
+        <p style="font-size:.88rem;color:var(--muted);">${db ? 'Veiksmai aprašyti žemiau 3 fazėse.' : 'Universali metodika taikoma.'}</p>
+      </div>`;
+    }).join('');
+
+    // Phase start offsets in days
+    const phaseOffset = { p1: 0, p2: 30, p3: 60 };
+
+    // Phases
+    ['p1','p2','p3'].forEach((phase, pi) => {
+      const el = document.getElementById(`phase${pi+1}Actions`);
+      let html = '';
+      comps.forEach(name => {
+        const db = PLAN_DB[name];
+        if(!db || !db[phase]) return;
+        html += `<div style="margin-bottom:14px;">
+          <div style="font-size:.82rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">${name}</div>`;
+        db[phase].forEach((a, ai) => {
+          const calId = `cal_${phase}_${name.replace(/\s/g,'_')}_${ai}`;
+          html += `<div class="action-item" data-text="${a.text.replace(/"/g,'&quot;')}" data-freq="${a.freq}" data-phase="${phase}" data-comp="${name}">
+            <input type="checkbox" class="action-cb" title="Pažymėti kaip atliktą">
+            <div style="flex:1;">
+              <div class="action-text">${a.text}</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+                <span class="action-freq">${a.freq}</span>
+                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
+                  <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
+                  📅 į kalendorių
+                </label>
+              </div>
+            </div>
+          </div>`;
+        });
+        html += '</div>';
+      });
+      el.innerHTML = html || '<p class="muted">Nėra konkrečių veiksmų šiai fazei.</p>';
+    });
+
+    // Weekly habits
+    let habitsHtml = '<div style="margin-bottom:12px;">';
+    let wIdx = 0;
+    comps.forEach(name => {
+      const db = PLAN_DB[name];
+      if(db?.weekly){
+        const calId = `cal_weekly_${wIdx++}`;
+        habitsHtml += `<div class="action-item" data-text="${(name+': '+db.weekly).replace(/"/g,'&quot;')}" data-freq="Kas savaitę" data-phase="weekly" data-comp="${name}">
+          <input type="checkbox" class="action-cb">
+          <div style="flex:1;">
+            <div class="action-text"><strong>${name}:</strong> ${db.weekly}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+              <span class="action-freq">Kas savaitę</span>
+              <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
+                <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
+                📅 į kalendorių
+              </label>
+            </div>
+          </div>
+        </div>`;
+      }
+    });
+    UNIVERSAL_HABITS.forEach((h, hi) => {
+      const calId = `cal_univ_${hi}`;
+      habitsHtml += `<div class="action-item" data-text="${h.text.replace(/"/g,'&quot;')}" data-freq="${h.freq}" data-phase="weekly" data-comp="universal">
+        <input type="checkbox" class="action-cb">
+        <div style="flex:1;">
+          <div class="action-text">${h.text}</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+            <span class="action-freq">${h.freq}</span>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
+              <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
+              📅 į kalendorių
+            </label>
+          </div>
+        </div>
+      </div>`;
+    });
+    habitsHtml += '</div>';
+    document.getElementById('weeklyHabits').innerHTML = habitsHtml;
+
+    // Success metrics
+    let metricsHtml = '';
+    comps.forEach(name => {
+      const db = PLAN_DB[name];
+      if(!db?.metrics) return;
+      metricsHtml += `<div style="margin-bottom:12px;">
+        <div style="font-size:.82rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">${name}</div>`;
+      db.metrics.forEach(m => {
+        metricsHtml += `<div class="action-item">
+          <input type="checkbox" class="action-cb">
+          <div class="action-text">✅ ${m}</div>
+        </div>`;
+      });
+      metricsHtml += '</div>';
+    });
+    document.getElementById('successMetrics').innerHTML = metricsHtml;
+
+    document.getElementById('planOutput').style.display = 'block';
+    document.getElementById('planOutput').scrollIntoView({ behavior:'smooth', block:'start' });
+
+    // Wire calendar export with current leader name
+    wireCalendarExport(leader);
+  }
+
+  // ── ICS Calendar Export ──────────────────────────────────────────────────
+  // planStartDate is set when renderPlan is called
+  let planStartDate = null;
+
+  function dateAddDays(base, days){
+    const d = new Date(base);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
+  function icsDate(d){
+    // YYYYMMDD format for all-day events
+    return d.toISOString().slice(0,10).replace(/-/g,'');
+  }
+
+  function icsDatetime(d){
+    // YYYYMMDDTHHmmssZ
+    return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  }
+
+  function escIcs(s){
+    return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+  }
+
+  // Map freq string → ICS RRULE or specific day offset
+  function freqToIcs(freq, phaseOffset){
+    const f = freq.toLowerCase();
+    if(f.includes('kas savaitę') || f.includes('kas susitikimas'))
+      return { rrule: 'FREQ=WEEKLY;BYDAY=MO;COUNT=13', dayOffset: phaseOffset }; // every Monday for 13 weeks
+    if(f.includes('kas 2 sav'))
+      return { rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO;COUNT=7', dayOffset: phaseOffset };
+    if(f.includes('kas mėnesį'))
+      return { rrule: 'FREQ=MONTHLY;COUNT=3', dayOffset: phaseOffset };
+    if(f.includes('kas pirmadienį'))
+      return { rrule: 'FREQ=WEEKLY;BYDAY=MO;COUNT=13', dayOffset: phaseOffset };
+    if(f.includes('kas penktadienį'))
+      return { rrule: 'FREQ=WEEKLY;BYDAY=FR;COUNT=13', dayOffset: phaseOffset };
+    if(f.includes('kasdien'))
+      return { rrule: 'FREQ=DAILY;COUNT=90', dayOffset: phaseOffset };
+    // Specific day mentions
+    const dayMatch = freq.match(/(\d+)/);
+    if(dayMatch) return { rrule: null, dayOffset: parseInt(dayMatch[1]) - 1 };
+    // One-time: phase start
+    return { rrule: null, dayOffset: phaseOffset };
+  }
+
+  function phaseToOffset(phase){
+    if(phase === 'p1' || phase === 'weekly') return 0;
+    if(phase === 'p2') return 30;
+    if(phase === 'p3') return 60;
+    return 0;
+  }
+
+  function generateIcs(items, startDate, leaderName){
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//GLA360 Personal//Tobulėjimo planas//LT',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      `X-WR-CALNAME:GLA360 – ${escIcs(leaderName)} 90d planas`,
+      'X-WR-TIMEZONE:Europe/Vilnius',
+    ];
+
+    items.forEach((item, idx) => {
+      const pOffset = phaseToOffset(item.phase);
+      const { rrule, dayOffset } = freqToIcs(item.freq, pOffset);
+      const eventDate = dateAddDays(startDate, dayOffset);
+      const uid = `gla360-${Date.now()}-${idx}@olemoz1977.github.io`;
+
+      lines.push('BEGIN:VEVENT');
+      lines.push(`UID:${uid}`);
+      lines.push(`DTSTART;VALUE=DATE:${icsDate(eventDate)}`);
+      lines.push(`DTEND;VALUE=DATE:${icsDate(dateAddDays(eventDate, 1))}`);
+      if(rrule){
+        // Limit recurrence to 90 days from plan start
+        const until = icsDate(dateAddDays(startDate, 90));
+        lines.push(`RRULE:${rrule};UNTIL=${until}`);
+      }
+      lines.push(`SUMMARY:GLA360: ${escIcs(item.text.slice(0, 60))}${item.text.length > 60 ? '...' : ''}`);
+      lines.push(`DESCRIPTION:${escIcs(item.comp + '\n' + item.freq + '\n\n' + item.text)}`);
+      lines.push('CATEGORIES:GLA360,Lyderystė');
+      lines.push('STATUS:CONFIRMED');
+      lines.push(`DTSTAMP:${icsDatetime(new Date())}`);
+      lines.push('END:VEVENT');
+    });
+
+    lines.push('END:VCALENDAR');
+
+    // ICS requires CRLF line endings
+    return lines.join('\r\n');
+  }
+
+  function downloadIcs(filename, content){
+    const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // Wire up export button after plan renders
+  function wireCalendarExport(leader){
+    const btn = document.getElementById('exportIcs');
+    if(!btn) return;
+    btn.addEventListener('click', () => {
+      // Collect all checked cal-cb items
+      const checked = document.querySelectorAll('.cal-cb:checked');
+      if(!checked.length){
+        alert('Pažymėkite bent vieną veiksmą "📅 į kalendorių" žymimuoju langeliu.');
+        return;
+      }
+      const items = [];
+      checked.forEach(cb => {
+        const row = cb.closest('.action-item');
+        if(!row) return;
+        items.push({
+          text: row.dataset.text || '',
+          freq: row.dataset.freq || 'Vieną kartą',
+          phase: row.dataset.phase || 'p1',
+          comp: row.dataset.comp || ''
+        });
+      });
+      const start = planStartDate || new Date();
+      const ics = generateIcs(items, start, leader);
+      const fname = `GLA360_${leader.replace(/\s+/g,'_')}_90d.ics`;
+      downloadIcs(fname, ics);
+      alert(`✅ Atsisiųsta: ${fname}\n\nAtidaryti failą → kalendorius importuos įvykius automatiškai.\n(Google Calendar: Nustatymai → Importuoti\nOutlook: Failas → Atidaryti ir eksportuoti → Importuoti/eksportuoti)`);
+    });
+  }
+
+  // Init
+  initManualPicker();
+
+})();
+</script>
+</body>
+</html>
