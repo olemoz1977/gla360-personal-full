@@ -108,12 +108,14 @@ const GLA = (()=>{
   }
 
   // ── 6. Pack / unpack response ─────────────────────────────────────────────
-  function packResponse({ aid, role, i, answers, open }){
+  // NOTE: 'i' (rater index) is intentionally NOT stored in the JSON file.
+  // This protects anonymity – the leader cannot identify which peer is which.
+  // 'i' is only used in the URL to generate unique survey links.
+  function packResponse({ aid, role, answers, open }){
     return {
       schema: 'gla360-personal@2',
       aid,
       role: role.toUpperCase(),
-      i: i || 1,
       ts: new Date().toISOString(),
       answers,   // { "COMM_INT_1": 4, ... }
       open: open || {}
@@ -121,13 +123,14 @@ const GLA = (()=>{
   }
 
   function unpackResponse(obj){
-    // Support both schema versions
     if(obj.schema === 'gla360-personal@2') return obj;
     // Legacy v1 format (Q1, Q2, ...) – can't aggregate properly, warn
     if(obj.answers && Object.keys(obj.answers).some(k => /^Q\d+$/.test(k))){
-      console.warn('Legacy answer format detected for AID:', obj.aid, '– cannot aggregate accurately.');
+      console.warn('Legacy answer format detected for AID:', obj.aid);
       return { ...obj, _legacy: true };
     }
+    // Accept files without schema if they have aid+role+answers (partial compatibility)
+    if(obj.aid && obj.role && obj.answers) return obj;
     return obj;
   }
 
@@ -199,10 +202,10 @@ const GLA = (()=>{
         }
       });
 
-      // Open comments
+      // Open comments – no rater index stored (anonymity)
       const o = pack.open || {};
-      if(o.strengths) comments.push({ role: safeRole, i: pack.i, type:'strengths', text: o.strengths });
-      if(o.develop)   comments.push({ role: safeRole, i: pack.i, type:'develop',   text: o.develop });
+      if(o.strengths) comments.push({ role: safeRole, type:'strengths', text: o.strengths });
+      if(o.develop)   comments.push({ role: safeRole, type:'develop',   text: o.develop });
     }
 
     // Mean per role per competency
@@ -419,9 +422,10 @@ const GLA = (()=>{
       el.innerHTML = '<li class="muted">Komentarų nėra.</li>';
       return;
     }
+    // Group by role for anonymity – show role but not rater number
     el.innerHTML = agg.comments.map(c => `
       <li>
-        <span class="badge">${esc(c.role.toUpperCase())} #${c.i}</span>
+        <span class="badge">${esc(c.role.toUpperCase())}</span>
         <span class="badge secondary">${c.type === 'strengths' ? '💪 Stiprybės' : '🎯 Tobulinti'}</span>
         ${esc(c.text)}
       </li>`).join('');

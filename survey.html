@@ -8,6 +8,13 @@
 </head>
 <body>
 
+<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
+  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="index.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🏠 Pradžia</a>
+    <a href="report.html" style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
+    <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
+  </div>
+</nav>
 <header class="head">
   <h1>GLA360 Personal – Apklausa</h1>
   <p>
@@ -119,8 +126,10 @@
       }
 
       const open = GLA.collectOpen();
-      const pack = GLA.packResponse({ aid: params.aid, role: params.role, i: params.i, answers, open });
-      const fname = `${params.role.toUpperCase()}-${params.aid || 'AID'}-${params.i}.json`;
+      const pack = GLA.packResponse({ aid: params.aid, role: params.role, answers, open });
+      // Filename has no rater number → protects anonymity
+      // (boss & self are naturally identifiable; peer/report/other are not)
+      const fname = `${params.role.toUpperCase()}-${params.aid || 'AID'}.json`;
       GLA.download(fname, pack);
     });
 
@@ -128,7 +137,7 @@
     document.getElementById('copy').addEventListener('click', () => {
       const answers = GLA.collectAnswers(bank);
       const open    = GLA.collectOpen();
-      const pack    = GLA.packResponse({ aid: params.aid, role: params.role, i: params.i, answers, open });
+      const pack    = GLA.packResponse({ aid: params.aid, role: params.role, answers, open });
       navigator.clipboard.writeText(JSON.stringify(pack, null, 2))
         .then(()  => alert('JSON nukopijuotas į iškarpinę.'))
         .catch(()  => alert('Nepavyko nukopijuoti. Pabandykite atsisiųsti.'));

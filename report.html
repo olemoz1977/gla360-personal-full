@@ -9,6 +9,13 @@
 </head>
 <body>
 
+<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
+  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
+    <a href="report.html" style="color:var(--brand);text-decoration:none;font-weight:600;">📊 Ataskaita</a>
+    <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
+  </div>
+</nav>
 <header class="head">
   <h1>GLA360 Personal – Ataskaita</h1>
   <p>Įkelkite visų raterių <code>*.json</code> failus (įskaitant SELF) ir spauskite <strong>Analizuoti</strong>.</p>
@@ -82,11 +89,16 @@
     </section>
 
     <section class="card no-print">
-      <h2>Eksportas</h2>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <h2>Eksportas ir tolimesni žingsniai</h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
         <button id="saveJson" type="button">⬇ Atsisiųsti JSON</button>
         <button type="button" onclick="window.print()" class="secondary">🖨 Spausdinti / PDF</button>
+        <a href="plan.html" class="btn" style="background:var(--accent);">📋 Generuoti 90 d. planą →</a>
       </div>
+      <p class="muted mt" style="font-size:.88rem;">
+        Atsisiųskite JSON ir įkelkite jį į <strong>90 dienų plano</strong> generatorių – 
+        gausite konkrečius veiksmus, savaitinius įpročius ir sėkmės rodiklius pagal jūsų spragas.
+      </p>
     </section>
 
   </div>
