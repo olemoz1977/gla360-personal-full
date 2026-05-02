@@ -13,10 +13,17 @@ const GLA = (()=>{
   }
 
   // ── 2. Load questions ─────────────────────────────────────────────────────
+  // Resolves bank/questions.json relative to app.js location, not the page URL.
+  // This ensures it works even if pages are linked from README or other locations.
   async function loadBank(){
-    const url = 'public/bank/questions.json';
+    // Build URL relative to this script file's location
+    const scriptEl = document.querySelector('script[src*="app.js"]');
+    const base = scriptEl
+      ? scriptEl.src.substring(0, scriptEl.src.lastIndexOf('/') + 1)
+      : (location.href.substring(0, location.href.lastIndexOf('/') + 1));
+    const url = base + 'bank/questions.json';
     const res = await fetch(url + '?v=' + Date.now(), { cache:'no-store' });
-    if(!res.ok) throw new Error('Nepavyko įkelti ' + url + ' (HTTP ' + res.status + ')');
+    if(!res.ok) throw new Error('Nepavyko įkelti bank/questions.json (HTTP ' + res.status + ')');
     return await res.json();
   }
 
