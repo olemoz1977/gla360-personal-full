@@ -210,309 +210,316 @@
 (function(){
 
   // ── Plan database: actions per competency, per phase ────────────────────
+  // Context: mid-level manufacturing managers (production, quality, logistics)
   const PLAN_DB = {
     'Demonstrating Integrity': {
       p1: [
-        { text: 'Peržiūrėkite paskutinius 30 d. įsipareigojimus – kurių neįvykdėte ir kodėl?', freq: 'Vieną kartą' },
-        { text: 'Paprašykite artimiausio kolegos ar vadovo: "Ar mano žodžiai atitinka veiksmus?"', freq: 'Vieną kartą' },
-        { text: 'Sukurkite asmeninį įsipareigojimų žurnalą (skaičiuoklė ar Notion).', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite paskutinius 30 d. įsipareigojimus komandai – kokie terminai praleisti ar pakeisti be paaiškinimo?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pamainos meistro ar techniko: „Ar mano žodžiai atitinka veiksmus cecho lygmeniu?"', freq: 'Vieną kartą' },
+        { text: 'Sukurkite paprastą skaičiuoklę: Įsipareigojimas → Terminas → Statusas. Peržiūrėkite kas pirmadienį.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kiekvieną pirmadienį viešai paskelbia komandai 3 svarbiausius savaitės įsipareigojimus.', freq: 'Kas savaitę' },
-        { text: 'Kai tenka keisti planą – iš karto paaiškina kontekstą el. paštu / susitikime.', freq: 'Kiekvieną kartą' },
-        { text: 'Penktadieniais 10 min. refleksija: "Ką pažadėjau? Ką įvykdžiau?"', freq: 'Kas savaitę' },
+        { text: 'Kiekvieną pirmadienio pamainos pradžioje viešai paskelbia komandai 3 svarbiausius savaitės tikslus (gamybos rodikliai, saugos veiksmai, kokybės taškai).', freq: 'Kas savaitę' },
+        { text: 'Kai tenka keisti gamybos planą – iš karto informuoja cechą ir paaiškina priežastį.', freq: 'Kiekvieną kartą' },
+        { text: 'Penktadienio pamainos pabaigoje: 5 min. apžvalga – „Ką pažadėjau savaitei? Ką įvykdžiau?"', freq: 'Kas savaitę' },
       ],
       p3: [
-        { text: 'Paprašykite 360° mini-grįžtamojo ryšio iš 2 kolegų: "Ar pastebėjote pokyčių?"', freq: '70-iąją dieną' },
-        { text: 'Pristatykite komandai mėnesio rezultatus vs. pradžioje paskelbtus tikslus.', freq: 'Kas mėnesį' },
-        { text: 'Fiksuokite įvykdytų įsipareigojimų procentą (tikslas: >85%).', freq: 'Kas savaitę' },
+        { text: 'Paprašykite 2 meistrų arba tiesioginių pavaldinių: „Ar pastebėjote, kad laikomasi terminų geriau nei anksčiau?"', freq: '70-ąją dieną' },
+        { text: 'Pristatykite komandai mėnesio gamybos rezultatus vs. savaitę paskelbtus tikslus.', freq: 'Kas mėnesį' },
+        { text: 'Fiksuokite įvykdytų gamybinių įsipareigojimų procentą (tikslas: >85%).', freq: 'Kas savaitę' },
       ],
-      weekly: 'Pirmadienio ryto 5 min.: paskelbi 3 savaitės įsipareigojimus. Penktadienis: pasižymi kurie įvykdyti.',
-      metrics: ['Įvykdytų įsipareigojimų rodiklis >85% per 90 d.', 'Komanda praneša, kad pokyčiai pastebimi (mini-apklausa)', 'Nė vienas terminas nepermestas be išankstinio pranešimo']
+      weekly: 'Pirmadienio rytas: 3 savaitės gamybos prioritetai paskelbti komandai. Penktadienis: patikrinimas kas įvykdyta.',
+      metrics: ['Įvykdytų gamybinių įsipareigojimų rodiklis >85%', 'Komanda praneša, kad pokyčiai pastebimi', 'Nė vienas terminas nepermestas be išankstinio pranešimo']
     },
 
     'Encouraging Dialogue': {
       p1: [
-        { text: 'Stebėkite kitus 3 susitikimus: kas kalba daugiausiai? Fiksuokite minutėmis.', freq: 'Vieną kartą' },
-        { text: 'Paprašykite komandos anoniminės apklausos: "Ar jaučiatės išgirsti susitikimuose?"', freq: 'Vieną kartą' },
-        { text: 'Išmokite 3 atvirus klausimus: "Ką mes praleidžiame?", "Kas dar turi nuomonę?", "Kur neatitikimas?"', freq: 'Išmokti' },
+        { text: 'Stebėkite kitus 3 pamainos susitikimus (briefings): kas kalba? Ar tik vadovas?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite meistrų anoniminės apklausos: „Ar galite laisvai pranešti apie problemas?"', freq: 'Vieną kartą' },
+        { text: 'Išmokite 3 klausimus gamybos kontekstui: „Kur yra kliūtis?" „Ko trūksta?" „Ką galėtume daryti kitaip?"', freq: 'Išmokti' },
       ],
       p2: [
-        { text: 'Kiekviename susitikime: 2 min. tylaus mąstymo prieš diskusiją (visi rašo idėjas).', freq: 'Kas susitikimas' },
-        { text: 'Aktyviai kvieskite tyliai sėdinčius: "Tomas, ką tu manai apie tai?"', freq: 'Kas susitikimas' },
-        { text: 'Susitikimų pabaigoje: "Ar kas nors norėtų pridurti ką nors, ko nepasakė?"', freq: 'Kas susitikimas' },
+        { text: 'Kiekviename pamainos briefinige: 2 min. leidžiate meistrui ar technikiui pranešti problemą prieš pradedant pačiam.', freq: 'Kas susitikimas' },
+        { text: 'Aktyviai klauskite tyliau kalbančių darbuotojų: „Petrai, ką manai dėl šio gedimo priežasties?"', freq: 'Kas susitikimas' },
+        { text: 'Po kiekvieno incidento ar stop: „Ką galėjome pastebėti anksčiau?" – ne kaltinimas, o mokymasis.', freq: 'Kiekvieną kartą' },
       ],
       p3: [
-        { text: 'Pakartokite anoniminę apklausą: "Ar jaučiatės išgirsti?" ir palyginkite rezultatus.', freq: '80-ąją dieną' },
-        { text: 'Stebėkite kalbėjimo laiko pasiskirstymą – ar pasikeitė?', freq: 'Kas mėnesį' },
-        { text: 'Pristatykite komandai, ką pakeitėte ir ko išmokote.', freq: '90-ąją dieną' },
+        { text: 'Pakartokite anoniminę apklausą: „Ar galite laisvai pranešti apie problemas?" – palyginkite.', freq: '80-ąją dieną' },
+        { text: 'Fiksuokite: ar padidėjo pranešimų apie gedimus ar anomalijas skaičius? (Tai teigiamas ženklas.)', freq: 'Kas mėnesį' },
+        { text: 'Pristatykite komandai, ką pakeitėte susitikimų struktūroje.', freq: '90-ąją dieną' },
       ],
-      weekly: 'Kiekviename susitikime: 2 min. tylos pradžioje + bent 1 atviras klausimas tyliau kalbančiam.',
-      metrics: ['Kalbėjimo laikas paskirstytas tolygiau (ne >50% vieno žmogaus)', 'Komanda praneša, kad jaučiasi išgirsta', 'Naujų idėjų skaičius susitikimuose padidėjo']
+      weekly: 'Kiekviename pamainos briefinige: pirma klausi komandos – tik tada kalbate patys.',
+      metrics: ['Pranešimų apie anomalijas skaičius padidėjo (darbuotojai nebijo)', 'Komanda praneša, kad jaučiasi išgirsta', 'Pamainos briefingas tampa dvikrypčiu, ne tik informavimo srautu']
     },
 
     'Creating Shared Vision': {
       p1: [
-        { text: 'Parašykite dabartinius komandos tikslus vienu sakiniu – ar visi komandoje pasakytų tą patį?', freq: 'Vieną kartą' },
-        { text: 'Apklauskite 3 komandos narius: "Kokia mūsų komandos misija šiam ketvirtaliui?"', freq: 'Vieną kartą' },
-        { text: 'Sukurkite "vizijos šabloną": Tikslas → Kliento vertė → Sėkmės metrika.', freq: 'Vieną kartą' },
+        { text: 'Parašykite vienu sakiniu: „Mūsų cecho/skyriaus tikslas šiam ketvirtaliui yra..." – ar visi meistriai pasakytų tą patį?', freq: 'Vieną kartą' },
+        { text: 'Apklauskite 3 tiesioginius pavaldinius: „Kokia mūsų pagrindinė metrika šiam mėnesiui?"', freq: 'Vieną kartą' },
+        { text: 'Sukurkite vizualų (A3 formatas arba ekranas cecho lentoje): OEE tikslas, kokybės rodiklis, saugos tikslas.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kiekvieno projekto pradžioje prieš bet ką kitą pristatykite "kodėl" per 3 min.', freq: 'Kiekvienam projektui' },
-        { text: 'Mėnesio susitikime: 10 min. vizijos priminimas ir ryšys su kasdieniais darbais.', freq: 'Kas mėnesį' },
-        { text: 'Sukurkite komandos vizualų (1 puslapis): tikslai + rodikliai + kas ką daro.', freq: 'Vieną kartą' },
+        { text: 'Kiekvieno naujo projekto ar gamybos užsakymo pradžioje: 3 min. „kodėl tai svarbu klientui ir gamyklai".', freq: 'Kiekvienam projektui' },
+        { text: 'Mėnesio gamybos apžvalgoje: 10 min. rezultatų ryšys su metiniais tikslais.', freq: 'Kas mėnesį' },
+        { text: 'Atnaujinkite cecho lentą su savaitės rezultatais – matomumas skatina atsakomybę.', freq: 'Kas savaitę' },
       ],
       p3: [
-        { text: 'Pakartokite apklausą: "Kokia mūsų misija?" – ar atsakymai sulygiuoti?', freq: '80-ąją dieną' },
-        { text: 'Peržiūrėkite vizijos šabloną – ar tikslai pasikeitę? Atnaujinkite.', freq: 'Kas ketvirtį' },
-        { text: 'Komandos retrospektyva: ką pasiekėme vs. planą?', freq: '90-ąją dieną' },
+        { text: 'Pakartokite klausimą: „Kokia mūsų pagrindinė metrika?" – ar atsakymai sulygiuoti?', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite vizualų ant cecho lentos – ar tikslai pasikeitę? Atnaujinkite.', freq: 'Kas ketvirtį' },
+        { text: 'Pamainos retrospektyva: ką pasiekėme vs. kėlį pradžioje paskelbtą planą?', freq: '90-ąją dieną' },
       ],
-      weekly: 'Pirmadienio "5 min. vizijos priminimas": kaip šios savaitės užduotys susijusios su bendru tikslu.',
-      metrics: ['100% komandos narių gali pasakyti tikslą vienu sakiniu', 'Rodikliai reguliariai atnaujinami ir matomi komandai', 'Sprendimai susieti su vizija, ne tik operatyviniais poreikiais']
+      weekly: 'Pirmadienio briefingas: „Kaip šios savaitės užduotys prisideda prie mėnesio OEE/kokybės tikslo?"',
+      metrics: ['100% meistrų gali pasakyti pagrindinę mėnesio metriką', 'Cecho lenta atnaujinama kiekvieną savaitę', 'Sprendimai susieti su gamybos tikslais, ne tik skubiais poreikiais']
     },
 
     'Developing Technological Savvy': {
       p1: [
-        { text: 'Sudarykite sąrašą: kokie įrankiai/technologijos aktualiausios jūsų srityje 2025–2026?', freq: 'Vieną kartą' },
-        { text: 'Pasirinkite 1 naują įrankį ir išmokite jį per 2 savaites (30 min./d.).', freq: 'Kasdien 30 min.' },
-        { text: 'Paklauskite komandos: "Kokie įrankiai mums padėtų dirbti greičiau?"', freq: 'Vieną kartą' },
+        { text: 'Sudarykite sąrašą: kokie skaitmeniniai įrankiai naudojami jūsų gamykloje (MES, SCADA, ERP, kokybės sistemos)? Kuriuos naudojate mažiausiai?', freq: 'Vieną kartą' },
+        { text: 'Pasirinkite 1 įrankį kurį naudojate nepakankamai ir skirkite 30 min./sav. jį išmokti geriau.', freq: 'Kas savaitę' },
+        { text: 'Paklauskite IT ar proceso inžinieriaus: „Kokios funkcijos mūsų sistemose nenaudojamos, bet galėtų padėti?"', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kas 2 savaites 30 min. "tech peržiūra": vienas naujas įrankis/metodas pristatomas komandai.', freq: 'Kas 2 sav.' },
-        { text: 'Paleiskite 1 pilotą (POC) su nauju įrankiu su aiškiu rezultato matavimu.', freq: 'Per 30–60 d.' },
-        { text: 'Dalijatės 1 tech įžvalga per savaitę komandos kanale (naujiena, straipsnis, eksperimentas).', freq: 'Kas savaitę' },
+        { text: 'Kas 2 savaites 30 min. komandos tech apžvalga: vienas naujas įrankis ar funkcija pristatoma meistrų susitikime.', freq: 'Kas 2 sav.' },
+        { text: 'Paleiskite 1 pilotą: pvz., skaitmeninis gedimų žurnalas vietoj popieriaus, arba QR kodai ant įrangos TPM kortelėms.', freq: 'Per 30–60 d.' },
+        { text: 'Dalinkitės 1 praktine gamybos technologijų įžvalga per mėnesį (iš pramonės žurnalo, gamintojo seminaro ir pan.).', freq: 'Kas mėnesį' },
       ],
       p3: [
-        { text: 'Įvertinkite piloto rezultatus: ar įrankis padidino produktyvumą? Dokumentuokite.', freq: '60-ąją dieną' },
-        { text: 'Pristatykite komandai 3 išmoktus dalykus per 90 d.', freq: '90-ąją dieną' },
-        { text: 'Nustatykite reguliarų tech-peržiūros ritmą (kas mėnesį).', freq: 'Kas mėnesį' },
+        { text: 'Įvertinkite piloto rezultatus: ar skaitmenizuotas procesas sutaupė laiko ar sumažino klaidų? Dokumentuokite.', freq: '60-ąją dieną' },
+        { text: 'Pristatykite vadovybei 3 išmoktus dalykus apie skaitmeninimą jūsų srityje.', freq: '90-ąją dieną' },
+        { text: 'Nustatykite reguliarų tech-apžvalgos ritmą su IT ir proceso inžinieriais.', freq: 'Kas mėnesį' },
       ],
-      weekly: 'Penktadienį: perskaitykite 1 tech naujienlaiškį. Savaitę: pabandykite 1 naują funkciją naudojamo įrankio.',
-      metrics: ['Išbandytas ir pristatytas komandai bent 1 naujas įrankis', 'Komanda praneša apie produktyvumo padidėjimą', 'Reguliarus tech-peržiūros ritmas įtvirtintas kalendoriuje']
+      weekly: 'Penktadienį: 15 min. peržiūra – ar MES/ERP duomenys teisingi? Ar yra neatitikimų kuriuos reikia taisyti?',
+      metrics: ['Išbandytas ir pristatytas bent 1 skaitmenizacijos sprendimas', 'Komanda naudoja sistemą tiksliau ir dažniau', 'Reguliarus tech-apžvalgos ritmas su IT įtvirtintas']
     },
 
     'Ensuring Customer Satisfaction': {
       p1: [
-        { text: 'Peržiūrėkite paskutinių 30 d. klientų atsiliepimus – kas kartojasi?', freq: 'Vieną kartą' },
-        { text: 'Surinkite NPS arba CSAT duomenis jei neturite – sukurkite paprastą apklausą.', freq: 'Vieną kartą' },
-        { text: 'Išsirinkite 1 "skausmo tašką" kurį galite išspręsti per 30 d.', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite paskutinių 30 d. klientų reklamacijas ar grąžinimus – kas kartojasi? Koks pagrindinis gedimų modelis?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite kokybės skyriaus: „Kokie mūsų 3 didžiausi klientų nusiskundimai šį ketvirtį?"', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 1 kokybės problemą kurią galite išspręsti cecho lygmeniu per 30 d.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kas mėnesį 30 min. susitikimas su komanda: "Ką klientai sako?" → konkretūs veiksmai.', freq: 'Kas mėnesį' },
-        { text: 'Kiekvieną savaitę 1 klientų atsiliepimas pasidalinamas su komanda.', freq: 'Kas savaitę' },
-        { text: 'Nustatykite atsakymo klientams terminą (pvz., 24h) ir stebėkite jo laikymąsi.', freq: 'Stebėti' },
+        { text: 'Kas mėnesį 30 min. su kokybės komanda: „Ką klientai praneša?" → konkretūs gamybos proceso pakeitimai.', freq: 'Kas mėnesį' },
+        { text: 'Kiekvieną savaitę 1 kokybės rodiklis (defektų %, grąžinimai) pasidalinamas su pamainos komanda.', freq: 'Kas savaitę' },
+        { text: 'Nustatykite aiškų atsakymo klientui terminą per kokybės skyrių ir stebėkite jo laikymąsi.', freq: 'Stebėti' },
       ],
       p3: [
-        { text: 'Palyginkite NPS/CSAT prieš ir po – ar pagerėjo?', freq: '85-ąją dieną' },
-        { text: 'Dokumentuokite 3 išspręstus klientų skausmo taškus.', freq: '90-ąją dieną' },
-        { text: 'Įtvirtinkite mėnesio klientų peržiūros susitikimą kaip standartą.', freq: 'Nuolat' },
+        { text: 'Palyginkite defektų rodiklį prieš ir po – ar pagerėjo?', freq: '85-ąją dieną' },
+        { text: 'Dokumentuokite 3 išspręstas kokybės problemas su root cause analize.', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite mėnesio kokybės peržiūrą kaip pamainos standartą.', freq: 'Nuolat' },
       ],
-      weekly: 'Pirmadienį: 1 klientų atsiliepimo peržiūra. Penktadienį: ar visi klientų klausimai atsakyti?',
-      metrics: ['NPS/CSAT pagerėjo lyginant su pradiniu matavimu', 'Visi klientų klausimai atsakomi per 24h', 'Mėnesio klientų peržiūra tapo komandos standartu']
+      weekly: 'Pirmadienį: kokybės rodikliai iš praėjusios savaitės peržiūrimi su komanda. Kas keitėsi?',
+      metrics: ['Defektų rodiklis sumažėjo lyginant su pradiniu matavimu', 'Reklamacijų skaičius sumažėjo arba greitesnis atsakymas', 'Mėnesio kokybės peržiūra tapo pamainos standartu']
     },
 
     'Maintaining Competitive Advantage': {
       p1: [
-        { text: 'Sudarykite 5 pagrindinių konkurentų sąrašą ir jų naujausias žinias.', freq: 'Vieną kartą' },
-        { text: 'Apklauskite klientus: "Kodėl pasirinktumėte mus, o ne X?"', freq: 'Vieną kartą' },
-        { text: 'Apibrėžkite savo unikalų pasiūlymą (USP) vienu sakiniu.', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite: kuo jūsų gamyklos procesas geresnis nei konkurentų? Kur esate prastesni? (Savikaina, kokybė, greitis, lankstumas)', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pardavimų ar marketingo komandos: „Ką klientai sako apie mūsų konkurentus?"', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 1 procesą kurį galite optimizuoti per 90 d. ir padidinti konkurencinį pranašumą.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kas 2 savaites 30 min. konkurentų peržiūra – kas naujo? Dokumentuokite.', freq: 'Kas 2 sav.' },
-        { text: 'Sugeneruokite 1 hipotezę ir 1 eksperimentą kaip atsakyti į konkurentų žingsnius.', freq: 'Kas mėnesį' },
-        { text: 'Prioritizuokite iniciatyvas pagal ROI – eliminuokite mažiausiai vertingas.', freq: 'Kas mėnesį' },
+        { text: 'Kas mėnesį: peržiūrėkite pramonės ataskaitas ar lankykite 1 seminare – ką daro geriausi gamytojai jūsų srityje?', freq: 'Kas mėnesį' },
+        { text: 'Sugeneruokite 1 proceso gerinimo hipotezę ir paleiskite kaizen ar A3 projektą.', freq: 'Per 30–60 d.' },
+        { text: 'Prioritizuokite gamybos iniciatyvas pagal įtaką savikainai ir kokybei – eliminuokite mažiausiai vertingas.', freq: 'Kas mėnesį' },
       ],
       p3: [
-        { text: 'Peržiūrėkite strategines prielaidas – ar jos vis dar teisingos?', freq: '75-ąją dieną' },
-        { text: 'Pristatykite komandai: "Ką išmokome apie konkurentus per 90 d."', freq: '90-ąją dieną' },
-        { text: 'Įtvirtinkite ketvirtinę strategijos peržiūrą.', freq: 'Kas ketvirtį' },
+        { text: 'Peržiūrėkite strategines prielaidas: ar OEE, savikaina, kokybė juda tinkama kryptimi?', freq: '75-ąją dieną' },
+        { text: 'Pristatykite vadovybei: „Ką išmokome apie mūsų konkurencinę padėtį per 90 d."', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite ketvirtinę proceso strategijos peržiūrą su vadovybe.', freq: 'Kas ketvirtį' },
       ],
-      weekly: 'Penktadienį: 15 min. konkurentų naujienų peržiūra. Rezultatus – į komandos kanalą.',
-      metrics: ['Reguliari konkurentų stebėjimo sistema sukurta ir veikia', 'Bent 1 eksperimentas išbandytas ir įvertintas', 'USP aiškiai komunikuojamas komandai ir klientams']
+      weekly: 'Penktadienį: 15 min. – ar šios savaitės gamybos rodikliai gerina mūsų konkurencinę padėtį?',
+      metrics: ['Identifikuotas ir įgyvendintas bent 1 proceso gerinimas', 'OEE arba kokybės rodiklis pagerėjo', 'Ketvirtinė proceso strategijos peržiūra įtvirtinta']
     },
 
     'Developing People': {
       p1: [
-        { text: 'Su kiekvienu komandos nariu surengite 1:1 ir paklauskite: "Kur nori augti per 90 d.?"', freq: 'Vieną kartą' },
-        { text: 'Peržiūrėkite, ar reguliariai teikiate konkrečią grįžtamąją informaciją – ar ne tik bendrą?', freq: 'Vieną kartą' },
-        { text: 'Sukurkite paprastą augimo šabloną kiekvienam: Tikslas → Veiksmai → Terminas.', freq: 'Vieną kartą' },
+        { text: 'Su kiekvienu meistru ar tiesiogiu pavaldiniu: 15 min. pokalbis – „Kur nori augti profesiškai per 90 d.?"', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite darbuotojų kompetencijų matricą – ar yra kritinių spragų jei kas išeina atostogų ar palieka?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite paprastą augimo planą: Darbuotojas → Tikslas → Veiksmai → Terminas.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kas 2 savaites 1:1 su kiekvienu: 1 konkreti grįžtamoji informacija + 1 augimo klausimas.', freq: 'Kas 2 sav.' },
-        { text: 'Deleguokite 1 naują atsakomybę kiekvienam nariui su aiškiais rėmais.', freq: 'Per 30–45 d.' },
-        { text: 'Viešai švęskite komandos nario pažangą susitikimuose.', freq: 'Kiekvieną kartą' },
+        { text: 'Kas 2 savaites trumpas 1:1 su kiekvienu meistru: 1 konkreti grįžtamoji informacija + 1 augimo klausimas.', freq: 'Kas 2 sav.' },
+        { text: 'Deleguokite 1 naują atsakomybę (pvz., TPM koordinavimas, naujo darbuotojo mokymas) su aiškiais lūkesčiais.', freq: 'Per 30–45 d.' },
+        { text: 'Viešai pavyzdiniame susitikime pažymėkite darbuotojo pažangą ar gerai atliktą darbą.', freq: 'Kiekvieną kartą' },
       ],
       p3: [
-        { text: 'Paklauskite kiekvieno nario: "Ar jaučiatės, kad augate?" – anoniminė mini-apklausa.', freq: '80-ąją dieną' },
-        { text: 'Peržiūrėkite augimo planus: kas pasiekta? Kas atnaujintina?', freq: '90-ąją dieną' },
-        { text: 'Padėkokite viešai tiems, kurių augimas buvo labiausiai matomas.', freq: '90-ąją dieną' },
+        { text: 'Paklauskite komandos: „Ar jaučiatės, kad galite augti šioje gamykloje?" – anoniminė apklausa.', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite augimo planus: kas pasiekta? Kompetencijų matrica atnaujinta?', freq: '90-ąją dieną' },
+        { text: 'Pasirūpinkite, kad bent 1 darbuotojas galėtų pavaduoti jus kritiniuose procesuose.', freq: '90-ąją dieną' },
       ],
-      weekly: 'Pirmadienį: patikrinkite augimo planus. Penktadienį: ar davėte bent vienam nariui konkrečią grįžtamąją informaciją?',
-      metrics: ['100% komandos narių turi augimo planą', 'Nariai praneša, kad jaučiasi labiau palaikomi', 'Bent 2 nariai gavo naują atsakomybę ir ją sėkmingai valdo']
+      weekly: 'Pirmadienį: patikrinkite augimo planus. Savaitę: ar davėte bent vienam darbuotojui konkrečią grįžtamąją informaciją?',
+      metrics: ['100% tiesioginių pavaldinių turi augimo planą', 'Kompetencijų matrica atnaujinta ir padengtos kritinės spragos', 'Bent 1 darbuotojas gali pavaduoti vadovą kritiniuose procesuose']
     },
 
     'Building Partnerships': {
       p1: [
-        { text: 'Sudarykite partnerystės žemėlapį: kas svarbiausi vidiniai ir išoriniai partneriai?', freq: 'Vieną kartą' },
-        { text: 'Suraskite 1 neišnaudotą partnerystę – su kuo turėtumėte bendradarbiauti, bet nedarote?', freq: 'Vieną kartą' },
-        { text: 'Peržiūrėkite 1 esamą konfliktą ar įtampą – kas ją sukelia?', freq: 'Vieną kartą' },
+        { text: 'Sudarykite partnerystės žemėlapį: su kuo PRIVALOTE gerai bendradarbiauti? (Priežiūra, kokybė, logistika, planavimas, IT)', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 1 ryšį kuris yra įtemptas ar neveikia – kas to priežastis?', freq: 'Vieną kartą' },
+        { text: 'Susitikite su priežiūros vadovu ar planavimo skyriumi: „Kaip galime geriau koordinuotis?"', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Susitikite su 1 nauju partneriu – aiškiai apibrėžkite abipusę vertę.', freq: 'Per 30 d.' },
-        { text: 'Nustatykite mėnesio partnerystės rytmetinį (30 min.) su pagrindiniais partneriais.', freq: 'Kas mėnesį' },
-        { text: 'Kai pasiekiamas rezultatas kartu – viešai dalinkitės kreditu su partneriu.', freq: 'Kiekvieną kartą' },
+        { text: 'Nustatykite savaitinį 30 min. koordinacijos susitikimą su priežiūros ir/ar logistikos vadovu.', freq: 'Kas savaitę' },
+        { text: 'Kai pasiekiamas bendras rezultatas (pvz., nuliniai sustojimų dėl atsargų trūkumo) – viešai dalinkitės kreditu su partneriu.', freq: 'Kiekvieną kartą' },
+        { text: 'Sukurkite bendrą problemų žurnalą su priežiūros skyriumi – matomos problemos sprendžiamos greičiau.', freq: 'Per 30 d.' },
       ],
       p3: [
-        { text: 'Įvertinkite partnerystes: ar jos suteikia abipusę vertę? Kurių nebereikia?', freq: '80-ąją dieną' },
-        { text: 'Paklauskite partnerių: "Kaip galime geriau dirbti kartu?"', freq: '75-ąją dieną' },
-        { text: 'Dokumentuokite 3 partnerystės sėkmės istorijas.', freq: '90-ąją dieną' },
+        { text: 'Įvertinkite partnerystes: ar koordinacija pagerėjo? Ar sumažėjo tarpfunkcinių konfliktų?', freq: '80-ąją dieną' },
+        { text: 'Paklauskite partnerių (priežiūra, logistika): „Kaip galime dar geriau dirbti kartu?"', freq: '75-ąją dieną' },
+        { text: 'Dokumentuokite 3 sėkmingos tarpfunkcinės koordinacijos atvejus.', freq: '90-ąją dieną' },
       ],
-      weekly: 'Trečiadienį: 1 partnerystės el. laiškas ar žinutė – palaikykite ryšį.',
-      metrics: ['Sukurta bent 1 nauja, vertinga partnerystė', 'Esami partneriai praneša apie geresnį bendradarbiavimą', 'Konfliktai sprendžiami greičiau, be eskalacijos']
+      weekly: 'Trečiadienį: trumpas kontaktas su priežiūros vadovu – ar yra planuojamų darbų kurie paveiks gamybą?',
+      metrics: ['Savaitinė koordinacija su priežiūra ir logistika įtvirtinta', 'Tarpfunkcinių konfliktų skaičius sumažėjęs', 'Įrangos sustojimų dėl koordinacijos problemų mažiau']
     },
 
     'Sharing Leadership': {
       p1: [
-        { text: 'Fiksuokite savaitę: kiek sprendimų priėmėte patys, o kiek delegavote?', freq: '1 savaitę' },
-        { text: 'Paklauskite komandos: "Ar jaučiatės, kad galite priimti sprendimus savarankiškai?"', freq: 'Vieną kartą' },
-        { text: 'Identifikuokite 3 sprendimus, kuriuos galite perduoti komandai su aiškiais rėmais.', freq: 'Vieną kartą' },
+        { text: 'Stebėkite savaitę: kiek sprendimų cecho lygmeniu priimate patys, o kiek leidžiate meistrams spręsti?', freq: '1 savaitę' },
+        { text: 'Paklauskite meistrų: „Ar jaučiatės, kad galite priimti sprendimus savo pamainos lygmeniu be mano patvirtinimo?"', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 sprendimus kuriuos galite perduoti meistrui su aiškiais rėmais (kokybės parametrai, saugos ribos).', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Delegavimo šablonas: kiekvienam deleguotam sprendimui – tikslas, rėmai, terminas, kaip matuosime.', freq: 'Kiekvieną kartą' },
-        { text: 'Susitikimuose: pirmiausia klausiate komandos nuomonės – nesakote savo pirmi.', freq: 'Kas susitikimas' },
-        { text: 'Leiskite komandai priimti netobulą sprendimą – tik stebėkite ir palaikykite.', freq: 'Bent 2 kartus' },
+        { text: 'Kiekvienam deleguotam sprendimui – aiškus formatas: Situacija → Leistini veiksmai → Kada eskaluoti.', freq: 'Kiekvieną kartą' },
+        { text: 'Pamainos briefinге: pirma klausiate meistro diagnozės – tik tada komentuojate.', freq: 'Kas susitikimas' },
+        { text: 'Leiskite meistrui priimti sprendimą dėl perplanavimo ar gedimo – stebėkite ir palaikykite tik jei prašo.', freq: 'Bent 2 kartus' },
       ],
       p3: [
-        { text: 'Pakartokite klausimą: "Ar jaučiatės, kad galite priimti sprendimus?" – palyginkite.', freq: '80-ąją dieną' },
-        { text: 'Peržiūrėkite: kiek sprendimų deleguota lyginant su pradiniu matavimu?', freq: '90-ąją dieną' },
-        { text: 'Komandos nariai pristato savo sprendimų rezultatus – ne jūs už juos.', freq: 'Nuolat' },
+        { text: 'Pakartokite klausimą meistrų: „Ar jaučiatės, kad galite spręsti savarankiškai?" – palyginkite su pradiniu.', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite: kiek gamybinių sprendimų deleguota lyginant su pradiniu matavimu?', freq: '90-ąją dieną' },
+        { text: 'Meistrų susitikime: jie pristato savo pamainų rezultatus – ne jūs už juos.', freq: 'Nuolat' },
       ],
-      weekly: 'Pirmadienį: išsirinkite 1 sprendimą, kurį atiduosite komandai šią savaitę.',
-      metrics: ['Delegavimo rodiklis padidėjo >30%', 'Komanda praneša, kad jaučiasi labiau įgalinta', 'Mažiau sprendimų "grįžta" atgal pas lyderį']
+      weekly: 'Pirmadienį: išsirinkite 1 sprendimą kurį šią savaitę priims meistras, ne jūs.',
+      metrics: ['Meistrų savarankiškų sprendimų rodiklis padidėjo', 'Meistrų komanda praneša, kad jaučiasi labiau įgalinta', 'Mažiau gamybos sprendimų „grįžta" pas vadovą']
     },
 
     'Achieving Personal Mastery': {
       p1: [
-        { text: 'Stebėkite savaitę: kada jaučiate daugiausiai energijos? Kada – mažiausiai?', freq: '1 savaitę' },
-        { text: 'Identifikuokite 3 produktyvumo "vagis" (el. laiškai, susitikimai, trukdžiai).', freq: 'Vieną kartą' },
-        { text: 'Nustatykite savo 3 svarbiausius prioritetus šiems 90 dienų.', freq: 'Vieną kartą' },
+        { text: 'Stebėkite savaitę: kokiose situacijose prarandate ramybę ar reaguojate pernelyg emocingai? (Gamybos stop, kokybės problemos, slėgis iš vadovybės)', freq: '1 savaitę' },
+        { text: 'Identifikuokite 3 „energijos vagis" – kas labiausiai išsekina per darbo dieną?', freq: 'Vieną kartą' },
+        { text: 'Nustatykite savo 3 svarbiausius prioritetus šiems 90 dienų (ne visą sąrašą – tik 3).', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kasdien 10 min. rytinis planavimas: "Ką šiandien PRIVALAU padaryti?" (tik 3 dalykai).', freq: 'Kasdien' },
-        { text: 'Penktadieniais 15 min. savaitės refleksija: "Ką išmokau? Ką darysiu kitaip?"', freq: 'Kas savaitę' },
-        { text: 'Blokuokite "gilaus darbo" laiką kalendoriuje – mažiausiai 2 val./d.', freq: 'Kasdien' },
+        { text: 'Prieš kiekvieną pamainos pradžią: 5 min. – „Kokie 3 svarbiausi dalykai šiai pamainai?" Nesileiskite į reaktyvų veikimą.', freq: 'Kasdien' },
+        { text: 'Pamainos pabaigoje: 5 min. refleksija – „Ką galėjau daryti geriau? Ką darysiu kitaip rytoj?"', freq: 'Kas savaitę' },
+        { text: 'Identifikuokite laiko „vagis" (neplanuoti susitikimai, avariniai skambučiai) ir sukurkite filtrą: kas tikrai reikalauja jūsų?', freq: 'Kasdien' },
       ],
       p3: [
-        { text: 'Palyginkite energijos lygį ir produktyvumą su pradiniu matavimu.', freq: '80-ąją dieną' },
-        { text: 'Peržiūrėkite: ar prioritetai pasikeitė? Kaip valdote pokyčius?', freq: '90-ąją dieną' },
-        { text: 'Pasidalinkite su komanda, ką išmokote apie savo produktyvumą.', freq: '90-ąją dieną' },
+        { text: 'Palyginkite energijos lygį ir streso valdymą su pradžia – kas pasikeitė?', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite: ar prioritetai teisūs? Ar laiko paskirstymas atitinka tai, kas svarbiausia?', freq: '90-ąją dieną' },
+        { text: 'Pasidalinkite su 1 kolega ar mentoriumi: ko išmokote apie save per 90 d.', freq: '90-ąją dieną' },
       ],
-      weekly: 'Pirmadienio rytas: 3 savaitės prioritetai. Penktadienis: refleksija kas pavyko.',
-      metrics: ['Rytinis planavimas tapo kasdieniu įpročiu', 'Gilaus darbo blokai apsaugoti kalendoriuje', 'Energijos ir produktyvumo lygis pagerėjo (subjektyvi vertė)']
+      weekly: 'Pamainos pradžia: 3 prioritetai. Pamainos pabaiga: trumpa refleksija kas pavyko.',
+      metrics: ['Reaktyvaus valdymo situacijų sumažėjo', 'Pamainos pradžios ritualas įtvirtintas kaip įprotis', 'Prioritetai valdomi, ne tik reagavimas į skubius reikalus']
     },
 
     'Anticipating Opportunities': {
       p1: [
-        { text: 'Peržiūrėkite paskutinių 6 mėn. tendencijas savo srityje – ko nepastebėjote laiku?', freq: 'Vieną kartą' },
-        { text: 'Sukurkite 2 scenarijus (optimistinį ir pesimistinį) svarbiausiam tikslui.', freq: 'Vieną kartą' },
-        { text: 'Identifikuokite 3 "ankstyvo signalo" šaltinius (įrankiai, naujienlaišiai, tinklai).', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite paskutinių 6 mėn. gamybos sustojimus ar kokybės problemas – ar buvo ankstyvų signalų kurių nepastebėjote?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite 2 scenarijus: „Jei gamybos apimtis padidės 20%" ir „Jei padidės defektų rodiklis" – ką darysime?', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 ankstyvų signalų šaltinius: įrangos vibracijos duomenys, tiekėjų vėlavimai, darbuotojų kaita.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kas savaitę 15 min. tendencijų peržiūra iš pasirinktų šaltinių.', freq: 'Kas savaitę' },
-        { text: 'Mėnesio pabaigoje: ar įvyko tai, ko tikėjotės? Ko nepastebėjote?', freq: 'Kas mėnesį' },
-        { text: 'Pristatykite komandai 1 ankstyvo signalo įžvalgą – ką tai reiškia mums?', freq: 'Kas mėnesį' },
+        { text: 'Kas savaitę 15 min.: peržiūrėkite įrangos būklės duomenis ir tiekėjų atsargų lygius – ar yra artėjančių problemų?', freq: 'Kas savaitę' },
+        { text: 'Mėnesio pabaigoje: „Ar įvyko tai, ko tikėjomės? Ko nepastebėjome laiku?" – aptarimas su meistrais.', freq: 'Kas mėnesį' },
+        { text: 'Pristatykite vadovybei 1 ankstyvą signalą ir siūlomą prevencinį veiksmą prieš problema tampa krize.', freq: 'Kas mėnesį' },
       ],
       p3: [
-        { text: 'Peržiūrėkite scenarijus – ar jie vis dar aktualūs? Atnaujinkite.', freq: '75-ąją dieną' },
-        { text: 'Identifikuokite 1 galimybę, kurią pastebėjote anksčiau dėl geresnio stebėjimo.', freq: '90-ąją dieną' },
-        { text: 'Įtvirtinkite ankstyvo signalo peržiūrą kaip mėnesio standartą.', freq: 'Nuolat' },
+        { text: 'Peržiūrėkite scenarijus – ar jie vis dar aktualūs? Kokie nauji rizikos veiksniai atsirado?', freq: '75-ąją dieną' },
+        { text: 'Identifikuokite 1 situaciją kurią pastebėjote anksčiau dėl geresnio stebėjimo ir išvengėte problemos.', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite savaitinę ankstyvų signalų peržiūrą kaip pamainos standartą.', freq: 'Nuolat' },
       ],
-      weekly: 'Trečiadienį: 15 min. tendencijų naujienų peržiūra. Pastabas – į asmeninį žurnalą.',
-      metrics: ['Tendencijų stebėjimo sistema veikia reguliariai', 'Bent 1 galimybė pastebėta ir išnaudota anksčiau nei konkurentai', 'Scenarijų planavimas tapo ketvirtiniu standartu']
+      weekly: 'Trečiadienį: 15 min. – įrangos duomenys, tiekėjų statusas, darbuotojų signalai. Ar artėja problema?',
+      metrics: ['Savaitinė ankstyvų signalų peržiūra veikia kaip standartas', 'Bent 1 problema pastebėta ir išspręsta proaktyviai', 'Neplanuotų gamybos sustojimų skaičius sumažėjęs']
     },
 
     'Leading Change': {
       p1: [
-        { text: 'Identifikuokite 1 svarbų pokyčio projektą – kas jį labiausiai priešinasi ir kodėl?', freq: 'Vieną kartą' },
-        { text: 'Sukurkite pokyčio šabloną: Kas keičiasi → Kodėl → Kas laimi → Kokie rūpesčiai.', freq: 'Vieną kartą' },
-        { text: 'Suraskite 2–3 "ankstyvuosius pritariančiuosius" – pradėkite nuo jų.', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 1 svarbų gamybos pokyčio projektą (naujas procesas, įranga, standartas) – kas jam labiausiai priešinasi ir kodėl?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite pokyčio komunikacijos šabloną: Kas keičiasi → Kodėl → Ką tai reiškia pamainos lygmeniu → Kokie rūpesčiai.', freq: 'Vieną kartą' },
+        { text: 'Suraskite 2–3 „ankstyvuosius pritariančiuosius" cecho lygmeniu – dirbkite su jais pirmiausia.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kiekvienam pokyčiui: aiški komunikacija "kas/ką/kada/kodėl" PRIEŠ pradedant.', freq: 'Kiekvienam pokyčiui' },
-        { text: 'Per pirmąsias 2 savaites: demonstruokite 1–2 "greitą laimėjimą" (matomas rezultatas).', freq: 'Per 30 d.' },
-        { text: 'Reguliariai kalbėkite su skeptikais – supraskite jų rūpesčius, o ne ignoruokite.', freq: 'Kas 2 sav.' },
+        { text: 'Prieš kiekvieną gamybos proceso pakeitimą: aiški komunikacija „kas/ką/kada/kodėl" PRIEŠ pradedant – ne po.', freq: 'Kiekvienam pokyčiui' },
+        { text: 'Per pirmąsias 2 savaites: demonstruokite 1 „greitą laimėjimą" – matomą pagerėjimą kurį matys cechas.', freq: 'Per 30 d.' },
+        { text: 'Reguliariai kalbėkitės su skeptikais – supraskite jų techninius rūpesčius, ne ignoruokite.', freq: 'Kas 2 sav.' },
       ],
       p3: [
-        { text: 'Įtvirtinkite pokyčius procesuose ir standartuose – ne tik kaip "projektą".', freq: '60–90 d.' },
-        { text: 'Komandos retrospektyva: "Kas buvo sunku? Ko išmokome apie pokyčių valdymą?"', freq: '90-ąją dieną' },
-        { text: 'Dokumentuokite pokyčių vadybos metodiką – naudokite ateityje.', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite pokyčius darbo instrukcijose, SOP ar valdymo plane – ne tik žodiniai susitarimai.', freq: '60–90 d.' },
+        { text: 'Pamainos retrospektyva: „Kas buvo sunku? Ko išmokome apie pokyčių diegimą šiame ceche?"', freq: '90-ąją dieną' },
+        { text: 'Dokumentuokite pokyčių valdymo metodiką – naudokite ateičiai kaip vidinis standartas.', freq: '90-ąją dieną' },
       ],
-      weekly: 'Pirmadienį: ar esame iš kelio? Kas atsispiriama? Kaip reaguosime?',
-      metrics: ['Pokyčio projektas įgyvendintas laiku su komandos palaikymu', 'Skeptikai tapo neutraliais ar pritariančiais', 'Pokyčiai įtvirtinti procesuose, o ne tik žmonių atmintyje']
+      weekly: 'Pirmadienį: ar esame teisingame kelyje su pokyčio projektu? Kas priešinasi? Kaip reaguosime?',
+      metrics: ['Gamybos pokyčio projektas įgyvendintas laiku su komandos palaikymu', 'Skeptikai tapo neutraliais ar pritariančiais', 'Pokyčiai įtvirtinti SOP ir darbo instrukcijose']
     },
 
     'Empowering People': {
       p1: [
-        { text: 'Paklauskite komandos: "Kur jaučiate, kad negalite veikti savarankiškai?"', freq: 'Vieną kartą' },
-        { text: 'Peržiūrėkite: kur jūs esate nereikalingas sprendimų grandinėje?', freq: 'Vieną kartą' },
-        { text: 'Identifikuokite 3 kliūtis, kurias galite pašalinti šią savaitę.', freq: 'Vieną kartą' },
+        { text: 'Paklauskite meistrų: „Kur jaučiate, kad negalite veikti savarankiškai? Kas jums trukdo?"', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite: kur gamybos procese esate nereikalingas „butelio kaklelis" – kas laukia jūsų sprendimo?', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 biurokratines ar proceso kliūtis kurias galite pašalinti šią savaitę.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kiekvienam komandos nariui: aiškiai apibrėžkite sprendimų ribas raštu.', freq: 'Vieną kartą' },
-        { text: 'Pašalinkite bent 1 biurokratinę kliūtį per savaitę.', freq: 'Kas savaitę' },
-        { text: 'Kai narys imasi iniciatyvos – viešai palaikykite, net jei sprendimas netobulas.', freq: 'Kiekvieną kartą' },
+        { text: 'Kiekvienam meistrui raštu apibrėžkite sprendimų ribas: „Šioje situacijoje tu gali spręsti pats, šioje – eskaluok."', freq: 'Vieną kartą' },
+        { text: 'Pašalinkite bent 1 proceso kliūtį per savaitę (nereikalingas patvirtinimas, perteklinis dokumentas, laukimo laikas).', freq: 'Kas savaitę' },
+        { text: 'Kai meistras imasi iniciatyvos – palaikykite viešai, net jei sprendimas nebuvo tobulas.', freq: 'Kiekvieną kartą' },
       ],
       p3: [
-        { text: 'Pakartokite klausimą: "Ar jaučiate, kad galite veikti savarankiškai?"', freq: '80-ąją dieną' },
-        { text: 'Suskaičiuokite: kiek kliūčių pašalinta per 90 d.?', freq: '90-ąją dieną' },
-        { text: 'Sukurkite "kliūčių šalinimo" procesą kaip komandos standartą.', freq: 'Nuolat' },
+        { text: 'Pakartokite klausimą: „Ar jaučiate, kad galite veikti savarankiškai?" – palyginkite su pradiniu.', freq: '80-ąją dieną' },
+        { text: 'Suskaičiuokite: kiek proceso kliūčių pašalinta per 90 d.?', freq: '90-ąją dieną' },
+        { text: 'Sukurkite „kliūčių šalinimo" procesą kaip gamyklos standartą – reguliarus valdymo agendos punktas.', freq: 'Nuolat' },
       ],
-      weekly: 'Pirmadienį: "Kokia viena kliūtis labiausiai trukdo komandai šią savaitę?" – ir pašalinkite ją.',
-      metrics: ['Komanda praneša apie didesnę autonomiją', 'Kliūčių skaičius sumažėjęs (galima matuoti)', 'Iniciatyvų skaičius iš komandos padidėjęs']
+      weekly: 'Pirmadienį: „Kokia viena kliūtis labiausiai trukdo pamainos darbui šią savaitę?" – ir pašalinkite ją.',
+      metrics: ['Meistrų komanda praneša apie didesnę autonomiją', 'Kliūčių skaičius sumažėjęs (fiksuojama)', 'Meistrai priima daugiau sprendimų savarankiškai']
     },
 
     'Thinking Globally': {
       p1: [
-        { text: 'Identifikuokite 3 rinkas ar kultūrines grupes, kurioms labiausiai turi įtakos jūsų sprendimai.', freq: 'Vieną kartą' },
-        { text: 'Raskite 1 kolegą iš kitos kultūros ar rinkos – paklauskite kaip jie mato jūsų sritį.', freq: 'Vieną kartą' },
-        { text: 'Peržiūrėkite 1 neseniai priimtą sprendimą – kaip jis veikia skirtingas grupes?', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite: kaip jūsų gamybos procesas veikia galutinį klientą? Ar žinote kas yra jūsų gaminių naudotojai?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pardavimų ar exporto skyriaus: „Kokie rinkų reikalavimai skiriasi nuo vietinių?"', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite 1 neseniai priimtą gamybos sprendimą – kaip jis paveikė skirtingus klientus ar rinkas?', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kiekvieną svarbų sprendimą tikrinkite per 3 perspektyvas: kaip tai atrodytų iš Lietuvos, Vokietijos, Azijos?', freq: 'Kiekvienam sprendimui' },
-        { text: 'Kas mėnesį 1 valanda: paskaita, podkastas ar straipsnis apie globalias tendencijas jūsų srityje.', freq: 'Kas mėnesį' },
-        { text: 'Bendradarbiaujant su skirtingomis kultūromis – pirmiausia klausiate, o tik tada siūlote.', freq: 'Nuolat' },
+        { text: 'Kiekvieną svarbų proceso sprendimą tikrinkite: „Ar tai atitinka eksportinių rinkų reikalavimus (CE, ISO, klientų specifikacijos)?"', freq: 'Kiekvienam sprendimui' },
+        { text: 'Kas mėnesį 1 valanda: pramonės standartas, tarptautinis geriausios praktikos dokumentas ar lankymasis pas pažangų gamybos partnerį.', freq: 'Kas mėnesį' },
+        { text: 'Bendradarbiaujant su kokybės ar exporto skyriumi: pirma klausiate apie rinkos reikalavimus, tada siūlote proceso sprendimus.', freq: 'Nuolat' },
       ],
       p3: [
-        { text: 'Ar sprendimai tapo labiau subalansuoti skirtingoms grupėms? Paklauskite paveiktų šalių.', freq: '80-ąją dieną' },
-        { text: 'Pristatykite komandai 3 globalaus mąstymo įžvalgas, kurias įgijote per 90 d.', freq: '90-ąją dieną' },
-        { text: 'Įtvirtinkite "globalios perspektyvos" klausimą į sprendimų priėmimo procesą.', freq: 'Nuolat' },
+        { text: 'Ar gamybos sprendimai labiau atitinka tarptautinius standartus? Paklauskite kokybės auditoriaus.', freq: '80-ąją dieną' },
+        { text: 'Pristatykite komandai 3 globalios gamybos tendencijų įžvalgas, kurias įgijote per 90 d.', freq: '90-ąją dieną' },
+        { text: 'Įtraukite „globalios rinkos reikalavimų" klausimą į proceso pakeitimų patvirtinimo procesą.', freq: 'Nuolat' },
       ],
-      weekly: 'Trečiadienį: 1 straipsnis ar naujiena iš globalios perspektyvos jūsų srityje.',
-      metrics: ['Sprendimai dokumentuojami su "globalios įtakos" analize', 'Paveiktos šalys praneša apie geresnį atsižvelgimą', 'Globalaus mąstymo klausimas įtrauktas į sprendimų šabloną']
+      weekly: 'Trečiadienį: ar šios savaitės gamybos sprendimai atitinka eksportinių klientų standartus?',
+      metrics: ['Gamybos sprendimai dokumentuojami su tarptautinių standartų analize', 'Kokybės auditorius patvirtina geresnį atitikimą', 'Globalios rinkos klausimas įtrauktas į proceso pakeitimų šabloną']
     },
 
     'Appreciating Diversity': {
       p1: [
-        { text: 'Peržiūrėkite komandos sudėtį: ar įvairios perspektyvos atstovaujamos sprendimų procese?', freq: 'Vieną kartą' },
-        { text: 'Stebėkite susitikimą: kas kalba? Kieno idėjos priimamos? Ar yra šablonų?', freq: 'Vieną kartą' },
-        { text: 'Paklauskite tyliau kalbančio nario: "Ką tu manai? Man svarbu išgirsti."', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite komandos sudėtį: ar skirtingų pamainos patirčių (seniūnai, naujokai, skirtingų profesijų) nuomonės atstovaujamos sprendimų procese?', freq: 'Vieną kartą' },
+        { text: 'Stebėkite susitikimą: ar tik patyrę darbuotojai kalba? Ar naujokai ar operatoriai iš kitų padalinių turi balsą?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite operatoriaus (ne meistro): „Ką tu matai šiame procese, ko mes, vadovai, nepastebime?"', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kiekviename susitikime: "Skirtumų vertė" – 2 min. klausimas "Ką mes galime praleisti dėl vienodos perspektyvos?"', freq: 'Kas susitikimas' },
-        { text: 'Aktyviai kvieskite skirtingų patirčių žmones į sprendimų diskusijas.', freq: 'Nuolat' },
-        { text: 'Kai pastebite šališkumą – nedelsdami ir pagarbiai reaguokite.', freq: 'Kiekvieną kartą' },
+        { text: 'Kiekviename problemų sprendimo susitikime: kvieskite operatorius iš skirtingų pamainos pozicijų – jie mato problemą iš arčiausiai.', freq: 'Kas susitikimas' },
+        { text: 'Aktyviai klauskite vyresnių darbuotojų: „Kaip tai buvo daroma anksčiau?" – jų patirtis turi vertę.', freq: 'Nuolat' },
+        { text: 'Kai pastebite, kad tik vienos grupės nuomonė dominuoja sprendimų procese – sąmoningai paklauskite kitų.', freq: 'Kiekvieną kartą' },
       ],
       p3: [
-        { text: 'Paklauskite komandos: "Ar jaučiatės, kad jūsų skirtingumas yra vertybė, ne kliūtis?"', freq: '80-ąją dieną' },
-        { text: 'Dokumentuokite atvejus, kai įvairi perspektyva padėjo priimti geresnį sprendimą.', freq: '90-ąją dieną' },
-        { text: 'Pristatykite komandai, kaip pasikeitė įtraukimas per 90 d.', freq: '90-ąją dieną' },
+        { text: 'Paklauskite komandos: „Ar jaučiate, kad jūsų patirtis ir nuomonė yra vertinama?" – anoniminė apklausa.', freq: '80-ąją dieną' },
+        { text: 'Dokumentuokite atvejus, kai operatoriaus ar naujos perspektyvos įžvalga padėjo išspręsti problemą geriau.', freq: '90-ąją dieną' },
+        { text: 'Pristatykite komandai, kaip pasikeitė įtraukimas į sprendimų procesą per 90 d.', freq: '90-ąją dieną' },
       ],
-      weekly: 'Kiekvienam susitikimui: "Kas čia atstovauja skirtingą perspektyvą? Ar visi turi balsą?"',
-      metrics: ['Komanda praneša apie didesnį įtraukimą ir vertinimą', 'Daugiau skirtingų perspektyvų atstovaujama sprendimų procese', 'Šališkumo epizodai sprendžiami greičiau ir efektyviau']
+      weekly: 'Kiekviename susitikime: „Ar čia atstovaujama pamainos operatorių perspektyva, ar tik vadovų?"',
+      metrics: ['Operatoriai aktyviau dalyvauja problemų sprendimo procesuose', 'Komanda praneša, kad jų patirtis vertinama', 'Mažiau sprendimų priimama be tų, kurių darbo vietą tai paveikia']
     }
   };
 
-  // Universal habits for all leaders
+  // Universal habits for manufacturing managers
+  const UNIVERSAL_HABITS = [
+    { text: 'Pirmadienio pamainos pradžia: 3 savaitės gamybos prioritetai → paskelbiami komandai', freq: 'Kas pirmadienį' },
+    { text: 'Penktadienio pamainos pabaiga: 5 min. refleksija – kas pavyko, kas nepavyko, ką daryti kitaip', freq: 'Kas penktadienį' },
+    { text: 'Trumpas 1:1 su kiekvienu meistru bent kas 2 savaites', freq: 'Kas 2 sav.' },
+  ];
+
   const UNIVERSAL_HABITS = [
     { text: 'Pirmadienio 5 min. ritualas: 3 savaitės prioritetai → komandos kanalas', freq: 'Kas pirmadienį' },
     { text: 'Penktadienio 10 min. refleksija: ko išmokau? Ką darysiu kitaip?', freq: 'Kas penktadienį' },
@@ -620,17 +627,13 @@
         db[phase].forEach((a, ai) => {
           const calId = `cal_${phase}_${name.replace(/\s/g,'_')}_${ai}`;
           html += `<div class="action-item" data-text="${a.text.replace(/"/g,'&quot;')}" data-freq="${a.freq}" data-phase="${phase}" data-comp="${name}">
-            <input type="checkbox" class="action-cb" title="Pažymėti kaip atliktą">
-            <div style="flex:1;">
-              <div class="action-text">${a.text}</div>
-              <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
-                <span class="action-freq">${a.freq}</span>
-                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
-                  <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
-                  📅 į kalendorių
-                </label>
+            <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;width:100%;">
+              <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--brand);width:16px;height:16px;margin-top:3px;flex-shrink:0;">
+              <div style="flex:1;">
+                <div class="action-text">${a.text}</div>
+                <div style="margin-top:3px;"><span class="action-freq">📅 ${a.freq}</span></div>
               </div>
-            </div>
+            </label>
           </div>`;
         });
         html += '</div>';
@@ -646,34 +649,26 @@
       if(db?.weekly){
         const calId = `cal_weekly_${wIdx++}`;
         habitsHtml += `<div class="action-item" data-text="${(name+': '+db.weekly).replace(/"/g,'&quot;')}" data-freq="Kas savaitę" data-phase="weekly" data-comp="${name}">
-          <input type="checkbox" class="action-cb">
-          <div style="flex:1;">
-            <div class="action-text"><strong>${name}:</strong> ${db.weekly}</div>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
-              <span class="action-freq">Kas savaitę</span>
-              <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
-                <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
-                📅 į kalendorių
-              </label>
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;width:100%;">
+            <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--brand);width:16px;height:16px;margin-top:3px;flex-shrink:0;">
+            <div style="flex:1;">
+              <div class="action-text"><strong>${name}:</strong> ${db.weekly}</div>
+              <div style="margin-top:3px;"><span class="action-freq">📅 Kas savaitę</span></div>
             </div>
-          </div>
+          </label>
         </div>`;
       }
     });
     UNIVERSAL_HABITS.forEach((h, hi) => {
       const calId = `cal_univ_${hi}`;
       habitsHtml += `<div class="action-item" data-text="${h.text.replace(/"/g,'&quot;')}" data-freq="${h.freq}" data-phase="weekly" data-comp="universal">
-        <input type="checkbox" class="action-cb">
-        <div style="flex:1;">
-          <div class="action-text">${h.text}</div>
-          <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
-            <span class="action-freq">${h.freq}</span>
-            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
-              <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
-              📅 į kalendorių
-            </label>
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;width:100%;">
+          <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--brand);width:16px;height:16px;margin-top:3px;flex-shrink:0;">
+          <div style="flex:1;">
+            <div class="action-text">${h.text}</div>
+            <div style="margin-top:3px;"><span class="action-freq">📅 ${h.freq}</span></div>
           </div>
-        </div>
+        </label>
       </div>`;
     });
     habitsHtml += '</div>';
@@ -687,8 +682,7 @@
       metricsHtml += `<div style="margin-bottom:12px;">
         <div style="font-size:.82rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">${name}</div>`;
       db.metrics.forEach(m => {
-        metricsHtml += `<div class="action-item">
-          <input type="checkbox" class="action-cb">
+        metricsHtml += `<div class="action-item" style="padding:8px 0;">
           <div class="action-text">✅ ${m}</div>
         </div>`;
       });

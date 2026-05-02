@@ -1,35 +1,36 @@
 /* GLA360 Personal – styles.css */
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
 
+/* Light theme default – professional business look for manufacturing managers */
 :root {
-  --bg:      #0b0d12;
-  --surface: #141720;
-  --surface2:#1c2030;
-  --border:  rgba(255,255,255,.08);
-  --ink:     #eaf0f8;
-  --muted:   #8a97aa;
-  --brand:   #5ac8fa;
-  --accent:  #7ee081;
-  --warn:    #f0b429;
-  --danger:  #f87171;
-  --pos:     #7ee081;
-  --neg:     #f87171;
+  --bg:      #f4f6f9;
+  --surface: #ffffff;
+  --surface2:#edf1f7;
+  --border:  #dde3ed;
+  --ink:     #111827;
+  --muted:   #52637a;
+  --brand:   #1a56db;
+  --accent:  #057a55;
+  --warn:    #b45309;
+  --danger:  #c0392b;
+  --pos:     #057a55;
+  --neg:     #c0392b;
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
-    --bg:      #f5f7fa;
-    --surface: #ffffff;
-    --surface2:#eef2f7;
-    --border:  #e0e7ef;
-    --ink:     #0e1621;
-    --muted:   #5a6a7e;
-    --brand:   #0077cc;
-    --accent:  #0a9e60;
-    --warn:    #c07a00;
-    --danger:  #c0392b;
-    --pos:     #0a9e60;
-    --neg:     #c0392b;
+    --bg:      #0b0d12;
+    --surface: #141720;
+    --surface2:#1c2030;
+    --border:  rgba(255,255,255,.08);
+    --ink:     #eaf0f8;
+    --muted:   #8a97aa;
+    --brand:   #5ac8fa;
+    --accent:  #7ee081;
+    --warn:    #f0b429;
+    --danger:  #f87171;
+    --pos:     #7ee081;
+    --neg:     #f87171;
   }
 }
 
