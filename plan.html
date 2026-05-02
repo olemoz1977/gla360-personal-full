@@ -141,7 +141,8 @@
           <h2 id="planTitle">90 dienų lyderystės tobulėjimo planas</h2>
           <p class="muted" id="planMeta"></p>
         </div>
-        <div class="no-print" style="display:flex;gap:8px;">
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="exportIcs" type="button">📅 Eksportuoti į kalendorių (.ics)</button>
           <button onclick="window.print()" class="secondary">🖨 Spausdinti / PDF</button>
         </div>
       </div>
@@ -586,9 +587,11 @@
   });
 
   function renderPlan(leader, comps){
-    const today = new Date().toLocaleDateString('lt-LT');
+    const today = new Date();
+    planStartDate = today; // store for ICS export
+    const todayStr = today.toLocaleDateString('lt-LT');
     document.getElementById('planTitle').textContent = `${leader} – 90 dienų tobulėjimo planas`;
-    document.getElementById('planMeta').textContent = `Sugeneruota: ${today} · Kompetencijos: ${comps.join(', ')}`;
+    document.getElementById('planMeta').textContent = `Pradžia: ${todayStr} · Pabaiga: ${dateAddDays(today,90).toLocaleDateString('lt-LT')} · Kompetencijos: ${comps.join(', ')}`;
 
     // Gaps summary
     document.getElementById('planGapsSummary').innerHTML = comps.map(name => {
@@ -602,6 +605,9 @@
       </div>`;
     }).join('');
 
+    // Phase start offsets in days
+    const phaseOffset = { p1: 0, p2: 30, p3: 60 };
+
     // Phases
     ['p1','p2','p3'].forEach((phase, pi) => {
       const el = document.getElementById(`phase${pi+1}Actions`);
@@ -611,12 +617,19 @@
         if(!db || !db[phase]) return;
         html += `<div style="margin-bottom:14px;">
           <div style="font-size:.82rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">${name}</div>`;
-        db[phase].forEach(a => {
-          html += `<div class="action-item">
-            <input type="checkbox" class="action-cb">
-            <div>
+        db[phase].forEach((a, ai) => {
+          const calId = `cal_${phase}_${name.replace(/\s/g,'_')}_${ai}`;
+          html += `<div class="action-item" data-text="${a.text.replace(/"/g,'&quot;')}" data-freq="${a.freq}" data-phase="${phase}" data-comp="${name}">
+            <input type="checkbox" class="action-cb" title="Pažymėti kaip atliktą">
+            <div style="flex:1;">
               <div class="action-text">${a.text}</div>
-              <div class="action-freq">${a.freq}</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+                <span class="action-freq">${a.freq}</span>
+                <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
+                  <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
+                  📅 į kalendorių
+                </label>
+              </div>
             </div>
           </div>`;
         });
@@ -627,17 +640,40 @@
 
     // Weekly habits
     let habitsHtml = '<div style="margin-bottom:12px;">';
+    let wIdx = 0;
     comps.forEach(name => {
       const db = PLAN_DB[name];
-      if(db?.weekly) habitsHtml += `<div class="action-item">
-        <input type="checkbox" class="action-cb">
-        <div><div class="action-text"><strong>${name}:</strong> ${db.weekly}</div></div>
-      </div>`;
+      if(db?.weekly){
+        const calId = `cal_weekly_${wIdx++}`;
+        habitsHtml += `<div class="action-item" data-text="${(name+': '+db.weekly).replace(/"/g,'&quot;')}" data-freq="Kas savaitę" data-phase="weekly" data-comp="${name}">
+          <input type="checkbox" class="action-cb">
+          <div style="flex:1;">
+            <div class="action-text"><strong>${name}:</strong> ${db.weekly}</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+              <span class="action-freq">Kas savaitę</span>
+              <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
+                <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
+                📅 į kalendorių
+              </label>
+            </div>
+          </div>
+        </div>`;
+      }
     });
-    UNIVERSAL_HABITS.forEach(h => {
-      habitsHtml += `<div class="action-item">
+    UNIVERSAL_HABITS.forEach((h, hi) => {
+      const calId = `cal_univ_${hi}`;
+      habitsHtml += `<div class="action-item" data-text="${h.text.replace(/"/g,'&quot;')}" data-freq="${h.freq}" data-phase="weekly" data-comp="universal">
         <input type="checkbox" class="action-cb">
-        <div><div class="action-text">${h.text}</div><div class="action-freq">${h.freq}</div></div>
+        <div style="flex:1;">
+          <div class="action-text">${h.text}</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+            <span class="action-freq">${h.freq}</span>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.75rem;color:var(--muted);font-weight:600;">
+              <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--accent);width:13px;height:13px;">
+              📅 į kalendorių
+            </label>
+          </div>
+        </div>
       </div>`;
     });
     habitsHtml += '</div>';
@@ -662,6 +698,143 @@
 
     document.getElementById('planOutput').style.display = 'block';
     document.getElementById('planOutput').scrollIntoView({ behavior:'smooth', block:'start' });
+
+    // Wire calendar export with current leader name
+    wireCalendarExport(leader);
+  }
+
+  // ── ICS Calendar Export ──────────────────────────────────────────────────
+  // planStartDate is set when renderPlan is called
+  let planStartDate = null;
+
+  function dateAddDays(base, days){
+    const d = new Date(base);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
+  function icsDate(d){
+    // YYYYMMDD format for all-day events
+    return d.toISOString().slice(0,10).replace(/-/g,'');
+  }
+
+  function icsDatetime(d){
+    // YYYYMMDDTHHmmssZ
+    return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  }
+
+  function escIcs(s){
+    return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+  }
+
+  // Map freq string → ICS RRULE or specific day offset
+  function freqToIcs(freq, phaseOffset){
+    const f = freq.toLowerCase();
+    if(f.includes('kas savaitę') || f.includes('kas susitikimas'))
+      return { rrule: 'FREQ=WEEKLY;BYDAY=MO;COUNT=13', dayOffset: phaseOffset }; // every Monday for 13 weeks
+    if(f.includes('kas 2 sav'))
+      return { rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO;COUNT=7', dayOffset: phaseOffset };
+    if(f.includes('kas mėnesį'))
+      return { rrule: 'FREQ=MONTHLY;COUNT=3', dayOffset: phaseOffset };
+    if(f.includes('kas pirmadienį'))
+      return { rrule: 'FREQ=WEEKLY;BYDAY=MO;COUNT=13', dayOffset: phaseOffset };
+    if(f.includes('kas penktadienį'))
+      return { rrule: 'FREQ=WEEKLY;BYDAY=FR;COUNT=13', dayOffset: phaseOffset };
+    if(f.includes('kasdien'))
+      return { rrule: 'FREQ=DAILY;COUNT=90', dayOffset: phaseOffset };
+    // Specific day mentions
+    const dayMatch = freq.match(/(\d+)/);
+    if(dayMatch) return { rrule: null, dayOffset: parseInt(dayMatch[1]) - 1 };
+    // One-time: phase start
+    return { rrule: null, dayOffset: phaseOffset };
+  }
+
+  function phaseToOffset(phase){
+    if(phase === 'p1' || phase === 'weekly') return 0;
+    if(phase === 'p2') return 30;
+    if(phase === 'p3') return 60;
+    return 0;
+  }
+
+  function generateIcs(items, startDate, leaderName){
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//GLA360 Personal//Tobulėjimo planas//LT',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      `X-WR-CALNAME:GLA360 – ${escIcs(leaderName)} 90d planas`,
+      'X-WR-TIMEZONE:Europe/Vilnius',
+    ];
+
+    items.forEach((item, idx) => {
+      const pOffset = phaseToOffset(item.phase);
+      const { rrule, dayOffset } = freqToIcs(item.freq, pOffset);
+      const eventDate = dateAddDays(startDate, dayOffset);
+      const uid = `gla360-${Date.now()}-${idx}@olemoz1977.github.io`;
+
+      lines.push('BEGIN:VEVENT');
+      lines.push(`UID:${uid}`);
+      lines.push(`DTSTART;VALUE=DATE:${icsDate(eventDate)}`);
+      lines.push(`DTEND;VALUE=DATE:${icsDate(dateAddDays(eventDate, 1))}`);
+      if(rrule){
+        // Limit recurrence to 90 days from plan start
+        const until = icsDate(dateAddDays(startDate, 90));
+        lines.push(`RRULE:${rrule};UNTIL=${until}`);
+      }
+      lines.push(`SUMMARY:GLA360: ${escIcs(item.text.slice(0, 60))}${item.text.length > 60 ? '...' : ''}`);
+      lines.push(`DESCRIPTION:${escIcs(item.comp + '\n' + item.freq + '\n\n' + item.text)}`);
+      lines.push('CATEGORIES:GLA360,Lyderystė');
+      lines.push('STATUS:CONFIRMED');
+      lines.push(`DTSTAMP:${icsDatetime(new Date())}`);
+      lines.push('END:VEVENT');
+    });
+
+    lines.push('END:VCALENDAR');
+
+    // ICS requires CRLF line endings
+    return lines.join('\r\n');
+  }
+
+  function downloadIcs(filename, content){
+    const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // Wire up export button after plan renders
+  function wireCalendarExport(leader){
+    const btn = document.getElementById('exportIcs');
+    if(!btn) return;
+    btn.addEventListener('click', () => {
+      // Collect all checked cal-cb items
+      const checked = document.querySelectorAll('.cal-cb:checked');
+      if(!checked.length){
+        alert('Pažymėkite bent vieną veiksmą "📅 į kalendorių" žymimuoju langeliu.');
+        return;
+      }
+      const items = [];
+      checked.forEach(cb => {
+        const row = cb.closest('.action-item');
+        if(!row) return;
+        items.push({
+          text: row.dataset.text || '',
+          freq: row.dataset.freq || 'Vieną kartą',
+          phase: row.dataset.phase || 'p1',
+          comp: row.dataset.comp || ''
+        });
+      });
+      const start = planStartDate || new Date();
+      const ics = generateIcs(items, start, leader);
+      const fname = `GLA360_${leader.replace(/\s+/g,'_')}_90d.ics`;
+      downloadIcs(fname, ics);
+      alert(`✅ Atsisiųsta: ${fname}\n\nAtidaryti failą → kalendorius importuos įvykius automatiškai.\n(Google Calendar: Nustatymai → Importuoti\nOutlook: Failas → Atidaryti ir eksportuoti → Importuoti/eksportuoti)`);
+    });
   }
 
   // Init
