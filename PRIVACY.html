@@ -1,76 +1,100 @@
-# GLA360 Personal – Privatumas ir dalyvių instrukcija
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GLA360 Personal – Privatumas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-> Šį dokumentą galite išsiųsti rateriams kartu su apklausos nuoroda.
+<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
+  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
+    <a href="report.html" style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
+    <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
+    <a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a>
+    <a href="PRIVACY.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🔒 Privatumas</a>
+  </div>
+</nav>
 
----
+<header class="head">
+  <h1>GLA360 Personal – Privatumas</h1>
+  <p>Šį puslapį galite persiųsti rateriams kartu su apklausos nuoroda</p>
+</header>
 
-## Kam skirta ši apklausa?
+<main class="wrap">
 
-Jūs esate pakviesti(-os) anonimiškai įvertinti kolegą(-ę) pagal 75 lyderystės elgsenos teiginius. Jūsų atsakymai padės lyderiui suprasti savo stiprybes ir tobulintinas sritis.
+  <section class="card">
+    <h2>Kam skirta ši apklausa?</h2>
+    <p>Jūs esate pakviesti(-os) anonimiškai įvertinti kolegą(-ę) pagal 75 lyderystės elgsenos teiginius. Jūsų atsakymai padės lyderiui suprasti savo stiprybes ir tobulintinas sritis.</p>
+    <p style="margin-top:8px;">Apklausa užtrunka apie <strong>15–20 minučių</strong>.</p>
+  </section>
 
-Apklausa užtrunka apie **15–20 minučių**.
+  <section class="card">
+    <h2>Kaip tai veikia?</h2>
+    <ol style="padding-left:18px;line-height:2.2;">
+      <li>Atidarykite gautą nuorodą naršyklėje (veikia kompiuteryje ir telefone).</li>
+      <li>Atsakykite į visus klausimus (skalė 1–5).</li>
+      <li>Neprivaloma: parašykite trumpus komentarus apie stiprybes ir tobulintinas sritis.</li>
+      <li>Spauskite <strong>Baigti ir atsisiųsti JSON</strong> — jūsų kompiuteryje išsaugomas failas.</li>
+      <li>Išsiųskite šį failą <strong>Anonimiškumo sargui</strong> (ne lyderiui tiesiogiai).</li>
+    </ol>
+    <p class="muted" style="margin-top:10px;">Sargas yra: <strong>[ĮRAŠYKITE SARGO VARDĄ IR KONTAKTĄ]</strong></p>
+  </section>
 
----
+  <section class="card">
+    <h2>Ar mano atsakymai anoniminiai?</h2>
+    <p><strong>Taip — jei laikotės proceso.</strong></p>
+    <table style="margin-top:12px;">
+      <thead><tr><th>Kas saugoma</th><th>Kaip</th></tr></thead>
+      <tbody>
+        <tr><td>Jūsų vardas</td><td>Niekada neįrašomas į failą</td></tr>
+        <tr><td>Jūsų el. paštas</td><td>Nematomas lyderiui (siųsti per Sargą)</td></tr>
+        <tr><td>Jūsų raterio numeris</td><td>Neišsaugomas faile</td></tr>
+        <tr><td>Jūsų atsakymai</td><td>Agreguojami su kitų grupės narių atsakymais</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:12px;">⚠️ Jei jūsų grupėje mažiau nei 3 žmonės (peer arba report), anonimiškumas negali būti visiškai garantuotas.</p>
+  </section>
 
-## Kaip tai veikia?
+  <section class="card">
+    <h2>Kaip rašyti komentarus?</h2>
+    <p>Komentarai rodomi lyderiui tik su grupės pavadinimu (pvz., <code>PEER</code>, <code>BOSS</code>) — be jūsų vardo.</p>
+    <p style="margin-top:10px;"><strong>Rekomenduojama:</strong></p>
+    <ul style="padding-left:18px;line-height:2;margin-top:6px;">
+      <li>Rašykite apie elgesį, ne asmenybę: „Dažnai keičia prioritetus be paaiškinimo" ✅</li>
+      <li>Vengti konkrečių datų ar situacijų, kurias tik jūs žinote ❌</li>
+      <li>Rašyti lietuviškai arba angliškai — bet ne maišyti, jei tai nėra įprasta</li>
+    </ul>
+  </section>
 
-1. Atidarykite gautą nuorodą naršyklėje (veikia kompiuteryje ir telefone).
-2. Atsakykite į visus klausimus (skalė 1–5).
-3. Neprivaloma: parašykite trumpus komentarus apie stiprybes ir tobulintinas sritis.
-4. Spauskite **Baigti ir atsisiųsti JSON** — jūsų kompiuteryje išsaugomas failas.
-5. Išsiųskite šį failą **Anonimiškumo sargui** (ne lyderiui tiesiogiai).
+  <section class="card">
+    <h2>Duomenų privatumas</h2>
+    <ul style="padding-left:18px;line-height:2;">
+      <li>Jūsų atsakymai <strong>nesiunčiami į jokį serverį</strong> — viskas vyksta tik jūsų naršyklėje.</li>
+      <li>Failas išsaugomas tik jūsų kompiuteryje.</li>
+      <li>Jūs kontroliuojate kas gaus šį failą.</li>
+      <li>Duomenys nenaudojami jokiais kitais tikslais nei šis vertinimas.</li>
+    </ul>
+  </section>
 
-> Sargas yra: **[ĮRAŠYKITE SARGAS VARDĄ IR KONTAKTĄ]**
+  <section class="card">
+    <h2>Techniniai reikalavimai</h2>
+    <ul style="padding-left:18px;line-height:2;">
+      <li>Bet kuri moderni naršyklė (Chrome, Firefox, Edge, Safari)</li>
+      <li>Interneto ryšys (tik puslapiui įkelti — atsakymai nesiunčiami)</li>
+      <li>Apie 5 KB laisvos vietos atsisiuntimui</li>
+    </ul>
+  </section>
 
----
+  <section class="card">
+    <h2>Klausimai?</h2>
+    <p>Jei iškilo techninių problemų ar klausimų dėl proceso — kreipkitės į <strong>Anonimiškumo sargą</strong>:</p>
+    <p class="muted" style="margin-top:8px;"><strong>[ĮRAŠYKITE SARGO VARDĄ IR KONTAKTĄ]</strong></p>
+    <p style="margin-top:16px;">Ačiū, kad skiriate laiko šiam vertinimui. Jūsų sąžiningas grįžtamasis ryšys yra vertingiausia šio proceso dalis.</p>
+  </section>
 
-## Ar mano atsakymai anoniminiai?
-
-**Taip — jei laikotės proceso.**
-
-| Kas saugoma | Kaip |
-|---|---|
-| Jūsų vardas | Niekada neįrašomas į failą |
-| Jūsų el. paštas | Nematomas lyderiui (siųsti per Sargą) |
-| Jūsų raterio numeris | Neišsaugomas faile |
-| Jūsų atsakymai | Agreguojami su kitų grupės narių atsakymais |
-
-**Svarbu:** Jei jūsų grupėje mažiau nei 3 žmonės (peer arba report), anonimiškumas negali būti visiškai garantuotas — lyderis gali numanyti kas atsakė. Tokiu atveju proceso koordinatorius jus informuos.
-
----
-
-## Kaip rašyti komentarus?
-
-Komentarai rodomi lyderiui su tik grupės pavadinimu (pvz., „PEER", „BOSS") — be jūsų vardo. Tačiau specifinės detalės ar unikalus stilius gali atskleisti tapatybę.
-
-**Rekomenduojama:**
-- Rašykite apie elgesį, ne asmenybę: „Dažnai keičia prioritetus be paaiškinimo" ✅
-- Vengti konkrečių datų ar situacijų kurias tik jūs žinote: „Po to susitikimo sausio 15 d." ❌
-- Rašyti lietuviškai arba angliškai — bet ne maišyti, jei tai nėra įprasta
-
----
-
-## Duomenų privatumas
-
-- Jūsų atsakymai **nesiunčiami į jokį serverį** — viskas vyksta tik jūsų naršyklėje.
-- Failas išsaugomas tik jūsų kompiuteryje.
-- Jūs kontroliuojate kas gaus šį failą.
-- Duomenys nenaudojami jokiais kitais tikslais nei šis vertinimas.
-
----
-
-## Techniniai reikalavimai
-
-- Bet kuri moderni naršyklė (Chrome, Firefox, Edge, Safari)
-- Interneto ryšys (tik puslapiui įkelti — atsakymai nesiunčiami)
-- Apie 15 MB laisvos vietos atsisiuntimui (failas mažas, ~5 KB)
-
----
-
-## Klausimai?
-
-Jei iškilo techninių problemų ar klausimų dėl proceso — kreipkitės į **Anonimiškumo sargą**:
-
-> **[ĮRAŠYKITE SARGAS VARDĄ IR KONTAKTĄ]**
-
-Ačiū, kad skiriate laiko šiam vertinimui. Jūsų sąžiningas grįžtamasis ryšys yra vertingiausia šio proceso dalis.
+</main>
+</body>
+</html>
