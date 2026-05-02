@@ -14,7 +14,7 @@ const GLA = (()=>{
 
   // ── 2. Load questions ─────────────────────────────────────────────────────
   async function loadBank(){
-    const url = 'bank/questions.json';
+    const url = 'public/bank/questions.json';
     const res = await fetch(url + '?v=' + Date.now(), { cache:'no-store' });
     if(!res.ok) throw new Error('Nepavyko įkelti ' + url + ' (HTTP ' + res.status + ')');
     return await res.json();
