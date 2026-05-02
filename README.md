@@ -65,7 +65,7 @@ Rateris 3 ──┘
 
 Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.t.) — be jokio numerio ar identifikatoriaus. Tačiau lyderis gali atpažinti žmogų iš **rašymo stiliaus ar specifinių detalių**. Sargas gali paraginti raterius rašyti bendrai ir vengti unikalių detalių.
 
-Plačiau apie privatuma - [Privatumas](https://olemoz1977.github.io/gla360-personal-full/PRIVACY.md) 
+Plačiau apie privatuma - [Privatumas](https://olemoz1977.github.io/gla360-personal-full/PRIVACY.html) 
 
 
 ### 3 žingsnis — Rateriai užpildo apklausą
