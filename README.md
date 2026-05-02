@@ -1,6 +1,6 @@
 # GLA360 Personal – pilna versija (client-only)
 
-Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėje), tinkama GitHub Pages.
+Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėje).
 
 ---
 
