@@ -21,7 +21,7 @@ const GLA = (()=>{
     const base = scriptEl
       ? scriptEl.src.substring(0, scriptEl.src.lastIndexOf('/') + 1)
       : (location.href.substring(0, location.href.lastIndexOf('/') + 1));
-    const url = base + 'bank/questions.json';
+    const url = base + 'public/bank/questions.json';
     const res = await fetch(url + '?v=' + Date.now(), { cache:'no-store' });
     if(!res.ok) throw new Error('Nepavyko įkelti bank/questions.json (HTTP ' + res.status + ')');
     return await res.json();
