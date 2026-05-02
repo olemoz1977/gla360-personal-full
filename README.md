@@ -76,7 +76,7 @@ Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.
 3. Spauskia **Baigti ir atsisiųsti JSON** — failas išsaugomas lokaliai.
 4. Failą siunčia **Sargas** (ne lyderiui tiesiogiai).
 
-> 🔒 Duomenys nesiunčiami į jokį serverį. Viskas vyksta naršyklėje. Plačiau apie [Privatumas](https://github.com/olemoz1977/gla360-personal-full/blob/main/PRIVACY.md)
+> 🔒 Duomenys nesiunčiami į jokį serverį. Viskas vyksta naršyklėje. Plačiau apie [Privatumas](https://olemoz1977.github.io/gla360-personal-full/Privacy)
 
 
 ---
