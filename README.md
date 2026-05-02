@@ -11,28 +11,6 @@ Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėj
 > ⚠️ Tai **ne oficialus** GLA360 produktas. Struktūra remiasi viešais aprašais:
 > [Global Coach Group](https://globalcoachgroup.com/gla360/) · [LEAPING KOI](https://www.leapingkoi.com/gla360.html) · [MGSCC](https://mgscc.net/gla360/)
 
----
-
-## Failų struktūra
-
-```
-├── index.html          ← Pradžia: sukurti vertinimą, generuoti nuorodas
-├── survey.html         ← Apklausa: rateriai užpildo ir atsisiunčia JSON
-├── report.html         ← Ataskaita: įkelti JSON, matyti rezultatus
-├── plan.html           ← 90 dienų tobulėjimo planas
-├── app.js              ← Visa logika (bendrai naudojama)
-├── styles.css          ← Stiliai
-└── bank/
-    └── questions.json  ← 75 klausimai (15 kompetencijų × 5)
-```
-
----
-
-## Paleidimas (GitHub Pages)
-
-1. Sukurkite repo ir įkelkite visus failus išlaikant struktūrą (`bank/` aplankas būtinas).
-2. **Settings → Pages**: Source = `Deploy from a branch` · Branch = `main / (root)`.
-3. Eikite į `index.html` ir pradėkite.
 
 ---
 
@@ -40,7 +18,7 @@ Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėj
 
 ### 1 žingsnis — Sukurti vertinimą 
 
-1. Atidarykite [ Apklausa ](https://olemoz1977.github.io/gla360-personal-full/).
+1. Atidarykite [ Apklausa ](https://olemoz1977.github.io/gla360-personal-full/public).
 2. Įveskite savo vardą ir projekto pavadinimą.
 3. Nurodykite kiek žmonių vertins kiekvienoje grupėje.
 4. Spauskite **Sukurti** — gausite unikalų **Assessment ID** ir nuorodas kiekvienam rateriui.
