@@ -25,7 +25,7 @@
 
   <section class="card">
     <h2>Naujas vertinimas</h2>
-    <p class="muted">Įveskite savo vardą, nurodykite kiek žmonių vertins kiekvienoje grupėje ir spauskite <strong>Sukurti</strong>. Gausite nuorodas, kurias išsiųsite vertintojams.</p>
+    <p class="muted">Įveskite savo vardą, nurodykite kiek žmonių vertins kiekvienoje grupėje ir spauskite <strong>Sukurti</strong>. Gausite nuorodas, kurias turit nukopijoti ir persiusti Anonimiškumo sargui, kuris išsiųs jas vertintojams.</p>
 
     <div class="grid2 mt">
       <label>Jūsų vardas
@@ -62,10 +62,11 @@
     <h2>Kaip tai veikia?</h2>
     <ol style="padding-left:18px; line-height:2;">
       <li>Sukurkite vertinimą aukščiau → gausite <strong>Assessment ID</strong> ir nuorodas.</li>
-      <li>Išsiųskite nuorodas savo rateriams el. paštu arba žinute.</li>
-      <li>Kiekvienas rateris atsakys į klausimus naršyklėje ir atsisiųs <code>*.json</code> failą.</li>
-      <li>Surinkite visus <code>*.json</code> failus ir atidarykite <a href="report.html">report.html</a>.</li>
-      <li>Peržiūrėkite rezultatus: radaras, klasteriai, Top 3 spragos ir stiprybės.</li>
+      <li>Išsiųskite nuorodas savo Anonimiškumo sargui kuris persius jas rateriams el. paštu arba žinute.</li>
+      <li>Kiekvienas rateris atsakys į klausimus naršyklėje ir atsisiųs <code>*.json</code> failą. Gautą failą persius atgal Anonimiškumo sargui.</li>
+      <li>Surinkite visus <code>*.json</code> vertinimo failus kurios Anonimiškumo sargas jums persiunte ir atidarykite Ataskaita.</li>
+      <li> Analizuokite. Peržiūrėkite rezultatus: radaras, klasteriai, Top 3 spragos ir stiprybės.</li>
+      <li> Sukurkite sau 90 d. planą.</li>
     </ol>
     <p class="muted mt">🔒 Privatumas: jokių duomenų į serverį. Viskas vyksta naršyklėje.</p>
   </section>
@@ -138,7 +139,7 @@
       }
     });
 
-    html += `<p class="muted mt">Išsiųskite šias nuorodas rateriams. Užpildę jie atsisiųs <code>*.json</code> ir atsiųs jums.</p>`;
+    html += `<p class="muted mt">Išsiųskite šias nuorodas Anonimiškumo sargui.Anonimiškumo sargas persius jas rateriams. Užpildę jie atsisiųs <code>*.json</code> ir atsiųs anonimiškumo sargui kuris persius jas jums.</p>`;
     document.getElementById('links').innerHTML = html;
     document.getElementById('links').scrollIntoView({ behavior:'smooth', block:'start' });
   });
