@@ -1,7 +1,6 @@
 # GLA360 Personal – pilna versija (client-only)
 
-Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėje), tinkama GitHub Pages.
-
+Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėje).
 ---
 
 ## Kas tai?
@@ -81,10 +80,10 @@ Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.
 
 ---
 
-### 4 žingsnis — Ataskaita (`report.html`)
+### 4 žingsnis — Ataskaita
 
 1. Anonimiškumo sargas perduoda visus `*.json` failus lyderiui.
-2. Lyderis atidaro `report.html`.
+2. Lyderis atidaro Ataskaita.
 3. Įkelia visus failus (drag & drop arba per mygtuką).
 4. Pakoreguoja svorius jei reikia (numatyta: Boss 30%, Peer 30%, Report 30%, Other 10%).
 5. Spauskia **Analizuoti**.
@@ -100,10 +99,10 @@ Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.
 
 ---
 
-### 5 žingsnis — 90 dienų planas (`plan.html`)
+### 5 žingsnis — 90 dienų planas 
 
-1. Iš `report.html` atsisiųskite agreguotą JSON (mygtukas **Atsisiųsti JSON**).
-2. Atidarykite `plan.html`.
+1. Iš Ataskaita atsisiųskite agreguotą JSON (mygtukas **Atsisiųsti JSON**).
+2. Atidarykite 90 dienų planas.
 3. Įkelkite agreguotą JSON — planas sugeneruojamas automatiškai pagal jūsų Top 3 spragas.
 4. Spausdinkite į PDF arba naudokite interaktyviai su žymimais langeliais.
 
@@ -147,16 +146,6 @@ Jei viena grupė nedalyvauja — jos svoris perskirstomas proporcingai tarp liku
 
 ---
 
-## Klaidų šalinimas
-
-| Problema | Sprendimas |
-|---|---|
-| Klausimai neįkeliami | Patikrinkite ar `bank/questions.json` yra repozitorijoje |
-| JSON neįkeliamas ataskaitoje | Failas turi būti `schema: gla360-personal@2` formato (naujas) |
-| Senas formatas (Q1, Q2...) | Rateris turi užpildyti iš naujo naudodamas naują survey.html |
-| Stiprybės rodo neigiamus skaičius | Visi rateriai įvertino žemiau nei Self — normalu, matosi info pranešimas |
-
----
 
 ## Licencija
 
