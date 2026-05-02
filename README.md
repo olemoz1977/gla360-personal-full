@@ -91,14 +91,15 @@ Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.
 
 ---
 
-### 3 žingsnis — Rateriai užpildo apklausą (`survey.html`)
+### 3 žingsnis — Rateriai užpildo apklausą 
 
 1. Rateris atidaro gautą nuorodą naršyklėje.
 2. Atsako į 75 klausimus (Likerto skalė 1–5) ir neprivalomą atvirą dalį.
 3. Spauskia **Baigti ir atsisiųsti JSON** — failas išsaugomas lokaliai.
 4. Failą siunčia **Sargas** (ne lyderiui tiesiogiai).
 
-> 🔒 Duomenys nesiunčiami į jokį serverį. Viskas vyksta naršyklėje.
+> 🔒 Duomenys nesiunčiami į jokį serverį. Viskas vyksta naršyklėje. Plačiau apie [Privatumas](https://github.com/olemoz1977/gla360-personal-full/blob/main/PRIVACY.md)
+
 
 ---
 
