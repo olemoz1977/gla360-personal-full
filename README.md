@@ -15,7 +15,7 @@ Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėj
 
 ### 1 žingsnis — Sukurti vertinimą 
 
-1. Atidarykite [Apklausa](http...)
+1. Atidarykite [Apklausa](https://olemoz1977.github.io/gla360-personal-full/public)
 2. Įveskite savo vardą ir projekto pavadinimą.
 3. Nurodykite kiek žmonių vertins kiekvienoje grupėje.
 4. Spauskite **Sukurti** — gausite unikalų **Assessment ID** ir nuorodas kiekvienam rateriui.
@@ -65,8 +65,8 @@ Rateris 3 ──┘
 
 Atviri komentarai ataskaitoje rodomi tik su grupės pavadinimu (PEER, BOSS ir t.t.) — be jokio numerio ar identifikatoriaus. Tačiau lyderis gali atpažinti žmogų iš **rašymo stiliaus ar specifinių detalių**. Sargas gali paraginti raterius rašyti bendrai ir vengti unikalių detalių.
 
-Plačiau apie privatuma - [Privatumas] (http:....) 
----
+Plačiau apie privatuma - [Privatumas] (https://olemoz1977.github.io/gla360-personal-full/PRIVACY.md) 
+
 
 ### 3 žingsnis — Rateriai užpildo apklausą
 
