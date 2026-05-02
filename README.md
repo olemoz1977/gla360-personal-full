@@ -38,9 +38,9 @@ Asmeninė 360° lyderystės apklausa, veikianti **be serverio** (tik naršyklėj
 
 ## Pilnas proceso aprašas
 
-### 1 žingsnis — Sukurti vertinimą (`index.html`)
+### 1 žingsnis — Sukurti vertinimą 
 
-1. Atidarykite [(https://olemoz1977.github.io/gla360-personal-full/)].
+1. Atidarykite [https://olemoz1977.github.io/gla360-personal-full/].
 2. Įveskite savo vardą ir projekto pavadinimą.
 3. Nurodykite kiek žmonių vertins kiekvienoje grupėje.
 4. Spauskite **Sukurti** — gausite unikalų **Assessment ID** ir nuorodas kiekvienam rateriui.
