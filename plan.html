@@ -246,6 +246,15 @@
 <script>
 (function(){
 
+  // ── Declared first: used throughout ─────────────────────────────────────
+  let planStartDate = null;
+
+  function dateAddDays(base, days){
+    const d = new Date(base);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
   // ── Plan database: actions per competency, per phase ────────────────────
   // Context: mid-level manufacturing managers (production, quality, logistics)
   const PLAN_DB = {
@@ -759,14 +768,6 @@
   }
 
   // ── ICS Calendar Export ──────────────────────────────────────────────────
-  // planStartDate is set when renderPlan is called
-  let planStartDate = null;
-
-  function dateAddDays(base, days){
-    const d = new Date(base);
-    d.setDate(d.getDate() + days);
-    return d;
-  }
 
   function icsDate(d){
     // YYYYMMDD format for all-day events
