@@ -7,7 +7,7 @@
       "items": [
         {"key":"COMM_INT_1","stem":"Laikosi duotų įsipareigojimų ir terminų."},
         {"key":"COMM_INT_2","stem":"Sprendimai atitinka deklaruojamas vertybes."},
-        {"key":"COMM_INT_3","stem":"Atvirai prisiima klaidas ir jas taiso."},
+        {"key":"COMM_INT_3","stem":"Atvirai prisiima atsakomybę už klaidas ir jas taiso."},
         {"key":"COMM_INT_4","stem":"Pateikia kontekstą, kai tenka keisti kryptį."},
         {"key":"COMM_INT_5","stem":"Viešai ir reguliariai praneša apie pažangos statusą ir rizikas."}
       ]
@@ -27,8 +27,8 @@
       "cluster": "Communication",
       "name": "Creating Shared Vision",
       "items": [
-        {"key":"COMM_VSN_1","stem":"Aiškiai sieja tikslus su kliento verte."},
-        {"key":"COMM_VSN_2","stem":"Formuluoja sėkmės metrikas ir ribas."},
+        {"key":"COMM_VSN_1","stem":"Aiškiai sieja tikslus su verte klientams/imonei."},
+        {"key":"COMM_VSN_2","stem":"Formuluoja sėkmės metrikas KPI ir ribas."},
         {"key":"COMM_VSN_3","stem":"Nuosekliai komunikuoja kryptį komandai."},
         {"key":"COMM_VSN_4","stem":"Užtikrina, kad visi supranta kodėl."},
         {"key":"COMM_VSN_5","stem":"Susieja viziją su kasdieniais pasirinkimais ir prioritetais."}
@@ -42,7 +42,7 @@
         {"key":"ASS_TECH_2","stem":"Greitai pritaiko įrankius produktyvumui didinti."},
         {"key":"ASS_TECH_3","stem":"Dalijasi praktinėmis gairėmis komandai."},
         {"key":"ASS_TECH_4","stem":"Vertina technologinių sprendimų rizikas ir naudą."},
-        {"key":"ASS_TECH_5","stem":"Skatina pilotus (POC) ir mokosi iš jų rezultatų."}
+        {"key":"ASS_TECH_5","stem":"Skatina pilotinius projektus (POC) ir mokosi iš jų rezultatų."}
       ]
     },
     {
@@ -151,7 +151,7 @@
         {"key":"INC_GLB_1","stem":"Įvertina sprendimų pasekmes skirtingoms rinkoms."},
         {"key":"INC_GLB_2","stem":"Derina standartizaciją su lokalizacija."},
         {"key":"INC_GLB_3","stem":"Mąsto per kultūrinius kontekstus."},
-        {"key":"INC_GLB_4","stem":"Priima įrodymų pagrįstus sprendimus."},
+        {"key":"INC_GLB_4","stem":"Priima įrodymais pagrįstus sprendimus."},
         {"key":"INC_GLB_5","stem":"Aktyviai ieško tarptautinės perspektyvos priimdamas strateginius sprendimus."}
       ]
     },
@@ -161,7 +161,7 @@
       "items": [
         {"key":"INC_DIV_1","stem":"Skatina skirtingas perspektyvas ir patirtis."},
         {"key":"INC_DIV_2","stem":"Užtikrina lygias galimybes dalyvauti."},
-        {"key":"INC_DIV_3","stem":"Mato skirtumus kaip inovacijos šaltinį."},
+        {"key":"INC_DIV_3","stem":"Mato skirtumus kaip naujovių šaltinį."},
         {"key":"INC_DIV_4","stem":"Reaguoja į šališkumą ir jį mažina."},
         {"key":"INC_DIV_5","stem":"Kuria įtraukią aplinką, kurioje kiekvienas jaučiasi vertinamas."}
       ]
