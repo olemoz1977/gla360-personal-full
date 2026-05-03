@@ -66,18 +66,6 @@
       gap: 8px;
       flex-wrap: wrap;
     }
-    /* Focus level badges (ChatGPT's good idea, properly implemented) */
-    .focus-badge {
-      font-size: .72rem;
-      font-weight: 700;
-      padding: 2px 9px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    .focus-primary  { background: rgba(248,113,113,.15); color: var(--neg); }
-    .focus-support  { background: rgba(240,180,41,.15);  color: var(--warn); }
-    .focus-minimal  { background: rgba(169,180,196,.12); color: var(--muted); }
     .upload-hint {
       text-align: center;
       padding: 40px 20px;
@@ -163,11 +151,6 @@
     <!-- Gaps summary -->
     <section class="card">
       <h2>Tobulintinos sritys</h2>
-      <p class="muted" id="focusLegend" style="font-size:.85rem;margin-bottom:8px;display:none;">
-        🔴 <strong>Pagrindinis</strong> – didžiausia spraga, pilnas planas &nbsp;·&nbsp;
-        🟡 <strong>Palaikantis</strong> – vidutinė spraga, 2 veiksmai fazei &nbsp;·&nbsp;
-        ⚪ <strong>Minimalus</strong> – maža spraga, 1 veiksmas fazei
-      </p>
       <div id="planGapsSummary"></div>
     </section>
 
@@ -219,6 +202,43 @@
       <div id="successMetrics"></div>
     </section>
 
+    <!-- Companion bot -->
+    <section class="card" id="botCard" style="display:none;">
+      <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+        <div style="font-size:2.5rem;line-height:1;">🤖</div>
+        <div style="flex:1;">
+          <h2 style="margin-bottom:6px;">Neužmiršk plano — companion bot</h2>
+          <p class="muted" style="margin-bottom:14px;">
+            7 dienų Telegram bot kas dieną paklaus: „Ar padarei bent 1 veiksmą?"
+            Trumpas check-in = nuoseklumas = rezultatai.
+          </p>
+          <div style="background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:14px;font-size:.9rem;">
+            <strong>Kaip pradėti:</strong>
+            <ol style="margin:8px 0 0 18px;line-height:2;">
+              <li>Spauskite mygtuką žemiau → atsidarys Telegram</li>
+              <li>Parašykite <code>/start</code></li>
+              <li>Bot pradės lydėti jus 7 dienas</li>
+            </ol>
+          </div>
+          <div id="botSummaryBox" style="background:rgba(90,200,250,.08);border:1px solid rgba(90,200,250,.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:.88rem;display:none;">
+            <strong>📋 Jūsų plano fokusas (bot žinos):</strong>
+            <div id="botCompList" style="margin-top:6px;color:var(--muted);"></div>
+          </div>
+          <a id="botLink" href="https://t.me/YOUR_BOT_USERNAME" target="_blank" rel="noopener"
+             style="display:inline-flex;align-items:center;gap:8px;background:#0088cc;color:#fff;
+                    padding:.6rem 1.2rem;border-radius:10px;font-weight:700;text-decoration:none;font-size:.95rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.26 13.4l-2.948-.924c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.877.159z"/>
+            </svg>
+            Pradėti su Telegram bot
+          </a>
+          <p class="muted" style="font-size:.78rem;margin-top:8px;">
+            ⚠️ Prieš naudodami: pakeiskite <code>YOUR_BOT_USERNAME</code> į savo boto vardą ManyChat nustatymuose.
+          </p>
+        </div>
+      </div>
+    </section>
+
   </div>
 </main>
 
@@ -236,27 +256,27 @@
         { text: 'Sukurkite paprastą skaičiuoklę: Įsipareigojimas → Terminas → Statusas. Peržiūrėkite kas pirmadienį.', freq: 'Vieną kartą' },
       ],
       p2: [
-        { text: 'Kiekvieną pirmą pamainų bloko dieną, pamainos pradžioje viešai paskelbkite komandai 3 svarbiausius savaitės tikslus (gamybos rodikliai, saugos veiksmai, kokybės taškai).', freq: 'Kas savaitę' },
-        { text: 'Kai tenka keisti gamybos planą – iš karto informuokite ir paaiškinkite priežastį.', freq: 'Kiekvieną kartą' },
-        { text: 'Paskutinės pamainos pabaigoje: 5 min. apžvalga – „Ką pažadėjau savaitei? Ką įvykdžiau?"', freq: 'Kas savaitę' },
+        { text: 'Kiekvieną pirmadienio pamainos pradžioje viešai paskelbia komandai 3 svarbiausius savaitės tikslus (gamybos rodikliai, saugos veiksmai, kokybės taškai).', freq: 'Kas savaitę' },
+        { text: 'Kai tenka keisti gamybos planą – iš karto informuoja cechą ir paaiškina priežastį.', freq: 'Kiekvieną kartą' },
+        { text: 'Penktadienio pamainos pabaigoje: 5 min. apžvalga – „Ką pažadėjau savaitei? Ką įvykdžiau?"', freq: 'Kas savaitę' },
       ],
       p3: [
-        { text: 'Paprašykite 2 kolegų arba tiesioginių pavaldinių: „Ar pastebėjote, kad laikomasi terminų geriau nei anksčiau?"', freq: '70-ąją dieną' },
+        { text: 'Paprašykite 2 meistrų arba tiesioginių pavaldinių: „Ar pastebėjote, kad laikomasi terminų geriau nei anksčiau?"', freq: '70-ąją dieną' },
         { text: 'Pristatykite komandai mėnesio gamybos rezultatus vs. savaitę paskelbtus tikslus.', freq: 'Kas mėnesį' },
-        { text: 'Fiksuokite įvykdytų gamybinių įsipareigojimų procentą (tikslas: >100%).', freq: 'Kas savaitę' },
+        { text: 'Fiksuokite įvykdytų gamybinių įsipareigojimų procentą (tikslas: >85%).', freq: 'Kas savaitę' },
       ],
-      weekly: 'Pirmos pamainos rytas: 3 savaitės gamybos prioritetai paskelbti komandai. Paskutine pamaina: patikrinimas kas įvykdyta.',
-      metrics: ['Įvykdytų gamybinių įsipareigojimų rodiklis >100%', 'Komanda praneša, kad pokyčiai pastebimi', 'Nė vienas terminas nepermestas be išankstinio pranešimo']
+      weekly: 'Pirmadienio rytas: 3 savaitės gamybos prioritetai paskelbti komandai. Penktadienis: patikrinimas kas įvykdyta.',
+      metrics: ['Įvykdytų gamybinių įsipareigojimų rodiklis >85%', 'Komanda praneša, kad pokyčiai pastebimi', 'Nė vienas terminas nepermestas be išankstinio pranešimo']
     },
 
     'Encouraging Dialogue': {
       p1: [
-        { text: 'Stebėkite kitus 3 savo pamainos susitikimus (briefings): Kas kalba? Ar tik vadovas?', freq: 'Vieną kartą' },
+        { text: 'Stebėkite kitus 3 pamainos susitikimus (briefings): kas kalba? Ar tik vadovas?', freq: 'Vieną kartą' },
         { text: 'Paklauskite meistrų anoniminės apklausos: „Ar galite laisvai pranešti apie problemas?"', freq: 'Vieną kartą' },
-        { text: 'Užduokite 3 klausimus operatoriams: „Kur yra kliūtis?" „Ko trūksta?" „Ką galėtume daryti kitaip?" – fiksuokite ir eskaluokite problemas su siūlymais.', freq: 'Išmokti' },
+        { text: 'Išmokite 3 klausimus gamybos kontekstui: „Kur yra kliūtis?" „Ko trūksta?" „Ką galėtume daryti kitaip?"', freq: 'Išmokti' },
       ],
       p2: [
-        { text: 'Kiekviename briefinige: 2 min. leidžiate meistrui ar technikiui pranešti problemą prieš pradedant pačiam.', freq: 'Kas susitikimas' },
+        { text: 'Kiekviename pamainos briefinige: 2 min. leidžiate meistrui ar technikiui pranešti problemą prieš pradedant pačiam.', freq: 'Kas susitikimas' },
         { text: 'Aktyviai klauskite tyliau kalbančių darbuotojų: „Petrai, ką manai dėl šio gedimo priežasties?"', freq: 'Kas susitikimas' },
         { text: 'Po kiekvieno incidento ar stop: „Ką galėjome pastebėti anksčiau?" – ne kaltinimas, o mokymasis.', freq: 'Kiekvieną kartą' },
       ],
@@ -265,25 +285,25 @@
         { text: 'Fiksuokite: ar padidėjo pranešimų apie gedimus ar anomalijas skaičius? (Tai teigiamas ženklas.)', freq: 'Kas mėnesį' },
         { text: 'Pristatykite komandai, ką pakeitėte susitikimų struktūroje.', freq: '90-ąją dieną' },
       ],
-      weekly: 'Kiekviename briefinige: pirma klauskite komandos – tik tada kalbate patys.',
-      metrics: ['Pranešimų apie anomalijas skaičius padidėjo (darbuotojai nebijo)', 'Komanda praneša, kad jaučiasi išgirsta', 'Briefingas tampa dvikrypčiu, ne tik informavimo srautu']
+      weekly: 'Kiekviename pamainos briefinige: pirma klausi komandos – tik tada kalbate patys.',
+      metrics: ['Pranešimų apie anomalijas skaičius padidėjo (darbuotojai nebijo)', 'Komanda praneša, kad jaučiasi išgirsta', 'Pamainos briefingas tampa dvikrypčiu, ne tik informavimo srautu']
     },
 
     'Creating Shared Vision': {
       p1: [
-        { text: 'Parašykite vienu sakiniu: „Mūsų pamainos/skyriaus tikslas šiam ketvirtaliui yra..." – ar visi meistriai pasakytų tą patį?', freq: 'Vieną kartą' },
+        { text: 'Parašykite vienu sakiniu: „Mūsų cecho/skyriaus tikslas šiam ketvirtaliui yra..." – ar visi meistriai pasakytų tą patį?', freq: 'Vieną kartą' },
         { text: 'Apklauskite 3 tiesioginius pavaldinius: „Kokia mūsų pagrindinė metrika šiam mėnesiui?"', freq: 'Vieną kartą' },
         { text: 'Sukurkite vizualų (A3 formatas arba ekranas cecho lentoje): OEE tikslas, kokybės rodiklis, saugos tikslas.', freq: 'Vieną kartą' },
       ],
       p2: [
         { text: 'Kiekvieno naujo projekto ar gamybos užsakymo pradžioje: 3 min. „kodėl tai svarbu klientui ir gamyklai".', freq: 'Kiekvienam projektui' },
         { text: 'Mėnesio gamybos apžvalgoje: 10 min. rezultatų ryšys su metiniais tikslais.', freq: 'Kas mėnesį' },
-        { text: 'Atnaujinkite padalinio/pamainos/skyriaus lentą su savaitės rezultatais – matomumas skatina atsakomybę.', freq: 'Kas savaitę' },
+        { text: 'Atnaujinkite cecho lentą su savaitės rezultatais – matomumas skatina atsakomybę.', freq: 'Kas savaitę' },
       ],
       p3: [
         { text: 'Pakartokite klausimą: „Kokia mūsų pagrindinė metrika?" – ar atsakymai sulygiuoti?', freq: '80-ąją dieną' },
         { text: 'Peržiūrėkite vizualų ant cecho lentos – ar tikslai pasikeitę? Atnaujinkite.', freq: 'Kas ketvirtį' },
-        { text: 'Padalinio/Pamainos/Skyriaus retrospektyva: ką pasiekėme vs. pradžioje paskelbtą planą?', freq: '90-ąją dieną' },
+        { text: 'Pamainos retrospektyva: ką pasiekėme vs. kėlį pradžioje paskelbtą planą?', freq: '90-ąją dieną' },
       ],
       weekly: 'Pirmadienio briefingas: „Kaip šios savaitės užduotys prisideda prie mėnesio OEE/kokybės tikslo?"',
       metrics: ['100% meistrų gali pasakyti pagrindinę mėnesio metriką', 'Cecho lenta atnaujinama kiekvieną savaitę', 'Sprendimai susieti su gamybos tikslais, ne tik skubiais poreikiais']
@@ -397,7 +417,7 @@
       ],
       p2: [
         { text: 'Kiekvienam deleguotam sprendimui – aiškus formatas: Situacija → Leistini veiksmai → Kada eskaluoti.', freq: 'Kiekvieną kartą' },
-        { text: 'Pamainos briefinige: pirma klausiate meistro diagnozės – tik tada komentuojate.', freq: 'Kas susitikimas' },
+        { text: 'Pamainos briefinге: pirma klausiate meistro diagnozės – tik tada komentuojate.', freq: 'Kas susitikimas' },
         { text: 'Leiskite meistrui priimti sprendimą dėl perplanavimo ar gedimo – stebėkite ir palaikykite tik jei prašo.', freq: 'Bent 2 kartus' },
       ],
       p3: [
@@ -530,59 +550,25 @@
     }
   };
 
-  // ── Universal habits ─────────────────────────────────────────────────────
-  // FIX: was declared twice (original bug) → now single declaration
+  // Universal habits for manufacturing managers
   const UNIVERSAL_HABITS = [
-    { text: 'Pirmadienio 5 min. ritualas: 3 savaitės prioritetai → paskelbiami komandai', freq: 'Kas pirmadienį' },
+    { text: 'Pirmadienio pamainos pradžia: 3 savaitės gamybos prioritetai → paskelbiami komandai', freq: 'Kas pirmadienį' },
+    { text: 'Penktadienio pamainos pabaiga: 5 min. refleksija – kas pavyko, kas nepavyko, ką daryti kitaip', freq: 'Kas penktadienį' },
+    { text: 'Trumpas 1:1 su kiekvienu meistru bent kas 2 savaites', freq: 'Kas 2 sav.' },
+  ];
+
+  const UNIVERSAL_HABITS = [
+    { text: 'Pirmadienio 5 min. ritualas: 3 savaitės prioritetai → komandos kanalas', freq: 'Kas pirmadienį' },
     { text: 'Penktadienio 10 min. refleksija: ko išmokau? Ką darysiu kitaip?', freq: 'Kas penktadienį' },
     { text: '1:1 su kiekvienu komandos nariu bent kas 2 savaites', freq: 'Kas 2 sav.' },
   ];
-
-  // ── Dynamic Focus Model (ChatGPT's idea, properly implemented) ───────────
-  // When loaded from JSON with gap data, assigns primary/support/minimal focus
-  // based on gap severity. When loaded manually, all comps get primary focus.
-  function buildFocusModel(comps, gapsData) {
-    // gapsData: array of { name, diff } from aggregated JSON, or null
-    if (gapsData && gapsData.length) {
-      // Sort by gap size (most negative first)
-      const sorted = gapsData
-        .filter(g => g.diff < 0)
-        .sort((a, b) => a.diff - b.diff);
-
-      return comps.map((name, i) => {
-        const gapEntry = sorted.find(g => g.name === name);
-        const diff = gapEntry ? gapEntry.diff : null;
-        // Rank by position in sorted list
-        const rank = sorted.findIndex(g => g.name === name);
-        let focus;
-        if (rank === 0)      focus = 'primary';
-        else if (rank === 1) focus = 'support';
-        else                 focus = 'minimal';
-        return { name, diff, focus };
-      });
-    }
-    // No gap data → all primary
-    return comps.map(name => ({ name, diff: null, focus: 'primary' }));
-  }
-
-  // How many phase actions to show per focus level
-  const FOCUS_ACTION_COUNT = { primary: 99, support: 2, minimal: 1 };
-  // How many metrics to show per focus level
-  const FOCUS_METRIC_COUNT = { primary: 99, support: 2, minimal: 1 };
-
-  function focusBadgeHtml(focus, diff) {
-    const labels = { primary: '🔴 Pagrindinis', support: '🟡 Palaikantis', minimal: '⚪ Minimalus' };
-    const cls    = { primary: 'focus-primary',  support: 'focus-support',  minimal: 'focus-minimal' };
-    const diffStr = diff !== null ? ` (spraga: ${diff > 0 ? '+' : ''}${diff.toFixed(2)})` : '';
-    return `<span class="focus-badge ${cls[focus]}">${labels[focus]}${diffStr}</span>`;
-  }
 
   // ── Load competency list for manual picker ───────────────────────────────
   async function initManualPicker(){
     let bank;
     try { bank = await GLA.loadBank(); } catch(e) { return; }
     const picker = document.getElementById('manualPicker');
-    picker.innerHTML = bank.competencies.map((c) => `
+    picker.innerHTML = bank.competencies.map((c,i) => `
       <label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.88rem;font-weight:400;cursor:pointer;">
         <input type="checkbox" class="manual-comp" value="${c.name}" style="accent-color:var(--brand);">
         <span><strong>${c.name}</strong> <span class="muted">${c.cluster}</span></span>
@@ -616,21 +602,16 @@
   document.getElementById('generateBtn').addEventListener('click', async () => {
     const leader = (document.getElementById('leaderNamePlan').value || 'Lyderis').trim();
     let targetComps = [];
-    let gapsData = null; // will hold [{name, diff}] if available from JSON
 
     // Try JSON file first
     if(aggFile.files && aggFile.files[0]){
       try {
         const agg = JSON.parse(await aggFile.files[0].text());
-        // Extract top 3 gaps and their diff values
+        // Extract top 3 gaps
         if(agg.gaps && agg.gaps.length){
-          const top3 = agg.gaps.slice(0, 3);
-          targetComps = top3.map(g => g.name);
-          gapsData = top3.map(g => ({ name: g.name, diff: g.diff ?? g.score ?? null }));
+          targetComps = agg.gaps.slice(0,3).map(g => g.name);
         } else if(agg.diffs){
-          const top3 = agg.diffs.filter(d => d.diff < 0).slice(0, 3);
-          targetComps = top3.map(d => d.name);
-          gapsData = top3.map(d => ({ name: d.name, diff: d.diff }));
+          targetComps = agg.diffs.filter(d=>d.diff<0).slice(0,3).map(d=>d.name);
         }
       } catch(e) { alert('Nepavyko nuskaityti JSON: ' + e.message); return; }
     }
@@ -646,51 +627,41 @@
       return;
     }
 
-    const focusModel = buildFocusModel(targetComps, gapsData);
-    renderPlan(leader, focusModel);
+    renderPlan(leader, targetComps);
   });
 
-  // ── Render plan ───────────────────────────────────────────────────────────
-  function renderPlan(leader, focusModel){
+  function renderPlan(leader, comps){
     const today = new Date();
-    planStartDate = today;
+    planStartDate = today; // store for ICS export
     const todayStr = today.toLocaleDateString('lt-LT');
-    const compNames = focusModel.map(c => c.name);
+    document.getElementById('planTitle').textContent = `${leader} – 90 dienų tobulėjimo planas`;
+    document.getElementById('planMeta').textContent = `Pradžia: ${todayStr} · Pabaiga: ${dateAddDays(today,90).toLocaleDateString('lt-LT')} · Kompetencijos: ${comps.join(', ')}`;
 
-    document.getElementById('planTitle').textContent =
-      `${leader} – 90 dienų tobulėjimo planas`;
-    document.getElementById('planMeta').textContent =
-      `Pradžia: ${todayStr} · Pabaiga: ${dateAddDays(today,90).toLocaleDateString('lt-LT')} · Kompetencijos: ${compNames.join(', ')}`;
-
-    // Show legend only if we have real focus data (not all primary)
-    const hasFocusLevels = focusModel.some(c => c.focus !== 'primary');
-    document.getElementById('focusLegend').style.display = hasFocusLevels ? 'block' : 'none';
-
-    // Gaps summary with focus badges
-    document.getElementById('planGapsSummary').innerHTML = focusModel.map(({ name, diff, focus }) => {
+    // Gaps summary
+    document.getElementById('planGapsSummary').innerHTML = comps.map(name => {
       const db = PLAN_DB[name];
       return `<div class="comp-gap-card">
         <div class="comp-gap-title">
           <span class="score-chip neg">🎯 Tobulinti</span>
           <strong>${name}</strong>
-          ${hasFocusLevels ? focusBadgeHtml(focus, diff) : ''}
         </div>
         <p style="font-size:.88rem;color:var(--muted);">${db ? 'Veiksmai aprašyti žemiau 3 fazėse.' : 'Universali metodika taikoma.'}</p>
       </div>`;
     }).join('');
 
+    // Phase start offsets in days
+    const phaseOffset = { p1: 0, p2: 30, p3: 60 };
+
     // Phases
     ['p1','p2','p3'].forEach((phase, pi) => {
       const el = document.getElementById(`phase${pi+1}Actions`);
       let html = '';
-      focusModel.forEach(({ name, focus }) => {
+      comps.forEach(name => {
         const db = PLAN_DB[name];
         if(!db || !db[phase]) return;
-        const limit = FOCUS_ACTION_COUNT[focus];
-        const actions = db[phase].slice(0, limit);
         html += `<div style="margin-bottom:14px;">
-          <div style="font-size:.82rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">${name}${hasFocusLevels ? ' · ' + focusBadgeHtml(focus, null) : ''}</div>`;
-        actions.forEach((a, ai) => {
+          <div style="font-size:.82rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">${name}</div>`;
+        db[phase].forEach((a, ai) => {
           const calId = `cal_${phase}_${name.replace(/\s/g,'_')}_${ai}`;
           html += `<div class="action-item" data-text="${a.text.replace(/"/g,'&quot;')}" data-freq="${a.freq}" data-phase="${phase}" data-comp="${name}">
             <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;width:100%;">
@@ -710,7 +681,7 @@
     // Weekly habits
     let habitsHtml = '<div style="margin-bottom:12px;">';
     let wIdx = 0;
-    focusModel.forEach(({ name }) => {
+    comps.forEach(name => {
       const db = PLAN_DB[name];
       if(db?.weekly){
         const calId = `cal_weekly_${wIdx++}`;
@@ -742,14 +713,12 @@
 
     // Success metrics
     let metricsHtml = '';
-    focusModel.forEach(({ name, focus }) => {
+    comps.forEach(name => {
       const db = PLAN_DB[name];
       if(!db?.metrics) return;
-      const limit = FOCUS_METRIC_COUNT[focus];
-      const metrics = db.metrics.slice(0, limit);
       metricsHtml += `<div style="margin-bottom:12px;">
         <div style="font-size:.82rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">${name}</div>`;
-      metrics.forEach(m => {
+      db.metrics.forEach(m => {
         metricsHtml += `<div class="action-item" style="padding:8px 0;">
           <div class="action-text">✅ ${m}</div>
         </div>`;
@@ -761,10 +730,36 @@
     document.getElementById('planOutput').style.display = 'block';
     document.getElementById('planOutput').scrollIntoView({ behavior:'smooth', block:'start' });
 
+    // Show companion bot card
+    const botCard = document.getElementById('botCard');
+    if(botCard){
+      botCard.style.display = 'block';
+
+      // Show competency summary for bot context
+      const botSummary = document.getElementById('botSummaryBox');
+      const botList    = document.getElementById('botCompList');
+      if(botSummary && botList){
+        botList.innerHTML = comps.map((name, i) =>
+          `<div style="padding:2px 0;">
+            ${i===0?'🔴':i===1?'🟡':'🟢'} <strong>${i+1}.</strong> ${name}
+          </div>`
+        ).join('');
+        botSummary.style.display = 'block';
+      }
+
+      // Build pre-filled bot URL with plan context
+      // The bot can receive start parameter with encoded competency names
+      const botBase = document.getElementById('botLink').href.split('?')[0];
+      const param = encodeURIComponent(comps.slice(0,3).join('|').slice(0,50));
+      document.getElementById('botLink').href = botBase + '?start=plan_' + param;
+    }
+
+    // Wire calendar export with current leader name
     wireCalendarExport(leader);
   }
 
   // ── ICS Calendar Export ──────────────────────────────────────────────────
+  // planStartDate is set when renderPlan is called
   let planStartDate = null;
 
   function dateAddDays(base, days){
@@ -774,10 +769,12 @@
   }
 
   function icsDate(d){
+    // YYYYMMDD format for all-day events
     return d.toISOString().slice(0,10).replace(/-/g,'');
   }
 
   function icsDatetime(d){
+    // YYYYMMDDTHHmmssZ
     return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
   }
 
@@ -785,10 +782,11 @@
     return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
   }
 
+  // Map freq string → ICS RRULE or specific day offset
   function freqToIcs(freq, phaseOffset){
     const f = freq.toLowerCase();
     if(f.includes('kas savaitę') || f.includes('kas susitikimas'))
-      return { rrule: 'FREQ=WEEKLY;BYDAY=MO;COUNT=13', dayOffset: phaseOffset };
+      return { rrule: 'FREQ=WEEKLY;BYDAY=MO;COUNT=13', dayOffset: phaseOffset }; // every Monday for 13 weeks
     if(f.includes('kas 2 sav'))
       return { rrule: 'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO;COUNT=7', dayOffset: phaseOffset };
     if(f.includes('kas mėnesį'))
@@ -799,8 +797,10 @@
       return { rrule: 'FREQ=WEEKLY;BYDAY=FR;COUNT=13', dayOffset: phaseOffset };
     if(f.includes('kasdien'))
       return { rrule: 'FREQ=DAILY;COUNT=90', dayOffset: phaseOffset };
+    // Specific day mentions
     const dayMatch = freq.match(/(\d+)/);
     if(dayMatch) return { rrule: null, dayOffset: parseInt(dayMatch[1]) - 1 };
+    // One-time: phase start
     return { rrule: null, dayOffset: phaseOffset };
   }
 
@@ -833,6 +833,7 @@
       lines.push(`DTSTART;VALUE=DATE:${icsDate(eventDate)}`);
       lines.push(`DTEND;VALUE=DATE:${icsDate(dateAddDays(eventDate, 1))}`);
       if(rrule){
+        // Limit recurrence to 90 days from plan start
         const until = icsDate(dateAddDays(startDate, 90));
         lines.push(`RRULE:${rrule};UNTIL=${until}`);
       }
@@ -845,6 +846,8 @@
     });
 
     lines.push('END:VCALENDAR');
+
+    // ICS requires CRLF line endings
     return lines.join('\r\n');
   }
 
@@ -859,16 +862,15 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
   }
 
+  // Wire up export button after plan renders
   function wireCalendarExport(leader){
     const btn = document.getElementById('exportIcs');
     if(!btn) return;
-    // Remove any previous listener by replacing the button
-    const newBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(newBtn, btn);
-    newBtn.addEventListener('click', () => {
+    btn.addEventListener('click', () => {
+      // Collect all checked cal-cb items
       const checked = document.querySelectorAll('.cal-cb:checked');
       if(!checked.length){
-        alert('Pažymėkite bent vieną veiksmą žymimuoju langeliu prieš eksportuodami.');
+        alert('Pažymėkite bent vieną veiksmą "📅 į kalendorių" žymimuoju langeliu.');
         return;
       }
       const items = [];
@@ -876,10 +878,10 @@
         const row = cb.closest('.action-item');
         if(!row) return;
         items.push({
-          text:  row.dataset.text  || '',
-          freq:  row.dataset.freq  || 'Vieną kartą',
+          text: row.dataset.text || '',
+          freq: row.dataset.freq || 'Vieną kartą',
           phase: row.dataset.phase || 'p1',
-          comp:  row.dataset.comp  || ''
+          comp: row.dataset.comp || ''
         });
       });
       const start = planStartDate || new Date();
