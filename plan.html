@@ -573,16 +573,37 @@
   ];
 
   // ── Load competency list for manual picker ───────────────────────────────
-  async function initManualPicker(){
-    let bank;
-    try { bank = await GLA.loadBank(); } catch(e) { return; }
+  // Uses PLAN_DB keys directly - no async needed, no GLA dependency
+  function initManualPicker(){
     const picker = document.getElementById('manualPicker');
-    picker.innerHTML = bank.competencies.map((c,i) => `
+    if(!picker) return;
+
+    // Competency → cluster mapping (mirrors questions.json structure)
+    const COMP_CLUSTERS = {
+      'Demonstrating Integrity':        'Communication',
+      'Encouraging Dialogue':           'Communication',
+      'Creating Shared Vision':         'Communication',
+      'Developing Technological Savvy': 'Assure Success',
+      'Ensuring Customer Satisfaction': 'Assure Success',
+      'Maintaining Competitive Advantage':'Assure Success',
+      'Developing People':              'Engaging People',
+      'Building Partnerships':          'Engaging People',
+      'Sharing Leadership':             'Engaging People',
+      'Achieving Personal Mastery':     'Continuous Change',
+      'Anticipating Opportunities':     'Continuous Change',
+      'Leading Change':                 'Continuous Change',
+      'Empowering People':              'Boundary-less Inclusion',
+      'Thinking Globally':              'Boundary-less Inclusion',
+      'Appreciating Diversity':         'Boundary-less Inclusion',
+    };
+
+    const comps = Object.keys(PLAN_DB);
+    picker.innerHTML = comps.map(name => `
       <label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.88rem;font-weight:400;cursor:pointer;">
-        <input type="checkbox" class="manual-comp" value="${c.name}" style="accent-color:var(--brand);">
-        <span><strong>${c.name}</strong> <span class="muted">${c.cluster}</span></span>
+        <input type="checkbox" class="manual-comp" value="${name}" style="accent-color:var(--brand);">
+        <span><strong>${name}</strong> <span class="muted">${COMP_CLUSTERS[name]||''}</span></span>
       </label>`).join('');
-    // Limit to 3
+
     picker.addEventListener('change', () => {
       const checked = picker.querySelectorAll('.manual-comp:checked');
       if(checked.length > 3){
@@ -893,8 +914,8 @@
     });
   }
 
-  // Init
-  initManualPicker();
+  // Init – runs synchronously after PLAN_DB is defined
+  document.addEventListener('DOMContentLoaded', initManualPicker);
 
 })();
 </script>
