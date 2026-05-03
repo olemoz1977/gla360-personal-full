@@ -211,6 +211,209 @@
 <script>
 (function(){
 
+
+  // =============================
+  // 🔧 DYNAMIC FOCUS MODEL
+  // =============================
+  function buildDynamicFocusModel(gaps){
+    const sorted = gaps
+      .filter(g => g.diff < 0)
+      .sort((a,b) => a.diff - b.diff);
+
+    const top = sorted.slice(0,3);
+
+    return top.map((g, i) => {
+      let focus;
+      if(i === 0) focus = 'primary';
+      else if(i === 1) focus = 'support';
+      else focus = 'minimal';
+
+      return {
+        name: g.name,
+        diff: g.diff,
+        focus,
+        weight: Math.abs(g.diff)
+      };
+    });
+  }
+
+  // =============================
+  // 🔥 ACTION FILTERING
+  // =============================
+  function filterActionsByFocus(actions, focus){
+    if(!actions) return [];
+
+    if(focus === 'primary') return actions;
+
+    if(focus === 'support')
+      return actions.filter(a => a.impact === 'high').slice(0,2);
+
+    if(focus === 'minimal')
+      return actions.filter(a => a.impact === 'high').slice(0,1);
+
+    return actions;
+  }
+
+  // =============================
+  // 📊 METRICS FILTER
+  // =============================
+  function filterMetrics(metrics, focus){
+    if(!metrics) return [];
+
+    if(focus === 'primary') return metrics;
+    if(focus === 'support') return metrics.slice(0,2);
+    if(focus === 'minimal') return metrics.slice(0,1);
+
+    return metrics;
+  }
+
+  // =============================
+  // 🚫 STOP BLOCK
+  // =============================
+  function renderStopBlock(focusModel){
+    return focusModel.map(c => {
+      const db = PLAN_DB[c.name];
+      if(!db?.stop) return '';
+
+      return `
+      <section class="card">
+        <h2>🚫 STOP – ${c.name}</h2>
+        ${db.stop.map(s => `
+          <div class="action-item">
+            <div class="action-text">🚫 ${s}</div>
+          </div>
+        `).join('')}
+      </section>`;
+    }).join('');
+  }
+
+  // =============================
+  // 🎯 RENDER PLAN
+  // =============================
+  function renderPlan(leader, focusModel){
+    const today = new Date();
+
+    document.getElementById('planTitle').textContent =
+      `${leader} – 90 dienų planas`;
+
+    document.getElementById('planMeta').textContent =
+      `Kompetencijos: ${focusModel.map(c=>c.name).join(', ')}`;
+
+    // GAPS
+    document.getElementById('planGapsSummary').innerHTML =
+      focusModel.map(c => `
+        <div class="comp-gap-card">
+          <div class="comp-gap-title">
+            🎯 ${c.focus.toUpperCase()} — ${c.name}
+            <span class="muted">gap: ${c.diff}</span>
+          </div>
+        </div>
+      `).join('');
+
+    // STOP BLOCK
+    document.getElementById('phase1Actions').innerHTML =
+      renderStopBlock(focusModel);
+
+    // PHASES
+    ['p1','p2','p3'].forEach((phase, i) => {
+      const el = document.getElementById(`phase${i+1}Actions`);
+      let html = '';
+
+      focusModel.forEach(c => {
+        const db = PLAN_DB[c.name];
+        if(!db || !db[phase]) return;
+
+        const actions = filterActionsByFocus(db[phase], c.focus);
+
+        html += `
+        <div style="margin-bottom:16px;">
+          <div style="font-weight:700;">
+            ${c.name} (${c.focus})
+          </div>`;
+
+        actions.forEach(a => {
+          const badge = a.impact === 'high' ? '🔥' : '';
+
+          html += `
+          <div class="action-item">
+            <div class="action-text">
+              ${badge} ${a.text}
+            </div>
+            <div class="action-freq">📅 ${a.freq}</div>
+          </div>`;
+        });
+
+        html += `</div>`;
+      });
+
+      el.innerHTML = html || '<p class="muted">Nėra veiksmų</p>';
+    });
+
+    // METRICS
+    let metricsHtml = '';
+
+    focusModel.forEach(c => {
+      const db = PLAN_DB[c.name];
+      if(!db?.metrics) return;
+
+      const m = filterMetrics(db.metrics, c.focus);
+
+      metricsHtml += `
+      <div style="margin-bottom:12px;">
+        <strong>${c.name}</strong>`;
+
+      m.forEach(x => {
+        metricsHtml += `
+          <div class="action-item">
+            ✅ ${x}
+          </div>`;
+      });
+
+      metricsHtml += `</div>`;
+    });
+
+    document.getElementById('successMetrics').innerHTML = metricsHtml;
+
+    document.getElementById('planOutput').style.display = 'block';
+  }
+
+  // =============================
+  // ▶ GENERATE BUTTON
+  // =============================
+  document.getElementById('generateBtn')
+    .addEventListener('click', async () => {
+
+    const leader =
+      document.getElementById('leaderNamePlan').value || 'Lyderis';
+
+    let focusModel = [];
+
+    const file = document.getElementById('aggFile').files[0];
+
+    if(file){
+      try{
+        const agg = JSON.parse(await file.text());
+
+        if(agg.gaps){
+          focusModel = buildDynamicFocusModel(agg.gaps);
+        }
+
+      } catch(e){
+        alert('JSON klaida: ' + e.message);
+        return;
+      }
+    }
+
+    if(!focusModel.length){
+      alert('Nėra duomenų.');
+      return;
+    }
+
+    renderPlan(leader, focusModel);
+  });
+
+
+
   // ── Plan database: actions per competency, per phase ────────────────────
   // Context: mid-level manufacturing managers (production, quality, logistics)
   const PLAN_DB = {
