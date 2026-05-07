@@ -20,13 +20,13 @@
 </nav>
 <header class="head">
   <h1>GLA360 Personal – Ataskaita</h1>
-  <p>Įkelkite visų raterių <code>*.json</code> failus (įskaitant SELF) ir spauskite <strong>Analizuoti</strong>.</p>
+  <p>Įkelkite visų vertintojų <code>*.json</code> failus (įskaitant SELF) ir spauskite <strong>Analizuoti</strong>.</p>
 </header>
 
 <main class="wrap">
 
   <section class="card">
-    <h2>1. Įkelti raterių failus</h2>
+    <h2>1. Įkelti vertintojų failus</h2>
     <label class="file-drop" id="fileDrop">
       <input id="files" type="file" multiple accept="application/json" style="display:none">
       <span class="file-drop-icon">📂</span>
@@ -134,7 +134,7 @@
     const othersMean = othersVals.length ? (othersVals.reduce((a,b)=>a+b,0)/othersVals.length).toFixed(2) : '—';
     const strCount   = agg.strengths.filter(s=>!s._relative).length;
     return `
-      <div class="stat-card"><div class="stat-val">${agg.packsCount}</div><div class="stat-lbl">Raterių failai</div></div>
+      <div class="stat-card"><div class="stat-val">${agg.packsCount}</div><div class="stat-lbl">Vertintojų failai</div></div>
       <div class="stat-card"><div class="stat-val">${totalItems}</div><div class="stat-lbl">Klausimai</div></div>
       <div class="stat-card"><div class="stat-val">${selfMean}</div><div class="stat-lbl">Self vidurkis</div></div>
       <div class="stat-card"><div class="stat-val">${othersMean}</div><div class="stat-lbl">Others vidurkis</div></div>

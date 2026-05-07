@@ -289,7 +289,7 @@ const GLA = (()=>{
       ? `<p class="warn">⚠️ Senojo formato failai (nepanaudoti): ${agg.legacyWarnings.join(', ')}</p>` : '';
     return `
       ${legacy}
-      <p><strong>Įkeltų raterių failų:</strong> ${agg.packsCount}</p>
+      <p><strong>Įkeltų vertintojų failų:</strong> ${agg.packsCount}</p>
       <p><strong>Kompetencijų:</strong> ${agg.bank.competencies.length} &nbsp;|&nbsp; <strong>Klausimų:</strong> ${totalItems}</p>
       <p><strong>Svoriai (Others):</strong>
         Vadovas ${(agg.weights.boss*100).toFixed(0)}% ·
@@ -394,7 +394,7 @@ const GLA = (()=>{
       const isRelative = agg.strengths.length > 0 && agg.strengths[0]._relative;
       if(isRelative){
         el.innerHTML = `<li class="alert info" style="list-style:none;margin-bottom:8px;">
-          ℹ️ Rateriai visose kompetencijose įvertino žemiau nei Self. Žemiau – santykinai stipriausios sritys.
+          ℹ️ Vertintojai visose kompetencijose įvertino žemiau nei Self. Žemiau – santykinai stipriausios sritys.
         </li>` + agg.strengths.map(s => `
           <li>
             <div class="sg-title">
