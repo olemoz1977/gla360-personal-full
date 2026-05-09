@@ -11,22 +11,21 @@
 
 <nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
   <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Auditas</a>
     <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
     <a href="report.html" style="color:var(--brand);text-decoration:none;font-weight:600;">📊 Ataskaita</a>
     <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
-    <a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a>
-    <a href="PRIVACY.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a>
   </div>
 </nav>
 <header class="head">
   <h1>GLA360 Personal – Ataskaita</h1>
-  <p>Įkelkite visų vertintojų <code>*.json</code> failus (įskaitant SELF) ir spauskite <strong>Analizuoti</strong>.</p>
+  <p>Įkelkite visų raterių <code>*.json</code> failus (įskaitant SELF) ir spauskite <strong>Analizuoti</strong>.</p>
 </header>
 
 <main class="wrap">
 
   <section class="card">
-    <h2>1. Įkelti vertintojų failus</h2>
+    <h2>1. Įkelti raterių failus</h2>
     <label class="file-drop" id="fileDrop">
       <input id="files" type="file" multiple accept="application/json" style="display:none">
       <span class="file-drop-icon">📂</span>
@@ -134,7 +133,7 @@
     const othersMean = othersVals.length ? (othersVals.reduce((a,b)=>a+b,0)/othersVals.length).toFixed(2) : '—';
     const strCount   = agg.strengths.filter(s=>!s._relative).length;
     return `
-      <div class="stat-card"><div class="stat-val">${agg.packsCount}</div><div class="stat-lbl">Vertintojų failai</div></div>
+      <div class="stat-card"><div class="stat-val">${agg.packsCount}</div><div class="stat-lbl">Raterių failai</div></div>
       <div class="stat-card"><div class="stat-val">${totalItems}</div><div class="stat-lbl">Klausimai</div></div>
       <div class="stat-card"><div class="stat-val">${selfMean}</div><div class="stat-lbl">Self vidurkis</div></div>
       <div class="stat-card"><div class="stat-val">${othersMean}</div><div class="stat-lbl">Others vidurkis</div></div>
