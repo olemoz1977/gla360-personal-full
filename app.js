@@ -28,8 +28,13 @@ const GLA = (()=>{
     const host = document.getElementById(mountId || 'questions');
     if(!host) return;
 
-    const scale = [1,2,3,4,5];
-    const scaleLabels = { 1:'Labai retai', 3:'Kartais', 5:'Nuosekliai' };
+    const scale = [
+      { v:1, label:'Beveik niekada' },
+      { v:2, label:'Retai'          },
+      { v:3, label:'Kartais'        },
+      { v:4, label:'Dažnai'         },
+      { v:5, label:'Beveik visada'  },
+    ];
 
     let html = '';
     let qNum = 0;
@@ -47,11 +52,11 @@ const GLA = (()=>{
         <div class="q" data-key="${esc(item.key)}">
           <div class="q-stem"><span class="q-num">${qNum}.</span> ${esc(item.stem)}</div>
           <div class="q-scale">
-            ${scale.map(v => `
+            ${scale.map(s => `
               <label class="q-opt">
-                <input type="radio" name="${esc(item.key)}" value="${v}" required>
-                <span class="q-val">${v}</span>
-                ${scaleLabels[v] ? `<span class="q-label">${scaleLabels[v]}</span>` : ''}
+                <input type="radio" name="${esc(item.key)}" value="${s.v}" required>
+                <span class="q-val">${s.v}</span>
+                <span class="q-label">${s.label}</span>
               </label>
             `).join('')}
           </div>
@@ -289,8 +294,8 @@ const GLA = (()=>{
       ? `<p class="warn">⚠️ Senojo formato failai (nepanaudoti): ${agg.legacyWarnings.join(', ')}</p>` : '';
     return `
       ${legacy}
-      <p><strong>Įkeltų vertintojų failų:</strong> ${agg.packsCount}</p>
-      <p><strong>Kompetencijų:</strong> ${agg.bank.competencies.length} &nbsp;|&nbsp; <strong>Klausimų:</strong> ${totalItems}</p>
+      <p><strong>Įkeltų raterių failų:</strong> ${agg.packsCount}</p>
+      <p><strong>Gebėjimų sričių:</strong> ${agg.bank.competencies.length} &nbsp;|&nbsp; <strong>Klausimų:</strong> ${totalItems}</p>
       <p><strong>Svoriai (Others):</strong>
         Vadovas ${(agg.weights.boss*100).toFixed(0)}% ·
         Kolegos ${(agg.weights.peer*100).toFixed(0)}% ·
@@ -347,7 +352,7 @@ const GLA = (()=>{
       </tr>`;
     }).join('');
     return `<table>
-      <thead><tr><th>Klasteris</th><th>Self</th><th>Others (sv.)</th><th>Skirtumas</th></tr></thead>
+      <thead><tr><th>Sritis</th><th>Self</th><th>Others (sv.)</th><th>Skirtumas</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
   }
@@ -360,7 +365,7 @@ const GLA = (()=>{
       'Developing Technological Savvy':'Kas 2 savaitės 30 min. tech peržiūra + 1 pritaikymas komandoje.',
       'Ensuring Customer Satisfaction':'Mėnesio ritmas: CSAT/NPS įžvalgos → konkretūs veiksmai.',
       'Maintaining Competitive Advantage':'Ketvirtis: 2 konkurentų analizės + 1 eksperimentas.',
-      'Developing People':             '1:1 – konkreti kompetencijos praktika ir mikro‑elgesys kas 2 sav.',
+      'Developing People':             '1:1 – konkreti gebėjimo sritis praktika ir mikro‑elgesys kas 2 sav.',
       'Building Partnerships':         'Kas mėnesį – 1 nauja partnerystė su aiškiu abipusės vertės tikslu.',
       'Sharing Leadership':            'Deleguokite sprendimą su aiškiais rėmais ir sėkmės kriterijais.',
       'Achieving Personal Mastery':    'Kasdien 10 min. refleksija + savaitinis prioritetų peržiūrėjimas.',
@@ -394,7 +399,7 @@ const GLA = (()=>{
       const isRelative = agg.strengths.length > 0 && agg.strengths[0]._relative;
       if(isRelative){
         el.innerHTML = `<li class="alert info" style="list-style:none;margin-bottom:8px;">
-          ℹ️ Vertintojai visose kompetencijose įvertino žemiau nei Self. Žemiau – santykinai stipriausios sritys.
+          ℹ️ Rateriai visose gebėjimo sritise įvertino žemiau nei Self. Žemiau – santykinai stipriausios sritys.
         </li>` + agg.strengths.map(s => `
           <li>
             <div class="sg-title">

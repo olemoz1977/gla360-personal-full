@@ -92,7 +92,7 @@
 </nav>
 <header class="head">
   <h1>GLA360 – 90 dienų tobulėjimo planas</h1>
-  <p>Įkelkite agreguotą JSON iš ataskaitos arba pasirinkite spragų kompetencijas rankiniu būdu.</p>
+  <p>Įkelkite apibendrintą JSON iš ataskaitos arba pasirinkite spragų kompetencijas rankiniu būdu.</p>
 </header>
 
 <main class="wrap">
@@ -105,7 +105,7 @@
 
       <!-- Option A: upload agg JSON -->
       <div>
-        <p style="font-weight:700;margin-bottom:8px;">A) Įkelti agreguotą JSON</p>
+        <p style="font-weight:700;margin-bottom:8px;">A) Įkelti apibendrintą JSON</p>
         <p class="muted" style="font-size:.88rem;margin-bottom:10px;">Atsisiųskite iš report.html → „Atsisiųsti JSON", tada įkelkite čia.</p>
         <label class="file-drop" id="aggDrop" style="padding:16px;">
           <input id="aggFile" type="file" accept="application/json" style="display:none">
@@ -118,7 +118,7 @@
       <!-- Option B: manual -->
       <div>
         <p style="font-weight:700;margin-bottom:8px;">B) Pasirinkti rankiniu būdu</p>
-        <p class="muted" style="font-size:.88rem;margin-bottom:10px;">Pasirinkite iki 3 kompetencijų, kurioms generuoti planą.</p>
+        <p class="muted" style="font-size:.88rem;margin-bottom:10px;">Pasirinkite iki 3 gebėjimų, kurioms generuoti planą.</p>
         <div id="manualPicker"></div>
       </div>
 
@@ -370,7 +370,7 @@
       p2: [
         { text: 'Kas mėnesį: peržiūrėkite pramonės ataskaitas ar lankykite 1 seminare – ką daro geriausi gamytojai jūsų srityje?', freq: 'Kas mėnesį' },
         { text: 'Sugeneruokite 1 proceso gerinimo hipotezę ir paleiskite kaizen ar A3 projektą.', freq: 'Per 30–60 d.' },
-        { text: 'Prioritizuokite gamybos iniciatyvas pagal įtaką savikainai ir kokybei – eliminuokite mažiausiai vertingas.', freq: 'Kas mėnesį' },
+        { text: 'Prioritizuokite gamybos iniciatyvas pagal įtaką gamybos savikainai ir kokybei – eliminuokite mažiausiai vertingas.', freq: 'Kas mėnesį' },
       ],
       p3: [
         { text: 'Peržiūrėkite strategines prielaidas: ar OEE, savikaina, kokybė juda tinkama kryptimi?', freq: '75-ąją dieną' },
@@ -384,7 +384,7 @@
     'Developing People': {
       p1: [
         { text: 'Su kiekvienu meistru ar tiesiogiu pavaldiniu: 15 min. pokalbis – „Kur nori augti profesiškai per 90 d.?"', freq: 'Vieną kartą' },
-        { text: 'Peržiūrėkite darbuotojų kompetencijų matricą – ar yra kritinių spragų jei kas išeina atostogų ar palieka?', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite darbuotojų gebėjimų matricą – ar yra kritinių spragų jei kas išeina atostogų ar palieka?', freq: 'Vieną kartą' },
         { text: 'Sukurkite paprastą augimo planą: Darbuotojas → Tikslas → Veiksmai → Terminas.', freq: 'Vieną kartą' },
       ],
       p2: [
@@ -606,7 +606,7 @@
       const checked = picker.querySelectorAll('.manual-comp:checked');
       if(checked.length > 3){
         checked[checked.length-1].checked = false;
-        alert('Pasirinkite ne daugiau 3 kompetencijų.');
+        alert('Pasirinkite ne daugiau 3 gebėjimų.');
       }
     });
   }
@@ -651,7 +651,7 @@
     }
 
     if(!targetComps.length){
-      alert('Įkelkite agreguotą JSON arba pasirinkite kompetencijas rankiniu būdu.');
+      alert('Įkelkite apibendrintą JSON arba pasirinkite kompetencijas rankiniu būdu.');
       return;
     }
 
@@ -663,7 +663,7 @@
     planStartDate = today; // store for ICS export
     const todayStr = today.toLocaleDateString('lt-LT');
     document.getElementById('planTitle').textContent = `${leader} – 90 dienų tobulėjimo planas`;
-    document.getElementById('planMeta').textContent = `Pradžia: ${todayStr} · Pabaiga: ${dateAddDays(today,90).toLocaleDateString('lt-LT')} · Kompetencijos: ${comps.join(', ')}`;
+    document.getElementById('planMeta').textContent = `Pradžia: ${todayStr} · Pabaiga: ${dateAddDays(today,90).toLocaleDateString('lt-LT')} · Sritys: ${comps.join(', ')}`;
 
     // Gaps summary
     document.getElementById('planGapsSummary').innerHTML = comps.map(name => {

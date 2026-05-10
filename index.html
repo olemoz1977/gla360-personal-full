@@ -21,7 +21,7 @@
 </nav>
 <header class="head">
   <h1>GLA360 Personal</h1>
-  <p>360° lyderystės apklausa · 5 klasteriai · 15 kompetencijų · 75 klausimai · be serverio</p>
+  <p>360° lyderystės apklausa · 5 klasteriai · 15 gebėjimų · 75 klausimai · be serverio</p>
 </header>
 
 <main class="wrap">
@@ -54,6 +54,19 @@
       </label>
     </div>
 
+    <div class="grid2 mt">
+      <label>Anonimiškumo sergėtojo vardas pavardė
+        <input type="text" id="guardianName" placeholder="pvz., Rasa Petrauskienė" autocomplete="off">
+      </label>
+      <label>Sergėtojo el. paštas
+        <input type="email" id="guardianEmail" placeholder="pvz., rasa@imone.lt" autocomplete="off">
+      </label>
+    </div>
+    <p class="muted" style="font-size:.82rem;margin-top:6px;">
+      🔒 Sergėtojo kontaktai bus rodomi vertintojams apklausos puslapyje — kad žinotų kam siųsti užpildytą failą.
+      Laukai neprivalomi.
+    </p>
+
     <div class="mt">
       <button id="create" type="button">Sukurti vertinimą</button>
     </div>
@@ -67,7 +80,7 @@
       <li>Sukurkite vertinimą aukščiau → gausite <strong>Assessment ID</strong> ir nuorodas.</li>
       <li>Išsiųskite nuorodas savo rateriams el. paštu arba žinute.</li>
       <li>Kiekvienas rateris atsakys į klausimus naršyklėje ir atsisiųs <code>*.json</code> failą.</li>
-      <li>Surinkite visus <code>*.json</code> failus ir atidarykite <a href="report.html">📊 Ataskaita</a>.</li>
+      <li>Surinkite visus <code>*.json</code> failus ir atidarykite <a href="report.html">report.html</a>.</li>
       <li>Peržiūrėkite rezultatus: radaras, klasteriai, Top 3 spragos ir stiprybės.</li>
     </ol>
     <p class="muted mt">🔒 Privatumas: jokių duomenų į serverį. Viskas vyksta naršyklėje.</p>
@@ -106,11 +119,16 @@
       ? base.href
       : base.href.substring(0, base.href.lastIndexOf('/') + 1);
 
+    const gName  = (document.getElementById('guardianName')?.value  || '').trim();
+    const gEmail = (document.getElementById('guardianEmail')?.value || '').trim();
+
     function mkUrl(role, i){
       const u = new URL('survey.html', dir);
       u.searchParams.set('aid', aid);
       u.searchParams.set('role', role);
       u.searchParams.set('i', i);
+      if(gName)  u.searchParams.set('gn', gName);
+      if(gEmail) u.searchParams.set('ge', gEmail);
       return u.toString();
     }
 

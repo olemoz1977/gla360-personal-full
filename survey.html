@@ -5,6 +5,70 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>GLA360 Personal – Apklausa</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Scale buttons: equal size on all screens ── */
+    .q-scale {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .q-opt {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 4px;
+      background: var(--surface2);
+      transition: border-color .15s, background .15s;
+      min-height: 56px;
+      text-align: center;
+    }
+    .q-opt:hover { border-color: var(--brand); background: rgba(26,86,219,.05); }
+    .q-opt input[type=radio] { display: none; }
+    .q-opt.selected {
+      border-color: var(--brand);
+      background: rgba(26,86,219,.08);
+    }
+    .q-val  { font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+    .q-label { font-size: .65rem; color: var(--muted); margin-top: 2px; line-height: 1.2; }
+    .q-opt.selected .q-val  { color: var(--brand); }
+    .q-opt.selected .q-label { color: var(--brand); }
+
+    /* Context card role badge */
+    .role-badge {
+      display: inline-block;
+      font-size: .82rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 999px;
+      background: rgba(26,86,219,.1);
+      color: var(--brand);
+      margin-bottom: 8px;
+    }
+    .context-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 500px) {
+      .context-grid { grid-template-columns: 1fr; }
+      .q-scale { grid-template-columns: repeat(5, 1fr); }
+      .q-label { font-size: .6rem; }
+    }
+    .context-box {
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: .88rem;
+      line-height: 1.6;
+    }
+    .context-box strong { display: block; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 4px; }
+  </style>
 </head>
 <body>
 
@@ -19,15 +83,17 @@
   </div>
 </nav>
 <header class="head">
-  <h1>GLA360 Personal – Apklausa</h1>
-  <p>
-    AID: <code id="aidDisplay">—</code> &nbsp;·&nbsp;
-    Vaidmuo: <code id="roleDisplay">—</code> &nbsp;·&nbsp;
-    Likerto skalė: 1 = labai retai &nbsp;→&nbsp; 5 = nuosekliai
-  </p>
+  <h1>GLA360 – Lyderystės vertinimas</h1>
 </header>
 
 <main class="wrap">
+
+  <!-- Context card: who am I rating and what to do -->
+  <div id="contextCard" class="card" style="margin-bottom:16px;">
+    <div id="contextContent">
+      <p class="muted">Kraunama...</p>
+    </div>
+  </div>
 
   <div id="errorBox"></div>
 
@@ -48,10 +114,14 @@
   <!-- Actions -->
   <div class="card mt2 no-print">
     <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-      <button id="finish" type="button">⬇ Baigti ir atsisiųsti JSON</button>
-      <button id="copy" type="button" class="secondary">📋 Nukopijuoti JSON</button>
+      <button id="finish" type="button">⬇ Baigti ir atsisiųsti failą</button>
+      <button id="copy" type="button" class="secondary">📋 Nukopijuoti</button>
     </div>
-    <p class="muted mt">Privatumas: atsakymai <strong>nesiunčiami</strong> į serverį. Viskas vyksta jūsų naršyklėje. Pabaigoje atsisiųskite JSON failą ir perduokite lyderiui.</p>
+    <div id="sendInstruction" class="mt" style="background:var(--surface2);border-radius:10px;padding:14px;font-size:.9rem;display:none;">
+      <strong>📨 Ką daryti su atsisiųstu failu?</strong>
+      <div id="sendInstructionText" style="margin-top:8px;line-height:1.7;color:var(--muted);"></div>
+    </div>
+    <p class="muted mt" style="font-size:.82rem;">🔒 Jūsų atsakymai <strong>nesiunčiami į serverį</strong> — viskas vyksta jūsų naršyklėje.</p>
   </div>
 
 </main>
@@ -62,15 +132,81 @@
   // ── Parse URL params ──────────────────────────────────────────────────────
   function parseParams(){
     let raw = location.search || '';
-    // Guard against concatenated URLs
     if(raw.includes('http')) raw = raw.split('http')[0];
     if(raw && !raw.startsWith('?')) raw = '?' + raw;
     const qs = new URLSearchParams(raw);
     return {
-      aid:  (qs.get('aid')  || '').trim(),
-      role: (qs.get('role') || 'peer').trim().toLowerCase(),
-      i:    Number(qs.get('i') || 1) || 1
+      aid:     (qs.get('aid')  || '').trim(),
+      role:    (qs.get('role') || 'peer').trim().toLowerCase(),
+      i:       Number(qs.get('i') || 1) || 1,
+      gName:   (qs.get('gn')   || '').trim(),
+      gEmail:  (qs.get('ge')   || '').trim(),
     };
+  }
+
+  // ── Role → lietuviški tekstai ─────────────────────────────────────────────
+  const ROLE_INFO = {
+    self:   { label: 'Savivertinimas',        desc: 'Jūs vertinate <strong>save patį(-ią)</strong>. Atsakykite kiek dažnai jūs pats(-i) demonstruojate šiuos elgesius darbe.' },
+    boss:   { label: 'Vadovo vertinimas',     desc: 'Jūs vertinate savo <strong>tiesioginį vadovą</strong>. Atsakykite kiek dažnai šis žmogus demonstruoja aprašytus elgesius.' },
+    peer:   { label: 'Kolegos vertinimas',    desc: 'Jūs vertinate savo <strong>kolegą</strong>. Atsakykite kiek dažnai šis žmogus demonstruoja aprašytus elgesius.' },
+    report: { label: 'Pavaldinio vertinimas', desc: 'Jūs vertinate savo <strong>pavaldinį</strong>. Atsakykite kiek dažnai šis žmogus demonstruoja aprašytus elgesius.' },
+    other:  { label: 'Darbo partnerio vertinimas', desc: 'Jūs vertinate savo <strong>darbo partnerį</strong>. Atsakykite kiek dažnai šis žmogus demonstruoja aprašytus elgesius.' },
+  };
+
+  // ── Context card ──────────────────────────────────────────────────────────
+  function renderContextCard(params){
+    const info = ROLE_INFO[params.role] || ROLE_INFO.peer;
+    const scaleHtml = `
+      <div style="margin-top:4px;">
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:6px;">Vertinimo skalė</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${[['1','Beveik niekada'],['2','Retai'],['3','Kartais'],['4','Dažnai'],['5','Beveik visada']].map(([n,l])=>`
+            <div style="text-align:center;min-width:52px;background:var(--surface2);border-radius:8px;padding:5px 4px;">
+              <div style="font-weight:700;font-size:1rem;">${n}</div>
+              <div style="font-size:.65rem;color:var(--muted);line-height:1.2;">${l}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+
+    let guardianHtml = '';
+    if(params.gName || params.gEmail){
+      guardianHtml = `
+        <div class="context-box" style="margin-top:12px;border-left:3px solid var(--brand);">
+          <strong>📨 Ką daryti užpildžius?</strong>
+          Atsisiųskite failą ir išsiųskite:
+          ${params.gName  ? `<br>👤 <strong>${params.gName}</strong>` : ''}
+          ${params.gEmail ? `<br>📧 <a href="mailto:${params.gEmail}">${params.gEmail}</a>` : ''}
+        </div>`;
+    } else {
+      guardianHtml = `
+        <div class="context-box" style="margin-top:12px;">
+          <strong>📨 Ką daryti užpildžius?</strong>
+          Atsisiųskite failą ir išsiųskite jį vertinamo žmogaus nurodytam asmeniui.
+        </div>`;
+    }
+
+    document.getElementById('contextContent').innerHTML = `
+      <div class="role-badge">${info.label}</div>
+      <p style="font-size:.95rem;line-height:1.6;">${info.desc}</p>
+      <p style="font-size:.88rem;color:var(--muted);margin-top:6px;">
+        Vertinkite <strong>realų elgesį</strong> — ne kaip turėtų būti, o kaip <em>iš tikrųjų yra</em>.
+      </p>
+      ${scaleHtml}
+      ${guardianHtml}`;
+
+    // Also update send instruction at bottom
+    const instrEl = document.getElementById('sendInstruction');
+    const instrTxt = document.getElementById('sendInstructionText');
+    if(instrEl && instrTxt){
+      instrEl.style.display = 'block';
+      if(params.gName || params.gEmail){
+        instrTxt.innerHTML = `Išsiųskite atsisiųstą failą:
+          ${params.gName  ? `<br>👤 <strong>${params.gName}</strong>` : ''}
+          ${params.gEmail ? `<br>📧 <a href="mailto:${params.gEmail}" style="color:var(--brand);">${params.gEmail}</a>` : ''}`;
+      } else {
+        instrTxt.innerHTML = 'Išsiųskite atsisiųstą failą vertinamo žmogaus nurodytam asmeniui.';
+      }
+    }
   }
 
   // ── Progress tracking ─────────────────────────────────────────────────────
@@ -89,12 +225,56 @@
     document.getElementById('progressBar').style.width = pct + '%';
   }
 
+  // ── localStorage key ────────────────────────────────────────────────────
+  function storageKey(params){
+    return `gla360_survey_${params.aid}_${params.role}_${params.i}`;
+  }
+
+  // ── Save / restore progress ──────────────────────────────────────────────
+  function saveProgress(bank, params){
+    const data = {};
+    bank.competencies.forEach(comp => {
+      comp.items.forEach(item => {
+        const checked = document.querySelector(`input[name="${CSS.escape(item.key)}"]:checked`);
+        if(checked) data[item.key] = checked.value;
+      });
+    });
+    try { localStorage.setItem(storageKey(params), JSON.stringify(data)); } catch(e){}
+  }
+
+  function restoreProgress(bank, params){
+    let data;
+    try { data = JSON.parse(localStorage.getItem(storageKey(params)) || '{}'); } catch(e){ return; }
+    let restored = 0;
+    bank.competencies.forEach(comp => {
+      comp.items.forEach(item => {
+        if(data[item.key]){
+          const radio = document.querySelector(`input[name="${CSS.escape(item.key)}"][value="${data[item.key]}"]`);
+          if(radio){
+            radio.checked = true;
+            // Mark parent .q-opt as selected
+            radio.closest('.q-opt')?.classList.add('selected');
+            restored++;
+          }
+        }
+      });
+    });
+    if(restored > 0){
+      const banner = document.createElement('div');
+      banner.className = 'alert info';
+      banner.style.marginBottom = '10px';
+      banner.innerHTML = `✅ Atkurta ${restored} ankstesnių atsakymų. Galite tęsti nuo ten, kur baigėte.`;
+      document.getElementById('errorBox').after(banner);
+      setTimeout(() => banner.remove(), 5000);
+    }
+  }
+
   // ── Main init ─────────────────────────────────────────────────────────────
   async function init(){
     const params = parseParams();
 
-    document.getElementById('aidDisplay').textContent  = params.aid  || '(nenurodytas)';
-    document.getElementById('roleDisplay').textContent = params.role.toUpperCase() + ' #' + params.i;
+    // Render context card
+    renderContextCard(params);
 
     let bank;
     try {
@@ -102,8 +282,8 @@
     } catch(e) {
       document.getElementById('errorBox').innerHTML = `
         <div class="alert error">
-          Nepavyko įkelti <code>bank/questions.json</code>.<br>
-          Patikrinkite, ar failas yra projekte ir ar serveris veikia.<br>
+          Nepavyko įkelti klausimų.<br>
+          Patikrinkite interneto ryšį ir bandykite dar kartą.<br>
           <small>${e.message}</small>
         </div>`;
       return;
@@ -111,8 +291,28 @@
 
     GLA.renderSurvey(bank, 'questions');
 
-    // Live progress on any change
-    document.getElementById('questions').addEventListener('change', () => updateProgress(bank));
+    // Fix scale buttons: replace radio+span with clickable div
+    document.querySelectorAll('.q-scale').forEach(scale => {
+      scale.querySelectorAll('.q-opt').forEach(opt => {
+        opt.addEventListener('click', () => {
+          // Unselect siblings
+          opt.closest('.q-scale').querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          opt.querySelector('input[type=radio]').checked = true;
+          updateProgress(bank);
+          saveProgress(bank, params);
+        });
+      });
+    });
+
+    // Restore saved progress
+    restoreProgress(bank, params);
+
+    // Live progress
+    document.getElementById('questions').addEventListener('change', () => {
+      updateProgress(bank);
+      saveProgress(bank, params);
+    });
     updateProgress(bank);
 
     // ── Finish button ─────────────────────────────────────────────────────

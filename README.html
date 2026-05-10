@@ -28,7 +28,7 @@
 
   <section class="card">
     <h2>Kas tai?</h2>
-    <p>Šis įrankis leidžia vadovui gauti struktūruotą grįžtamąjį ryšį iš aplinkinių (vadovo, kolegų, pavaldinių) ir palyginti jį su savivertinimu. Rezultatas — radarinė diagrama, klasterių lentelė, Top 3 spragos su patarimais ir automatiškai sugeneruotas <strong>90 dienų tobulėjimo planas</strong>.</p>
+    <p>Šis įrankis leidžia vadovui gauti struktūruotą grįžtamąjį ryšį iš aplinkinių (vadovo, kolegų, pavaldinių) ir palyginti jį su savivertinimu. Rezultatas — radarinė diagrama, sričių lentelė, Top 3 spragos su patarimais ir automatiškai sugeneruotas <strong>90 dienų tobulėjimo planas</strong>.</p>
     <p class="muted" style="margin-top:10px;">⚠️ Tai <strong>ne oficialus</strong> GLA360 produktas. Struktūra remiasi viešais aprašais:
       <a href="https://globalcoachgroup.com/gla360/" target="_blank">Global Coach Group</a> ·
       <a href="https://www.leapingkoi.com/gla360.html" target="_blank">LEAPING KOI</a> ·
@@ -44,7 +44,7 @@
         <tr><td>Klasteriai</td><td>5</td></tr>
         <tr><td>Kompetencijos</td><td>15</td></tr>
         <tr><td>Klausimai</td><td>75 (15 × 5)</td></tr>
-        <tr><td>Skalė</td><td>Likerto 1–5</td></tr>
+        <tr><td>Skalė</td><td>vertinimo skalė 1–5</td></tr>
         <tr><td>Atsakymų formatas</td><td><code>Key-based JSON (schema: gla360-personal@2)</code></td></tr>
         <tr><td>Priklausomybės</td><td>Chart.js 4.4.4 (tik report.html)</td></tr>
         <tr><td>Serveris</td><td>Nereikalingas</td></tr>
@@ -95,7 +95,7 @@
     <h2>4 žingsnis — Vertintojai užpildo apklausą</h2>
     <ol style="padding-left:18px;line-height:2.2;">
       <li>Vertintojas atidaro gautą nuorodą naršyklėje.</li>
-      <li>Atsako į 75 klausimus (Likerto skalė 1–5) ir neprivalomą atvirą dalį.</li>
+      <li>Atsako į 75 klausimus (Vertinimo skalė 1–5) ir neprivalomą atvirą dalį.</li>
       <li>Spaudžia <strong>Baigti ir atsisiųsti JSON</strong> — failas išsaugomas lokaliai.</li>
       <li>Failą siunčia <strong>Anonimiškumo sergėtojui</strong> (ne lyderiui tiesiogiai).</li>
     </ol>
@@ -109,17 +109,17 @@
       <li>Lyderis atidaro <a href="report.html">Ataskaita</a>.</li>
       <li>Įkelia visus failus (tempti ir paleisti arba per mygtuką).</li>
       <li>Pakoreguoja svorius jei reikia (numatyta: Boss 30%, Peer 30%, Report 30%, Other 10%).</li>
-      <li>Spaudžia <strong>Analizuoti</strong>.</li>
+      <li>Spaudžia <strong>Skaičiuoti rezultatus</strong>.</li>
     </ol>
-    <p style="margin-top:10px;"><strong>Gausite:</strong> radarinę diagramą, klasterių vidurkius, Top 3 stiprybes ir spragas, kompetencijų diagramą, atvirus komentarus.</p>
+    <p style="margin-top:10px;"><strong>Gausite:</strong> radarinę diagramą, sričių vidurkius, Top 3 stiprybes ir spragas, gebėjimų diagramą, atvirus komentarus.</p>
   </section>
 
   <section class="card">
     <h2>6 žingsnis — 90 dienų planas</h2>
     <ol style="padding-left:18px;line-height:2.2;">
-      <li>Iš Ataskaitos atsisiųskite agreguotą JSON (mygtukas <strong>Atsisiųsti JSON</strong>).</li>
+      <li>Iš Ataskaitos atsisiųskite apibendrintą JSON (mygtukas <strong>Atsisiųsti JSON</strong>).</li>
       <li>Atidarykite <a href="plan.html">90 d. planas</a>.</li>
-      <li>Įkelkite agreguotą JSON — planas sugeneruojamas automatiškai pagal jūsų Top 3 spragas.</li>
+      <li>Įkelkite apibendrintą JSON — planas sugeneruojamas automatiškai pagal jūsų Top 3 spragas.</li>
       <li>Spausdinkite į PDF arba įkelkite į kalendorių (.ics).</li>
     </ol>
     <p style="margin-top:10px;"><strong>Plano struktūra:</strong> Fazė 1 (1–30 d.) · Fazė 2 (31–60 d.) · Fazė 3 (61–90 d.) · Savaitinis ritmas · Sėkmės rodikliai</p>
