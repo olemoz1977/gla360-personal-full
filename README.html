@@ -10,6 +10,7 @@
 
 <nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
   <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Auditas</a>
     <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
     <a href="report.html" style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
     <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
@@ -52,27 +53,32 @@
   </section>
 
   <section class="card">
-    <h2>1 žingsnis — Sukurti vertinimą</h2>
+    <h2>1 žingsnis — Operatyvinės trinties auditas</h2>
+    <p>Prieš pradedant 360° vertinimą, rekomenduojame atlikti trumpą auditą.</p>
+    <p style="margin-top:10px;"><a href="audit.html" class="btn" style="font-size:.9rem;">🔍 Atlikti operatyvinės trinties auditą →</a></p>
+  </section>
+
+  <section class="card">
+    <h2>2 žingsnis — Sukurti vertinimą</h2>
     <ol style="padding-left:18px;line-height:2.2;">
       <li>Atidarykite <a href="index.html">Pradžia</a></li>
       <li>Įveskite savo vardą ir projekto pavadinimą.</li>
       <li>Nurodykite kiek žmonių vertins kiekvienoje grupėje.</li>
       <li>Spauskite <strong>Sukurti</strong> — gausite unikalų <strong>Assessment ID</strong> ir nuorodas kiekvienam vertintojui.</li>
-      <li><strong>Neišsiųskite nuorodų tiesiogiai.</strong> Perduokite jas per <strong>Anonimiškumo sergėtoją</strong> (žr. žemiau).</li>
+      <li><strong>Neišsiųskite nuorodų tiesiogiai.</strong> Perduokite jas per <strong>Anonimiškumo sergėtoją</strong>.</li>
     </ol>
   </section>
 
   <section class="card">
-    <h2>2 žingsnis — Anonimiškumas ir Anonimiškumo sergėtojas</h2>
-    <p style="margin-bottom:12px;">Kai vertintojas užpildo apklausą, jis atsisiunčia <code>*.json</code> failą. Jei siunčia el. paštu — siuntėjo adresas matomas. Tai pažeidžia anonimiškumą.</p>
-    <p><strong>Sprendimas: Anonimiškumo sergėtojas</strong> — patikimas žmogus (HR specialistas, administratorius), kuris:</p>
+    <h2>3 žingsnis — Anonimiškumas ir sergėtojas</h2>
+    <p style="margin-bottom:12px;">Kai vertintojas užpildo apklausą, jis atsisiunčia <code>*.json</code> failą. Jei siunčia el. paštu tiesiogiai lyderiui — siuntėjo adresas matomas. Tai pažeidžia anonimiškumą.</p>
+    <p><strong>Anonimiškumo sergėtojas</strong> — patikimas žmogus (HR specialistas, administratorius), kuris:</p>
     <ul style="padding-left:18px;line-height:2;margin:10px 0;">
       <li>Išsiunčia lyderio sukurtas nuorodas vertintojams</li>
       <li>Gauna visus <code>*.json</code> failus iš vertintojų</li>
       <li>Patikrina ar visi atsiuntė (bet nenagrinėja turinio)</li>
       <li>Perduoda failus lyderiui <strong>be jokios informacijos kas ką atsiuntė</strong></li>
     </ul>
-    <h2 style="margin-top:16px;">Minimalus vertintojų skaičius grupėje</h2>
     <table style="margin-top:10px;">
       <thead><tr><th>Grupė</th><th>Minimalus</th><th>Kodėl</th></tr></thead>
       <tbody>
@@ -86,7 +92,7 @@
   </section>
 
   <section class="card">
-    <h2>3 žingsnis — Vertintojai užpildo apklausą</h2>
+    <h2>4 žingsnis — Vertintojai užpildo apklausą</h2>
     <ol style="padding-left:18px;line-height:2.2;">
       <li>Vertintojas atidaro gautą nuorodą naršyklėje.</li>
       <li>Atsako į 75 klausimus (Likerto skalė 1–5) ir neprivalomą atvirą dalį.</li>
@@ -97,11 +103,11 @@
   </section>
 
   <section class="card">
-    <h2>4 žingsnis — Ataskaita</h2>
+    <h2>5 žingsnis — Ataskaita</h2>
     <ol style="padding-left:18px;line-height:2.2;">
       <li>Sergėtojas perduoda visus <code>*.json</code> failus lyderiui.</li>
       <li>Lyderis atidaro <a href="report.html">Ataskaita</a>.</li>
-      <li>Įkelia visus failus (drag &amp; drop arba per mygtuką).</li>
+      <li>Įkelia visus failus (tempti ir paleisti arba per mygtuką).</li>
       <li>Pakoreguoja svorius jei reikia (numatyta: Boss 30%, Peer 30%, Report 30%, Other 10%).</li>
       <li>Spaudžia <strong>Analizuoti</strong>.</li>
     </ol>
@@ -109,12 +115,12 @@
   </section>
 
   <section class="card">
-    <h2>5 žingsnis — 90 dienų planas</h2>
+    <h2>6 žingsnis — 90 dienų planas</h2>
     <ol style="padding-left:18px;line-height:2.2;">
-      <li>Iš Ataskaita atsisiųskite agreguotą JSON (mygtukas <strong>Atsisiųsti JSON</strong>).</li>
+      <li>Iš Ataskaitos atsisiųskite agreguotą JSON (mygtukas <strong>Atsisiųsti JSON</strong>).</li>
       <li>Atidarykite <a href="plan.html">90 d. planas</a>.</li>
       <li>Įkelkite agreguotą JSON — planas sugeneruojamas automatiškai pagal jūsų Top 3 spragas.</li>
-      <li>Spausdinkite į PDF arba įkelkite į kalendorių.</li>
+      <li>Spausdinkite į PDF arba įkelkite į kalendorių (.ics).</li>
     </ol>
     <p style="margin-top:10px;"><strong>Plano struktūra:</strong> Fazė 1 (1–30 d.) · Fazė 2 (31–60 d.) · Fazė 3 (61–90 d.) · Savaitinis ritmas · Sėkmės rodikliai</p>
   </section>
