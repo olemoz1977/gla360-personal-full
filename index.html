@@ -28,7 +28,7 @@
 
   <section class="card">
     <h2>Naujas vertinimas</h2>
-    <p class="muted">Įveskite savo vardą, nurodykite kiek žmonių vertins kiekvienoje grupėje ir spauskite <strong>Sukurti</strong>. Gausite nuorodas, kurias išsiųsite vertintojams.</p>
+    <p class="muted">Įveskite savo vardą, nurodykite kiek žmonių vertins kiekvienoje grupėje ir spauskite <strong>Sukurti</strong>. Gausite nuorodas, kurias išsiųsite Anonimiškumo sergetojui kuris jas persius vertintojams.</p>
 
     <div class="grid2 mt">
       <label>Jūsų vardas
@@ -78,9 +78,10 @@
     <h2>Kaip tai veikia?</h2>
     <ol style="padding-left:18px; line-height:2;">
       <li>Sukurkite vertinimą aukščiau → gausite <strong>Assessment ID</strong> ir nuorodas.</li>
-      <li>Išsiųskite nuorodas savo vertintojams el. paštu arba žinute.</li>
-      <li>Kiekvienas vertintojas atsakys į klausimus naršyklėje ir atsisiųs <code>*.json</code> failą.</li>
-      <li>Surinkite visus <code>*.json</code> failus ir atidarykite <a href="report.html">📊 Ataskaita</a>.</li>
+      <li>Išsiųskite nuorodas  Anonimiškumo sergėtojui el. paštu arba žinute.</li>
+      <li>Anonimiškumo sergėtojas išsiųs nuorodas  el. paštu arba žinute vertintojams.</li>
+      <li>Kiekvienas vertintojas atsakys į klausimus naršyklėje ir atsisiųs atgal <code>*.json</code> failą.</li>
+      <li>Surinkite visus <code>*.json</code> failus per Anonimiškumo sergėtoją ir atidarykite <a href="report.html">📊 Ataskaita</a>.</li>
       <li>Peržiūrėkite rezultatus: radaras, klasteriai, Top 3 spragos ir stiprybės.</li>
     </ol>
     <p class="muted mt">🔒 Privatumas: jokių duomenų į serverį. Viskas vyksta naršyklėje.</p>
@@ -159,7 +160,7 @@
       }
     });
 
-    html += `<p class="muted mt">Išsiųskite šias nuorodas vertintojams. Užpildę jie atsisiųs <code>*.json</code> ir atsiųs jums.</p>`;
+    html += `<p class="muted mt">Išsiųskite šias nuorodas vertintojams per Anonimiškumo sergėtoją . Užpildę jie atsisiųs <code>*.json</code> ir atsiųs jums.</p>`;
     document.getElementById('links').innerHTML = html;
     document.getElementById('links').scrollIntoView({ behavior:'smooth', block:'start' });
   });
