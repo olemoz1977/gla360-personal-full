@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Operatyvinės trintis auditas – GLA360</title>
-  <meta name="description" content="Kodėl jūsų pamaina nuolat gesina gaisrus? 3 minučių auditas atskleidžia paslėptą vadybos trintį.">
+  <title>Operatyvinės trinties auditas – GLA360</title>
+  <meta name="description" content="Kodėl jūsų pamaina nuolat gesina gaisrus? 3 minučių auditas atskleidžia paslėptą operatyvinę trintį.">
   <link rel="stylesheet" href="styles.css">
   <style>
     /* ── Audit-specific overrides ── */
@@ -131,11 +131,8 @@
       color: var(--ink);
     }
 
-    /* ── Score labels ── */
-    .scale-opt[data-val="0"] input:checked + .scale-btn { border-color: var(--accent); background: rgba(5,122,85,.08); color: var(--accent); }
-    .scale-opt[data-val="1"] input:checked + .scale-btn { border-color: var(--warn); background: rgba(180,83,9,.08); color: var(--warn); }
-    .scale-opt[data-val="2"] input:checked + .scale-btn { border-color: #d97706; background: rgba(217,119,6,.08); color: #d97706; }
-    .scale-opt[data-val="3"] input:checked + .scale-btn { border-color: var(--danger); background: rgba(192,57,43,.08); color: var(--danger); }
+    /* ── Visi pasirinkimai – neutrali mėlyna spalva (rezultatai tik pabaigoje) ── */
+    /* Spalvos NERODOMOS kol nepaspaustas skaičiavimo mygtukas */
 
     /* ── Progress ── */
     .audit-progress {
@@ -300,12 +297,14 @@
     <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
     <a href="report.html" style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
     <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
+    <a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a>
+    <a href="PRIVACY.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <div class="audit-hero no-print">
-  <div class="eyebrow">Operatyvinės trintis · 3 minučių auditas</div>
+  <div class="eyebrow">Operatyvinės trinties auditas · 3 minutės</div>
   <h1>Kodėl jūsų pamaina<br>nuolat gesina <em>gaisrus</em>?</h1>
   <p class="lead">
     Dauguma operatyvinių problemų kyla ne iš blogos sistemos ar silpnų darbuotojų —
@@ -330,7 +329,7 @@
 
   <div class="audit-submit">
     <button type="button" id="submitBtn" disabled>
-      Apskaičiuoti operatyvinės trintis lygį →
+      Apskaičiuoti trinties lygį →
     </button>
     <p class="privacy-note" style="margin-top:10px;">
       🔒 Atsakymai nesiunčiami į jokį serverį. Viskas skaičiuojama jūsų naršyklėje.
@@ -382,7 +381,7 @@
       id: 'q6',
       text: 'Jūs asmeniškai sprendžiate tai, ką turėtų spręsti pamainos komanda.',
       context: 'Esate „butelio kaklelis" — be jūsų sprendimas neįvyksta.',
-      area: 'Lyderiavimo dalinimasis'
+      area: 'Lyderystės dalijimasis'
     },
     {
       id: 'q7',
@@ -402,7 +401,7 @@
     { val: 0, label: 'Niekada',  short: 'N' },
     { val: 1, label: 'Kartais',  short: 'K' },
     { val: 2, label: 'Dažnai',   short: 'D' },
-    { val: 3, label: 'Nuolatos', short: 'Nu' },
+    { val: 3, label: 'Nuolat',  short: 'Nu' },
   ];
 
   // ── Render klausimai ─────────────────────────────────────────────────────
@@ -475,7 +474,7 @@
       title   = 'Komanda jaučia tai, ko jūs nematote';
       desc    = 'Jūsų pamainoje yra paslėptų vadybos trintį taškai. Sistema veikia — bet tik todėl, kad žmonės prisitaiko, apeinant spragas. Tai kaupiasi.';
       reframe = 'Dauguma vadovų šioje kategorijoje galvoja, kad problema yra žmonės arba sistema. <strong>Tyrimas rodo, kad dažniau problema yra nematoma vadybos elgsena</strong> — neaiškūs lūkesčiai, per retas grįžtamasis ryšys, nepakankamai deleguota atsakomybė.';
-      advice  = 'Rekomenduojama: sužinokite kaip jus mato komanda — prieš problemos tampa krizėmis.';
+      advice  = 'Rekomenduojama: sužinokite, kaip jus mato komanda — prieš problemos tampa krizėmis.';
     } else {
       level   = '🔴 Reaktyvi vadyba';
       color   = 'red';
@@ -488,7 +487,7 @@
     // Render rezultatai
     const hsHtml = hotspots.map(h => `
       <div class="hotspot-item">
-        <span class="hotspot-score hs-${h.val}">${['Niekada','Kartais','Dažnai','Nuolatos'][h.val]}</span>
+        <span class="hotspot-score hs-${h.val}">${['Niekada','Kartais','Dažnai','Nuolat'][h.val]}</span>
         <span>${h.area}</span>
       </div>
     `).join('');
@@ -503,7 +502,7 @@
       </div>
 
       <div class="hotspots">
-        <h3>⚡ Didžiausi trintis taškai</h3>
+        <h3>⚡ Didžiausi trinties taškai</h3>
         ${hsHtml}
       </div>
 
@@ -513,9 +512,9 @@
       </div>
 
       <div class="cta-block">
-        <h2>Kitas žingsnis: sužinokite kaip jus mato komanda</h2>
+        <h2>Kitas žingsnis: sužinokite, kaip jus mato komanda</h2>
         <p>
-          GLA360 Personal — anoniminė 360° apklausa kuri veikia tiesiai naršyklėje.
+          GLA360 Personal — anoniminė 360° apklausa, kuri veikia tiesiai naršyklėje.
           Be serverio. Be įmonės IT. Be HR dalyvavimo.<br>
           <strong>Tik jūs ir tiesa apie savo lyderystę.</strong>
         </p>
