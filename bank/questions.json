@@ -28,9 +28,9 @@
       "name": "Creating Shared Vision",
       "items": [
         {"key":"COMM_VSN_1","stem":"Aiškiai sieja tikslus su verte klientams/imonei."},
-        {"key":"COMM_VSN_2","stem":"Formuluoja sėkmės metrikas KPI ir ribas."},
+        {"key":"COMM_VSN_2","stem":"Formuluoja KPI sėkmės matavimui ir kritinės ribas."},
         {"key":"COMM_VSN_3","stem":"Nuosekliai komunikuoja kryptį komandai."},
-        {"key":"COMM_VSN_4","stem":"Užtikrina, kad visi supranta kodėl."},
+        {"key":"COMM_VSN_4","stem":"Užtikrina, kad visi komandos nariai supranta kodėl."},
         {"key":"COMM_VSN_5","stem":"Susieja viziją su kasdieniais pasirinkimais ir prioritetais."}
       ]
     },
@@ -49,11 +49,11 @@
       "cluster": "Assure Success",
       "name": "Ensuring Customer Satisfaction",
       "items": [
-        {"key":"ASS_CUST_1","stem":"Reguliariai telkia klientų įžvalgas sprendimams."},
+        {"key":"ASS_CUST_1","stem":"Reguliariai pasitelkia klientų įžvalgas sprendimams."},
         {"key":"ASS_CUST_2","stem":"Greitai reaguoja į klientų skausmo taškus."},
-        {"key":"ASS_CUST_3","stem":"Matuoja pasitenkinimą (pvz., NPS/CSAT)."},
-        {"key":"ASS_CUST_4","stem":"Verčia įžvalgas konkrečiais veiksmais."},
-        {"key":"ASS_CUST_5","stem":"Užtikrina sisteminį atsiliepimų fiksavimą ir atsakymus klientams."}
+        {"key":"ASS_CUST_3","stem":"Matuoja klientų pasitenkinimą (pvz., NPS/CSAT)."},
+        {"key":"ASS_CUST_4","stem":"Verčia klientų įžvalgas konkrečiais veiksmais."},
+        {"key":"ASS_CUST_5","stem":"Užtikrina sisteminį klientų atsiliepimų fiksavimą ir atsakymus klientams."}
       ]
     },
     {
@@ -63,7 +63,7 @@
         {"key":"ASS_COMP_1","stem":"Stebi konkurentų veiksmus struktūruotai."},
         {"key":"ASS_COMP_2","stem":"Generuoja atsako hipotezes ir eksperimentus."},
         {"key":"ASS_COMP_3","stem":"Koncentruojasi į mūsų unikalų pasiūlymą."},
-        {"key":"ASS_COMP_4","stem":"Prioritizuoja iniciatyvas pagal ROI."},
+        {"key":"ASS_COMP_4","stem":"Prioritizuoja iniciatyvas pagal ROI (Investicijų grąža)."},
         {"key":"ASS_COMP_5","stem":"Reguliariai peržiūri strategines prielaidas ir adaptuoja kryptį."}
       ]
     },
@@ -72,10 +72,10 @@
       "name": "Developing People",
       "items": [
         {"key":"ENG_DEV_1","stem":"Kuria individualius augimo planus."},
-        {"key":"ENG_DEV_2","stem":"Duoda reguliarią, konkrečią grįžtamąją informaciją."},
+        {"key":"ENG_DEV_2","stem":"Duoda reguliarų, konstruktyvų grįžtamąjį ryšį (feedback ar feedforward)."},
         {"key":"ENG_DEV_3","stem":"Suteikia praktines galimybes mokytis."},
         {"key":"ENG_DEV_4","stem":"Švenčia progresą ir pasiekimus."},
-        {"key":"ENG_DEV_5","stem":"Skatina ir palaiko praktikos bendruomenes."}
+        {"key":"ENG_DEV_5","stem":"Skatina ir palaiko mentorystę."}
       ]
     },
     {
@@ -106,9 +106,9 @@
       "items": [
         {"key":"CHG_MAS_1","stem":"Laikosi produktyvumo ritualų ir ribų."},
         {"key":"CHG_MAS_2","stem":"Reflektuoja ir mokosi iš klaidų."},
-        {"key":"CHG_MAS_3","stem":"Tvarko prioritetus pagal vertę."},
+        {"key":"CHG_MAS_3","stem":"sudelioja prioritetus pagal vertę."},
         {"key":"CHG_MAS_4","stem":"Išlaiko ramybę spaudimo situacijose."},
-        {"key":"CHG_MAS_5","stem":"Valdo energiją ir poilsį piko periodams."}
+        {"key":"CHG_MAS_5","stem":"Valdo energiją ir poilsį piko periodais."}
       ]
     },
     {
