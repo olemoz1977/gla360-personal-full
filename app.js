@@ -399,7 +399,7 @@ const GLA = (()=>{
       const isRelative = agg.strengths.length > 0 && agg.strengths[0]._relative;
       if(isRelative){
         el.innerHTML = `<li class="alert info" style="list-style:none;margin-bottom:8px;">
-          ℹ️ Rateriai visose gebėjimo sritise įvertino žemiau nei Self. Žemiau – santykinai stipriausios sritys.
+          ℹ️ Vertintojai visose gebėjimo sritise įvertino žemiau nei Self. Žemiau – santykinai stipriausios sritys.
         </li>` + agg.strengths.map(s => `
           <li>
             <div class="sg-title">
