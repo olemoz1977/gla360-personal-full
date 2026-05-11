@@ -1,0 +1,208 @@
+{
+  "version": "2.0.0",
+  "profile": "manufacturing_shift_leader",
+  "title": "Gamybos pamainos vadovo 360 vertinimas",
+  "description": "Praktinis pamainos vadovo vertinimas gamybos aplinkai.",
+  "competencies": [
+    {
+      "cluster": "Pamainos valdymas",
+      "name": "Aiškus darbo organizavimas",
+      "items": [
+        {
+          "key": "OPS_ORG_1",
+          "stem": "Pamainos pradžioje aiškiai paskirsto darbus ir prioritetus."
+        },
+        {
+          "key": "OPS_ORG_2",
+          "stem": "Greitai reaguoja pasikeitus gamybos situacijai."
+        },
+        {
+          "key": "OPS_ORG_3",
+          "stem": "Aiškiai paaiškina ką reikia padaryti ir iki kada."
+        },
+        {
+          "key": "OPS_ORG_4",
+          "stem": "Pamainos metu palaiko tvarką ir darbo ritmą."
+        },
+        {
+          "key": "OPS_ORG_5",
+          "stem": "Laiku perduoda svarbią informaciją kitai pamainai."
+        }
+      ]
+    },
+    {
+      "cluster": "Komunikacija",
+      "name": "Bendravimas su komanda",
+      "items": [
+        {
+          "key": "COM_TEAM_1",
+          "stem": "Aiškiai ir suprantamai bendrauja su operatoriais."
+        },
+        {
+          "key": "COM_TEAM_2",
+          "stem": "Išklauso darbuotojų problemas iki galo."
+        },
+        {
+          "key": "COM_TEAM_3",
+          "stem": "Ramybę išlaiko net esant stresui ar gedimams."
+        },
+        {
+          "key": "COM_TEAM_4",
+          "stem": "Konfliktus sprendžia pagarbiai ir konstruktyviai."
+        },
+        {
+          "key": "COM_TEAM_5",
+          "stem": "Operatoriai nebijo kreiptis pagalbos ar patarimo."
+        }
+      ]
+    },
+    {
+      "cluster": "Problemų sprendimas",
+      "name": "Reakcija į problemas",
+      "items": [
+        {
+          "key": "PROB_SOLV_1",
+          "stem": "Greitai reaguoja į gedimus ar kokybės problemas."
+        },
+        {
+          "key": "PROB_SOLV_2",
+          "stem": "Ieško tikrųjų problemų priežasčių, o ne kaltų žmonių."
+        },
+        {
+          "key": "PROB_SOLV_3",
+          "stem": "Po problemų įveda aiškius veiksmus situacijai pagerinti."
+        },
+        {
+          "key": "PROB_SOLV_4",
+          "stem": "Laiku eskaluoja problemas kai reikia papildomos pagalbos."
+        },
+        {
+          "key": "PROB_SOLV_5",
+          "stem": "Pasikartojančios problemos nėra ignoruojamos."
+        }
+      ]
+    },
+    {
+      "cluster": "Komandos valdymas",
+      "name": "Pagarba ir pasitikėjimas",
+      "items": [
+        {
+          "key": "TEAM_TRUST_1",
+          "stem": "Su darbuotojais elgiasi pagarbiai."
+        },
+        {
+          "key": "TEAM_TRUST_2",
+          "stem": "Vienodai taiko taisykles visiems darbuotojams."
+        },
+        {
+          "key": "TEAM_TRUST_3",
+          "stem": "Prisiima atsakomybę už savo sprendimus ir klaidas."
+        },
+        {
+          "key": "TEAM_TRUST_4",
+          "stem": "Nekelia bereikalingos įtampos ar baimės komandoje."
+        },
+        {
+          "key": "TEAM_TRUST_5",
+          "stem": "Pastebi ir įvertina gerai atliktą darbą."
+        }
+      ]
+    },
+    {
+      "cluster": "Darbuotojų ugdymas",
+      "name": "Operatorių stiprinimas",
+      "items": [
+        {
+          "key": "DEV_PEOPLE_1",
+          "stem": "Padeda silpnesniems operatoriams tobulėti."
+        },
+        {
+          "key": "DEV_PEOPLE_2",
+          "stem": "Kantriai paaiškina naujas užduotis ar procesus."
+        },
+        {
+          "key": "DEV_PEOPLE_3",
+          "stem": "Skatina darbuotojus siūlyti pagerinimus."
+        },
+        {
+          "key": "DEV_PEOPLE_4",
+          "stem": "Suteikia darbuotojams daugiau atsakomybės kai jie pasiruošę."
+        },
+        {
+          "key": "DEV_PEOPLE_5",
+          "stem": "Dalijasi savo žiniomis ir praktiniais patarimais."
+        }
+      ]
+    },
+    {
+      "cluster": "Gamybos disciplina",
+      "name": "Standartų laikymasis",
+      "items": [
+        {
+          "key": "DISC_STD_1",
+          "stem": "Laikosi saugos reikalavimų ir reikalauja jų laikytis iš kitų."
+        },
+        {
+          "key": "DISC_STD_2",
+          "stem": "Kontroliuoja kad būtų laikomasi darbo instrukcijų."
+        },
+        {
+          "key": "DISC_STD_3",
+          "stem": "Reaguoja į broko ar kokybės nukrypimus."
+        },
+        {
+          "key": "DISC_STD_4",
+          "stem": "Rūpinasi tvarka darbo vietoje."
+        },
+        {
+          "key": "DISC_STD_5",
+          "stem": "Priima sprendimus atsižvelgdamas į saugą, kokybę ir našumą."
+        }
+      ]
+    }
+  ]
+}
+```
+
+# Why this version is stronger for manufacturing
+
+## Main improvements
+
+* Questions are based on observable shopfloor behavior
+* Easier language for operators
+* Less corporate vocabulary
+* More practical production situations
+* Shorter and faster to complete
+* Better fit for extrusion/manufacturing environment
+
+## Survey structure
+
+* 6 competency areas
+* 30 questions total
+* Designed for completion in 4–6 minutes
+* Suitable for:
+
+  * extrusion
+  * plastics manufacturing
+  * packaging production
+  * shift operations
+  * industrial teams
+
+## Recommended rating scale
+
+Use simple scale:
+
+1 — Niekada
+2 — Retai
+3 — Kartais
+4 — Dažnai
+5 — Beveik visada
+
+Optional:
+
+0 — Neturiu pakankamai informacijos
+
+## Recommended intro text for operators
+
+"Šis vertinimas skirtas pagerinti komandos darbą ir pamainos valdymą. Vertinimas anoniminis. Prašome atsakyti pagal tai, ką realiai matote kasdieniame darbe."
+
