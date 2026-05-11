@@ -663,7 +663,7 @@
     const today = new Date();
     planStartDate = today; // store for ICS export
     const todayStr = today.toLocaleDateString('lt-LT');
-    document.getElementById('planTitle').textContent = `${leader} – 90 dienų tobulėjimo planas`;
+    document.getElementById('planTitle').textContent = `${leader} – 90 dienų tobulėjimo planas. Patogiausia - pažymeti ✅ visus arba norimus punktus iš žemiau pateikto plano tam, kad eksportoti į savo Google artba Outlook kalendorį. Kitas variantas atspausdinti arba išsaugoti kaip PDF.`;
     document.getElementById('planMeta').textContent = `Pradžia: ${todayStr} · Pabaiga: ${dateAddDays(today,90).toLocaleDateString('lt-LT')} · Sritys: ${comps.join(', ')}`;
 
     // Gaps summary
