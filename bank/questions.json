@@ -1,169 +1,169 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "competencies": [
     {
       "cluster": "Communication",
       "name": "Demonstrating Integrity",
       "items": [
-        {"key":"COMM_INT_1","stem":"Laikosi duotų įsipareigojimų ir terminų."},
-        {"key":"COMM_INT_2","stem":"Sprendimai atitinka deklaruojamas vertybes."},
-        {"key":"COMM_INT_3","stem":"Atvirai prisiima atsakomybę už klaidas ir jas taiso."},
-        {"key":"COMM_INT_4","stem":"Pateikia kontekstą, kai tenka keisti kryptį."},
-        {"key":"COMM_INT_5","stem":"Viešai ir reguliariai praneša apie pažangos statusą ir rizikas."}
+        {"key":"COMM_INT_1","stem":"Laikosi pažadų ir susitarimų su komanda."},
+        {"key":"COMM_INT_2","stem":"Vienodai taiko taisykles visiems darbuotojams."},
+        {"key":"COMM_INT_3","stem":"Pripažįsta savo klaidas ir padeda jas ištaisyti."},
+        {"key":"COMM_INT_4","stem":"Paaiškina komandai kodėl keičiasi planai ar prioritetai."},
+        {"key":"COMM_INT_5","stem":"Informuoja komandą apie problemas ir darbo eigą."}
       ]
     },
     {
       "cluster": "Communication",
       "name": "Encouraging Dialogue",
       "items": [
-        {"key":"COMM_DIA_1","stem":"Sukuria saugią erdvę skirtingoms nuomonėms."},
-        {"key":"COMM_DIA_2","stem":"Aktyviai klausia ir įtraukia tyliau kalbančius."},
-        {"key":"COMM_DIA_3","stem":"Skatina ginčą dėl idėjų, ne dėl žmonių."},
-        {"key":"COMM_DIA_4","stem":"Apibendrina ir tikslina susitarimus raštu."},
-        {"key":"COMM_DIA_5","stem":"Sąmoningai balansuoja eterio laiką tarp dalyvių."}
+        {"key":"COMM_DIA_1","stem":"Leidžia darbuotojams laisvai išsakyti problemas ir nuomonę."},
+        {"key":"COMM_DIA_2","stem":"Išklauso ir tylesnius komandos narius."},
+        {"key":"COMM_DIA_3","stem":"Sprendžia problemas ramiai ir be asmeniškumų."},
+        {"key":"COMM_DIA_4","stem":"Aiškiai susitaria kas ir ką turi padaryti."},
+        {"key":"COMM_DIA_5","stem":"Pamainos aptarimuose leidžia pasisakyti kitiems."}
       ]
     },
     {
       "cluster": "Communication",
       "name": "Creating Shared Vision",
       "items": [
-        {"key":"COMM_VSN_1","stem":"Aiškiai sieja tikslus su verte klientams/imonei."},
-        {"key":"COMM_VSN_2","stem":"Formuluoja KPI sėkmės matavimui ir kritinės ribas."},
-        {"key":"COMM_VSN_3","stem":"Nuosekliai komunikuoja kryptį komandai."},
-        {"key":"COMM_VSN_4","stem":"Užtikrina, kad visi komandos nariai supranta kodėl."},
-        {"key":"COMM_VSN_5","stem":"Susieja viziją su kasdieniais pasirinkimais ir prioritetais."}
+        {"key":"COMM_VSN_1","stem":"Paaiškina komandai darbo tikslus ir prioritetus."},
+        {"key":"COMM_VSN_2","stem":"Aiškiai parodo kas laikoma geru rezultatu."},
+        {"key":"COMM_VSN_3","stem":"Nuolat primena svarbiausius pamainos tikslus."},
+        {"key":"COMM_VSN_4","stem":"Įsitikina kad darbuotojai suprato užduotis."},
+        {"key":"COMM_VSN_5","stem":"Kasdienius sprendimus sieja su gamybos tikslais."}
       ]
     },
     {
       "cluster": "Assure Success",
       "name": "Developing Technological Savvy",
       "items": [
-        {"key":"ASS_TECH_1","stem":"Domisi naujomis technologijomis savo srityje."},
-        {"key":"ASS_TECH_2","stem":"Greitai pritaiko įrankius produktyvumui didinti."},
-        {"key":"ASS_TECH_3","stem":"Dalijasi praktinėmis gairėmis komandai."},
-        {"key":"ASS_TECH_4","stem":"Vertina technologinių sprendimų rizikas ir naudą."},
-        {"key":"ASS_TECH_5","stem":"Skatina pilotinius projektus (POC) ir mokosi iš jų rezultatų."}
+        {"key":"ASS_TECH_1","stem":"Domisi kaip pagerinti darbą ar procesus."},
+        {"key":"ASS_TECH_2","stem":"Greitai pritaiko naudingus darbo įrankius ar metodus."},
+        {"key":"ASS_TECH_3","stem":"Dalijasi praktiniais darbo patarimais su komanda."},
+        {"key":"ASS_TECH_4","stem":"Prieš pokyčius įvertina riziką kokybei ir gamybai."},
+        {"key":"ASS_TECH_5","stem":"Išbando naujus sprendimus ir mokosi iš rezultatų."}
       ]
     },
     {
       "cluster": "Assure Success",
       "name": "Ensuring Customer Satisfaction",
       "items": [
-        {"key":"ASS_CUST_1","stem":"Reguliariai pasitelkia klientų įžvalgas sprendimams."},
-        {"key":"ASS_CUST_2","stem":"Greitai reaguoja į klientų skausmo taškus."},
-        {"key":"ASS_CUST_3","stem":"Matuoja klientų pasitenkinimą (pvz., NPS/CSAT)."},
-        {"key":"ASS_CUST_4","stem":"Verčia klientų įžvalgas konkrečiais veiksmais."},
-        {"key":"ASS_CUST_5","stem":"Užtikrina sisteminį klientų atsiliepimų fiksavimą ir atsakymus klientams."}
+        {"key":"ASS_CUST_1","stem":"Rūpinasi kad produktas atitiktų kokybės reikalavimus."},
+        {"key":"ASS_CUST_2","stem":"Greitai reaguoja į kokybės ar klientų problemas."},
+        {"key":"ASS_CUST_3","stem":"Atkreipia dėmesį į klientų nusiskundimus ir broką."},
+        {"key":"ASS_CUST_4","stem":"Po problemų imasi veiksmų situacijai pagerinti."},
+        {"key":"ASS_CUST_5","stem":"Rūpinasi kad klaidos nesikartotų ateityje."}
       ]
     },
     {
       "cluster": "Assure Success",
       "name": "Maintaining Competitive Advantage",
       "items": [
-        {"key":"ASS_COMP_1","stem":"Stebi konkurentų veiksmus struktūruotai."},
-        {"key":"ASS_COMP_2","stem":"Generuoja atsako hipotezes ir eksperimentus."},
-        {"key":"ASS_COMP_3","stem":"Koncentruojasi į mūsų unikalų pasiūlymą."},
-        {"key":"ASS_COMP_4","stem":"Prioritizuoja iniciatyvas pagal ROI (Investicijų grąža)."},
-        {"key":"ASS_COMP_5","stem":"Reguliariai peržiūri strategines prielaidas ir adaptuoja kryptį."}
+        {"key":"ASS_COMP_1","stem":"Ieško būdų dirbti efektyviau ir stabiliau."},
+        {"key":"ASS_COMP_2","stem":"Siūlo naujas idėjas darbo gerinimui."},
+        {"key":"ASS_COMP_3","stem":"Daugiausia dėmesio skiria svarbiausiems darbams."},
+        {"key":"ASS_COMP_4","stem":"Sprendimus priima atsižvelgdamas į rezultatą ir naudą."},
+        {"key":"ASS_COMP_5","stem":"Pastebi kada reikia keisti darbo organizavimą."}
       ]
     },
     {
       "cluster": "Engaging People",
       "name": "Developing People",
       "items": [
-        {"key":"ENG_DEV_1","stem":"Kuria individualius augimo planus."},
-        {"key":"ENG_DEV_2","stem":"Duoda reguliarų, konstruktyvų grįžtamąjį ryšį (feedback ar feedforward)."},
-        {"key":"ENG_DEV_3","stem":"Suteikia praktines galimybes mokytis."},
-        {"key":"ENG_DEV_4","stem":"Švenčia progresą ir pasiekimus."},
-        {"key":"ENG_DEV_5","stem":"Skatina ir palaiko mentorystę."}
+        {"key":"ENG_DEV_1","stem":"Padeda silpnesniems darbuotojams tobulėti."},
+        {"key":"ENG_DEV_2","stem":"Duoda aiškų ir naudingą grįžtamąjį ryšį."},
+        {"key":"ENG_DEV_3","stem":"Moko darbuotojus praktiškai darbo vietoje."},
+        {"key":"ENG_DEV_4","stem":"Pastebi ir pagiria progresą bei gerą darbą."},
+        {"key":"ENG_DEV_5","stem":"Dalijasi savo patirtimi ir žiniomis."}
       ]
     },
     {
       "cluster": "Engaging People",
       "name": "Building Partnerships",
       "items": [
-        {"key":"ENG_PAR_1","stem":"Mezga ryšius per funkcijas ir organizacijas."},
-        {"key":"ENG_PAR_2","stem":"Aiškiai apibrėžia abipusę vertę."},
-        {"key":"ENG_PAR_3","stem":"Greitai sprendžia konfliktus be eskalacijos."},
-        {"key":"ENG_PAR_4","stem":"Dalijasi kreditais už rezultatus."},
-        {"key":"ENG_PAR_5","stem":"Nustato reguliarų partnerystės valdymo ritmą (tikslai, rodikliai)."}
+        {"key":"ENG_PAR_1","stem":"Gerai bendradarbiauja su kitomis pamainomis ar skyriais."},
+        {"key":"ENG_PAR_2","stem":"Aiškiai susitaria dėl bendrų darbų ir atsakomybių."},
+        {"key":"ENG_PAR_3","stem":"Greitai sprendžia nesutarimus tarp darbuotojų."},
+        {"key":"ENG_PAR_4","stem":"Pasidalina nuopelnais su komanda."},
+        {"key":"ENG_PAR_5","stem":"Palaiko reguliarų bendravimą su kitais skyriais."}
       ]
     },
     {
       "cluster": "Engaging People",
       "name": "Sharing Leadership",
       "items": [
-        {"key":"ENG_SLD_1","stem":"Deleguoja sprendimus su aiškiais rėmais."},
-        {"key":"ENG_SLD_2","stem":"Suteikia autonomiją ir pasitiki."},
-        {"key":"ENG_SLD_3","stem":"Padeda komandos nariams blizgėti viešai."},
-        {"key":"ENG_SLD_4","stem":"Klauso, o ne mikrovaldo."},
-        {"key":"ENG_SLD_5","stem":"Numato, kada pasitraukti iš sprendimų kelio ir netrukdyti."}
+        {"key":"ENG_SLD_1","stem":"Deleguoja užduotis aiškiai ir suprantamai."},
+        {"key":"ENG_SLD_2","stem":"Pasitiki darbuotojais atlikti savo darbą."},
+        {"key":"ENG_SLD_3","stem":"Leidžia darbuotojams parodyti savo stipriąsias puses."},
+        {"key":"ENG_SLD_4","stem":"Klauso darbuotojų ir nekontroliuoja smulkmenų."},
+        {"key":"ENG_SLD_5","stem":"Leidžia komandai savarankiškai spręsti paprastas problemas."}
       ]
     },
     {
       "cluster": "Continuous Change",
       "name": "Achieving Personal Mastery",
       "items": [
-        {"key":"CHG_MAS_1","stem":"Laikosi produktyvumo ritualų ir ribų."},
-        {"key":"CHG_MAS_2","stem":"Reflektuoja ir mokosi iš klaidų."},
-        {"key":"CHG_MAS_3","stem":"sudelioja prioritetus pagal vertę."},
-        {"key":"CHG_MAS_4","stem":"Išlaiko ramybę spaudimo situacijose."},
-        {"key":"CHG_MAS_5","stem":"Valdo energiją ir poilsį piko periodais."}
+        {"key":"CHG_MAS_1","stem":"Išlaiko tvarkingą ir organizuotą darbo ritmą."},
+        {"key":"CHG_MAS_2","stem":"Mokosi iš savo klaidų."},
+        {"key":"CHG_MAS_3","stem":"Teisingai sudėlioja darbo prioritetus."},
+        {"key":"CHG_MAS_4","stem":"Išlieka ramus sudėtingose situacijose."},
+        {"key":"CHG_MAS_5","stem":"Išlaiko darbingumą ir stresą piko metu."}
       ]
     },
     {
       "cluster": "Continuous Change",
       "name": "Anticipating Opportunities",
       "items": [
-        {"key":"CHG_ANT_1","stem":"Anksti pastebi tendencijas ir rizikas."},
-        {"key":"CHG_ANT_2","stem":"Kuria scenarijus ir pasirengimą."},
-        {"key":"CHG_ANT_3","stem":"Veikia proaktyviai prieš terminus."},
-        {"key":"CHG_ANT_4","stem":"Mato didįjį paveikslą už savo funkcijos ribų."},
-        {"key":"CHG_ANT_5","stem":"Naudoja duomenis ankstyvų signalų aptikimui ir prioritetams."}
+        {"key":"CHG_ANT_1","stem":"Anksti pastebi galimas problemas ar rizikas."},
+        {"key":"CHG_ANT_2","stem":"Iš anksto ruošiasi sudėtingesnėms situacijoms."},
+        {"key":"CHG_ANT_3","stem":"Imasi veiksmų nelaukdamas kol problema padidės."},
+        {"key":"CHG_ANT_4","stem":"Mato kaip jo sprendimai veikia kitus procesus."},
+        {"key":"CHG_ANT_5","stem":"Naudoja turimą informaciją problemų prevencijai."}
       ]
     },
     {
       "cluster": "Continuous Change",
       "name": "Leading Change",
       "items": [
-        {"key":"CHG_LEAD_1","stem":"Sutelkia komandą aiškiam pokyčio tikslui."},
-        {"key":"CHG_LEAD_2","stem":"Numato pasipriešinimą ir jį valdo."},
-        {"key":"CHG_LEAD_3","stem":"Greitai demonstruoja greitus laimėjimus."},
-        {"key":"CHG_LEAD_4","stem":"Įtvirtina pokyčius procesuose ir standartuose."},
-        {"key":"CHG_LEAD_5","stem":"Anksti įtraukia kritikus ir skeptikus."}
+        {"key":"CHG_LEAD_1","stem":"Aiškiai paaiškina pokyčių tikslus komandai."},
+        {"key":"CHG_LEAD_2","stem":"Padeda darbuotojams prisitaikyti prie pokyčių."},
+        {"key":"CHG_LEAD_3","stem":"Greitai įveda pagerinimus kurie duoda rezultatą."},
+        {"key":"CHG_LEAD_4","stem":"Užtikrina kad naujos tvarkos būtų laikomasi."},
+        {"key":"CHG_LEAD_5","stem":"Išklauso abejojančius darbuotojus prieš pokyčius."}
       ]
     },
     {
       "cluster": "Boundary-less Inclusion",
       "name": "Empowering People",
       "items": [
-        {"key":"INC_EMP_1","stem":"Aiškiai apibrėžia sprendimo ribas komandai."},
-        {"key":"INC_EMP_2","stem":"Skatina iniciatyvą be baimės klysti."},
-        {"key":"INC_EMP_3","stem":"Užtikrina resursus ir kliūčių šalinimą."},
-        {"key":"INC_EMP_4","stem":"Pripažįsta indėlį viešai."},
-        {"key":"INC_EMP_5","stem":"Kuria kultūrą, kurioje klaidos tampa mokymosi galimybėmis."}
+        {"key":"INC_EMP_1","stem":"Aiškiai pasako už ką atsakingas kiekvienas darbuotojas."},
+        {"key":"INC_EMP_2","stem":"Skatina darbuotojus rodyti iniciatyvą."},
+        {"key":"INC_EMP_3","stem":"Padeda pašalinti kliūtis darbui."},
+        {"key":"INC_EMP_4","stem":"Pastebi ir įvertina darbuotojų pastangas."},
+        {"key":"INC_EMP_5","stem":"Leidžia mokytis iš klaidų be bereikalingos baimės."}
       ]
     },
     {
       "cluster": "Boundary-less Inclusion",
       "name": "Thinking Globally",
       "items": [
-        {"key":"INC_GLB_1","stem":"Įvertina sprendimų pasekmes skirtingoms rinkoms."},
-        {"key":"INC_GLB_2","stem":"Derina standartizaciją su lokalizacija."},
-        {"key":"INC_GLB_3","stem":"Mąsto per kultūrinius kontekstus."},
-        {"key":"INC_GLB_4","stem":"Priima įrodymais pagrįstus sprendimus."},
-        {"key":"INC_GLB_5","stem":"Aktyviai ieško tarptautinės perspektyvos priimdamas strateginius sprendimus."}
+        {"key":"INC_GLB_1","stem":"Prieš priimdamas sprendimus įvertina poveikį gamybai."},
+        {"key":"INC_GLB_2","stem":"Stengiasi suderinti kokybę, saugą ir našumą."},
+        {"key":"INC_GLB_3","stem":"Gerbia skirtingus darbuotojų požiūrius ir patirtis."},
+        {"key":"INC_GLB_4","stem":"Sprendimus priima remdamasis faktais ir situacija."},
+        {"key":"INC_GLB_5","stem":"Mato platesnį vaizdą už savo pamainos ribų."}
       ]
     },
     {
       "cluster": "Boundary-less Inclusion",
       "name": "Appreciating Diversity",
       "items": [
-        {"key":"INC_DIV_1","stem":"Skatina skirtingas perspektyvas ir patirtis."},
-        {"key":"INC_DIV_2","stem":"Užtikrina lygias galimybes dalyvauti."},
-        {"key":"INC_DIV_3","stem":"Mato skirtumus kaip naujovių šaltinį."},
-        {"key":"INC_DIV_4","stem":"Reaguoja į šališkumą ir jį mažina."},
-        {"key":"INC_DIV_5","stem":"Kuria įtraukią aplinką, kurioje kiekvienas jaučiasi vertinamas."}
+        {"key":"INC_DIV_1","stem":"Išklauso skirtingas darbuotojų nuomones."},
+        {"key":"INC_DIV_2","stem":"Suteikia visiems vienodas galimybes pasisakyti."},
+        {"key":"INC_DIV_3","stem":"Vertina skirtingą darbuotojų patirtį ir žinias."},
+        {"key":"INC_DIV_4","stem":"Netoleruoja nepagarbaus elgesio komandoje."},
+        {"key":"INC_DIV_5","stem":"Kuria aplinką kur darbuotojai jaučiasi gerbiami."}
       ]
     }
   ]
