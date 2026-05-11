@@ -129,6 +129,8 @@
 <script src="app.js"></script>
 <script>
 (function(){
+  let _bank = null; // module-level, accessible by all buttons
+
   // ── Parse URL params ──────────────────────────────────────────────────────
   function parseParams(){
     let raw = location.search || '';
@@ -279,6 +281,7 @@
     let bank;
     try {
       bank = await GLA.loadBank();
+      _bank = bank;
     } catch(e) {
       document.getElementById('errorBox').innerHTML = `
         <div class="alert error">
@@ -317,6 +320,8 @@
 
     // ── Finish button ─────────────────────────────────────────────────────
     document.getElementById('finish').addEventListener('click', () => {
+      const bank = _bank;
+      if(!bank){ alert('Klausimai dar neįkelti. Palaukite ir bandykite dar kartą.'); return; }
       const answers = GLA.collectAnswers(bank);
       const missing = GLA.getMissingKeys(answers);
 
@@ -338,6 +343,8 @@
 
     // ── Copy button ───────────────────────────────────────────────────────
     document.getElementById('copy').addEventListener('click', () => {
+      const bank = _bank;
+      if(!bank){ alert('Klausimai dar neįkelti.'); return; }
       const answers = GLA.collectAnswers(bank);
       const open    = GLA.collectOpen();
       const pack    = GLA.packResponse({ aid: params.aid, role: params.role, answers, open });
