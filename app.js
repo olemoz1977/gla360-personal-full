@@ -4,6 +4,36 @@
 
 const GLA = (()=>{
 
+  // ── 0. Lietuvių kalbos vertimų žodynas ───────────────────────────────────
+  // Anglų k. raktai naudojami kode, lietuvių k. rodomi vartotojui
+  const LT = {
+    // Sritys (clusters)
+    'Communication':              'Komunikacija',
+    'Assure Success':             'Sėkmės užtikrinimas',
+    'Engaging People':            'Žmonių įtraukimas',
+    'Continuous Change':          'Nuolatinis tobulėjimas',
+    'Boundary-less Inclusion':    'Įtraukianti aplinka',
+    // Gebėjimai (competencies)
+    'Demonstrating Integrity':          'Sąžiningumas ir patikimumas',
+    'Encouraging Dialogue':             'Dialogo skatinimas',
+    'Creating Shared Vision':           'Bendros krypties kūrimas',
+    'Developing Technological Savvy':   'Technologinis išprusimas',
+    'Ensuring Customer Satisfaction':   'Kliento pasitenkinimas',
+    'Maintaining Competitive Advantage':'Konkurencinis pranašumas',
+    'Developing People':                'Žmonių ugdymas',
+    'Building Partnerships':            'Partnerystės kūrimas',
+    'Sharing Leadership':               'Lyderiavimo dalijimasis',
+    'Achieving Personal Mastery':       'Asmeninis tobulėjimas',
+    'Anticipating Opportunities':       'Galimybių numatymas',
+    'Leading Change':                   'Pokyčių valdymas',
+    'Empowering People':                'Žmonių įgalinimas',
+    'Thinking Globally':                'Globalus mąstymas',
+    'Appreciating Diversity':           'Įvairovės vertinimas',
+  };
+
+  // Verčia anglišką raktą į lietuvišką; jei nežinomas – grąžina originalą
+  function lt(key){ return LT[key] || key; }
+
   // ── 1. ID generation ──────────────────────────────────────────────────────
   function newAssessmentId(leader){
     const init = (leader||'').trim().split(/\s+/).map(s=>(s[0]||'').toUpperCase()).join('') || 'A';
@@ -13,8 +43,6 @@ const GLA = (()=>{
   }
 
   // ── 2. Load questions ─────────────────────────────────────────────────────
-  // Resolves bank/questions.json relative to app.js location, not the page URL.
-  // This ensures it works even if pages are linked from README or other locations.
   async function loadBank(){
     const res = await fetch('bank/questions.json?v=' + Date.now(), { cache:'no-store' });
     if(!res.ok) throw new Error('Nepavyko įkelti bank/questions.json (HTTP ' + res.status + ')');
@@ -22,8 +50,6 @@ const GLA = (()=>{
   }
 
   // ── 3. Render survey ──────────────────────────────────────────────────────
-  // Renders all questions into #questions element
-  // Each question gets a radio group named by its key (e.g. "COMM_INT_1")
   function renderSurvey(bank, mountId){
     const host = document.getElementById(mountId || 'questions');
     if(!host) return;
@@ -42,8 +68,8 @@ const GLA = (()=>{
     bank.competencies.forEach(comp => {
       html += `<div class="comp-block">
         <div class="comp-header">
-          <span class="comp-cluster">${esc(comp.cluster)}</span>
-          <span class="comp-name">${esc(comp.name)}</span>
+          <span class="comp-cluster">${esc(lt(comp.cluster))}</span>
+          <span class="comp-name">${esc(lt(comp.name))}</span>
         </div>`;
 
       comp.items.forEach(item => {
@@ -74,7 +100,7 @@ const GLA = (()=>{
           <span class="comp-name">Neprivaloma</span>
         </div>
         <div class="open-q">
-          <label>Stiprybės – kuo šis lyderis išsiskiria?
+          <label>Stiprybės – kuo šis žmogus išsiskiria?
             <textarea id="open_str" rows="3" placeholder="Konkretūs pavyzdžiai..."></textarea>
           </label>
         </div>
@@ -89,7 +115,6 @@ const GLA = (()=>{
   }
 
   // ── 4. Collect answers ────────────────────────────────────────────────────
-  // Returns { "COMM_INT_1": 4, ... } – key-based format
   function collectAnswers(bank){
     const answers = {};
     bank.competencies.forEach(comp => {
@@ -114,30 +139,24 @@ const GLA = (()=>{
   }
 
   // ── 6. Pack / unpack response ─────────────────────────────────────────────
-  // NOTE: 'i' (rater index) is intentionally NOT stored in the JSON file.
-  // This protects anonymity – the leader cannot identify which peer is which.
-  // 'i' is only used in the URL to generate unique survey links.
   function packResponse({ aid, role, answers, open }){
-    // ts rounded to date only (not hour/minute) – protects anonymity
     const dateOnly = new Date().toISOString().slice(0, 10);
     return {
       schema: 'gla360-personal@2',
       aid,
       role: role.toUpperCase(),
       ts: dateOnly,
-      answers,   // { "COMM_INT_1": 4, ... }
+      answers,
       open: open || {}
     };
   }
 
   function unpackResponse(obj){
     if(obj.schema === 'gla360-personal@2') return obj;
-    // Legacy v1 format (Q1, Q2, ...) – can't aggregate properly, warn
     if(obj.answers && Object.keys(obj.answers).some(k => /^Q\d+$/.test(k))){
       console.warn('Legacy answer format detected for AID:', obj.aid);
       return { ...obj, _legacy: true };
     }
-    // Accept files without schema if they have aid+role+answers (partial compatibility)
     if(obj.aid && obj.role && obj.answers) return obj;
     return obj;
   }
@@ -168,9 +187,8 @@ const GLA = (()=>{
 
   function aggregate(bank, packs, weights){
     const w = normalizeWeights(weights || ROLE_WEIGHTS_DEFAULT);
-    const compCount = bank.competencies.length; // 15
+    const compCount = bank.competencies.length;
 
-    // Build lookup: key → { compIndex, itemIndex }
     const keyMap = {};
     bank.competencies.forEach((comp, ci) => {
       comp.items.forEach((item, ii) => {
@@ -178,7 +196,6 @@ const GLA = (()=>{
       });
     });
 
-    // Per role, per competency: array of individual scores
     const roleData = { self:{}, boss:{}, peer:{}, report:{}, other:{} };
     Object.keys(roleData).forEach(r => {
       roleData[r] = Array.from({ length: compCount }, () => []);
@@ -189,13 +206,12 @@ const GLA = (()=>{
 
     for(const pack of packs){
       if(pack._legacy){
-        legacyWarnings.push(pack.role + ' #' + pack.i);
+        legacyWarnings.push(pack.role);
         continue;
       }
       const role = (pack.role||'other').toLowerCase();
       const safeRole = roleData[role] ? role : 'other';
 
-      // For each key in answers, map to competency index
       const compScores = Array.from({ length: compCount }, () => []);
       for(const [key, val] of Object.entries(pack.answers || {})){
         if(val === null || val === undefined) continue;
@@ -203,27 +219,23 @@ const GLA = (()=>{
         if(!info) continue;
         compScores[info.ci].push(Number(val));
       }
-      // Average per competency for this rater
       compScores.forEach((scores, ci) => {
         if(scores.length > 0){
           roleData[safeRole][ci].push(scores.reduce((a,b)=>a+b,0)/scores.length);
         }
       });
 
-      // Open comments – no rater index stored (anonymity)
       const o = pack.open || {};
       if(o.strengths) comments.push({ role: safeRole, type:'strengths', text: o.strengths });
       if(o.develop)   comments.push({ role: safeRole, type:'develop',   text: o.develop });
     }
 
-    // Mean per role per competency
     const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
     const means = {};
     Object.keys(roleData).forEach(r => {
       means[r] = roleData[r].map(arr => avg(arr));
     });
 
-    // Weighted "Others" (excluding self)
     const others = Array.from({ length: compCount }, (_, ci) => {
       const vals = [];
       const ws   = [];
@@ -235,7 +247,6 @@ const GLA = (()=>{
       return wSum > 0 ? vals.reduce((a,b)=>a+b,0) / wSum : null;
     });
 
-    // Unique clusters
     const clusterNames = [...new Set(bank.competencies.map(c=>c.cluster))];
     const clusterMeans = {
       self:   clusterNames.map(cl => {
@@ -248,7 +259,6 @@ const GLA = (()=>{
       })
     };
 
-    // Diffs per competency (others - self), sorted ascending (most negative = biggest gap first)
     const diffs = bank.competencies.map((comp, ci) => ({
       ci,
       name: comp.name,
@@ -260,29 +270,17 @@ const GLA = (()=>{
                 : null
     })).filter(d => d.diff !== null).sort((a,b) => a.diff - b.diff);
 
-    // Gaps: Others scored lower than Self (negative diff)
     const gaps = diffs.filter(d => d.diff < 0).slice(0, 3);
-
-    // True strengths: Others scored higher than Self (positive diff)
     const trueStrengths = diffs.filter(d => d.diff > 0).slice(-3).reverse();
-
-    // If no positive diffs, show least-negative as relative strengths
     const strengths = trueStrengths.length > 0
       ? trueStrengths
       : diffs.slice(-3).reverse().map(s => ({ ...s, _relative: true }));
 
     return {
-      bank,
-      weights: w,
-      means,
-      others,
-      clusterNames,
-      clusterMeans,
-      diffs,
-      gaps,
-      strengths,
-      comments,
-      legacyWarnings,
+      bank, weights: w, means, others,
+      clusterNames, clusterMeans,
+      diffs, gaps, strengths,
+      comments, legacyWarnings,
       packsCount: packs.length
     };
   }
@@ -294,16 +292,16 @@ const GLA = (()=>{
       ? `<p class="warn">⚠️ Senojo formato failai (nepanaudoti): ${agg.legacyWarnings.join(', ')}</p>` : '';
     return `
       ${legacy}
-      <p><strong>Įkeltų raterių failų:</strong> ${agg.packsCount}</p>
+      <p><strong>Įkeltų vertintojų failų:</strong> ${agg.packsCount}</p>
       <p><strong>Gebėjimų sričių:</strong> ${agg.bank.competencies.length} &nbsp;|&nbsp; <strong>Klausimų:</strong> ${totalItems}</p>
-      <p><strong>Svoriai (Others):</strong>
+      <p><strong>Svoriai (Kiti):</strong>
         Vadovas ${(agg.weights.boss*100).toFixed(0)}% ·
         Kolegos ${(agg.weights.peer*100).toFixed(0)}% ·
         Pavaldiniai ${(agg.weights.report*100).toFixed(0)}% ·
         Kiti ${(agg.weights.other*100).toFixed(0)}%
       </p>
       <p><strong>Didžiausios spragos:</strong>
-        ${agg.gaps.map(g=>`${g.name} (${g.diff.toFixed(2)})`).join(' · ')}
+        ${agg.gaps.map(g=>`${lt(g.name)} (${g.diff.toFixed(2)})`).join(' · ')}
       </p>`;
   }
 
@@ -312,7 +310,7 @@ const GLA = (()=>{
     const existing = Chart.getChart(canvasId);
     if(existing) existing.destroy();
 
-    const labels = agg.bank.competencies.map(c=>c.name);
+    const labels = agg.bank.competencies.map(c => lt(c.name));
     const selfData   = agg.bank.competencies.map((_,ci) => agg.means.self[ci] || 0);
     const othersData = agg.bank.competencies.map((_,ci) => agg.others[ci] || 0);
 
@@ -321,16 +319,16 @@ const GLA = (()=>{
       data: {
         labels,
         datasets: [
-          { label:'Self', data:selfData, fill:true,
+          { label:'Savivertinimas', data:selfData, fill:true,
             backgroundColor:'rgba(90,200,250,.15)', borderColor:'rgba(90,200,250,.9)', pointBackgroundColor:'rgba(90,200,250,1)' },
-          { label:'Others (svorinė)', data:othersData, fill:true,
+          { label:'Kiti (svorinė)', data:othersData, fill:true,
             backgroundColor:'rgba(126,224,129,.15)', borderColor:'rgba(126,224,129,.9)', pointBackgroundColor:'rgba(126,224,129,1)' }
         ]
       },
       options: {
         scales:{ r:{ suggestedMin:1, suggestedMax:5, ticks:{ stepSize:1, backdropColor:'transparent' },
-          grid:{ color:'rgba(255,255,255,.1)' }, angleLines:{ color:'rgba(255,255,255,.1)' },
-          pointLabels:{ font:{ size:11 } } } },
+          grid:{ color:'rgba(128,128,128,.2)' }, angleLines:{ color:'rgba(128,128,128,.2)' },
+          pointLabels:{ font:{ size:10 } } } },
         plugins:{ legend:{ position:'bottom' } }
       }
     });
@@ -345,35 +343,35 @@ const GLA = (()=>{
         ? `<span class="${diff >= 0 ? 'pos' : 'neg'}">${diff >= 0 ? '+' : ''}${diff.toFixed(2)}</span>`
         : '—';
       return `<tr>
-        <td>${esc(cl)}</td>
+        <td>${esc(lt(cl))}</td>
         <td>${s !== null ? s.toFixed(2) : '—'}</td>
         <td>${o !== null ? o.toFixed(2) : '—'}</td>
         <td>${diffStr}</td>
       </tr>`;
     }).join('');
     return `<table>
-      <thead><tr><th>Sritis</th><th>Self</th><th>Others (sv.)</th><th>Skirtumas</th></tr></thead>
+      <thead><tr><th>Sritis</th><th>Savivertinimas</th><th>Kiti (sv.)</th><th>Skirtumas</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
   }
 
   function renderStrengthsGaps(agg, strengthsId, gapsId){
     const SUGGESTIONS = {
-      'Demonstrating Integrity':       'Savaitiniai įsipareigojimų apžvalgos ritualai; viešas statuso ataskaitos šablonas.',
-      'Encouraging Dialogue':          'Įveskite 2 min. tylos + klausimų raundą kiekviename susitikime.',
-      'Creating Shared Vision':        'Vienas vizijos šablonas: tikslas → kliento vertė → sėkmės metrika.',
-      'Developing Technological Savvy':'Kas 2 savaitės 30 min. tech peržiūra + 1 pritaikymas komandoje.',
-      'Ensuring Customer Satisfaction':'Mėnesio ritmas: CSAT/NPS įžvalgos → konkretūs veiksmai.',
+      'Demonstrating Integrity':          'Savaitiniai įsipareigojimų apžvalgos ritualai; viešas statuso ataskaitos šablonas.',
+      'Encouraging Dialogue':             'Įveskite 2 min. tylos + klausimų raundą kiekviename susitikime.',
+      'Creating Shared Vision':           'Vienas vizijos šablonas: tikslas → kliento vertė → sėkmės metrika.',
+      'Developing Technological Savvy':   'Kas 2 savaitės 30 min. tech peržiūra + 1 pritaikymas komandoje.',
+      'Ensuring Customer Satisfaction':   'Mėnesio ritmas: CSAT/NPS įžvalgos → konkretūs veiksmai.',
       'Maintaining Competitive Advantage':'Ketvirtis: 2 konkurentų analizės + 1 eksperimentas.',
-      'Developing People':             '1:1 – konkreti gebėjimo sritis praktika ir mikro‑elgesys kas 2 sav.',
-      'Building Partnerships':         'Kas mėnesį – 1 nauja partnerystė su aiškiu abipusės vertės tikslu.',
-      'Sharing Leadership':            'Deleguokite sprendimą su aiškiais rėmais ir sėkmės kriterijais.',
-      'Achieving Personal Mastery':    'Kasdien 10 min. refleksija + savaitinis prioritetų peržiūrėjimas.',
-      'Anticipating Opportunities':    'Du scenarijai (geriausias/blogiausias) su trigeriais trims tikslams.',
-      'Leading Change':                'Kiekvienam pokyčiui: kas/ką/kada/kodėl + 2 greiti laimėjimai.',
-      'Empowering People':             'Suteikite autonomiją vienoje srityje su aiškiais sprendimo rėmais.',
-      'Thinking Globally':             'Sprendimus tikrinkite per 3 rinkų ar kultūrų perspektyvą.',
-      'Appreciating Diversity':        'Skirtumų vertė – 2 min. momentas kiekviename susitikime.'
+      'Developing People':                '1:1 – konkreti grįžtamoji informacija ir augimo klausimas kas 2 sav.',
+      'Building Partnerships':            'Kas mėnesį – 1 nauja partnerystė su aiškiu abipusės vertės tikslu.',
+      'Sharing Leadership':               'Deleguokite sprendimą su aiškiais rėmais ir sėkmės kriterijais.',
+      'Achieving Personal Mastery':       'Kasdien 10 min. refleksija + savaitinis prioritetų peržiūrėjimas.',
+      'Anticipating Opportunities':       'Du scenarijai (geriausias/blogiausias) su trigeriais trims tikslams.',
+      'Leading Change':                   'Kiekvienam pokyčiui: kas/ką/kada/kodėl + 2 greiti laimėjimai.',
+      'Empowering People':                'Suteikite autonomiją vienoje srityje su aiškiais sprendimo rėmais.',
+      'Thinking Globally':                'Sprendimus tikrinkite per 3 rinkų ar kultūrų perspektyvą.',
+      'Appreciating Diversity':           'Skirtumų vertė – 2 min. momentas kiekviename susitikime.'
     };
     const CAPITALIZE = 'Dokumentuokite gerąją praktiką ir dalinkitės per shadowing ar mini‑mokymą.';
 
@@ -385,9 +383,9 @@ const GLA = (()=>{
         el.innerHTML = agg.gaps.map(g => `
           <li>
             <div class="sg-title">
-              <strong>${esc(g.name)}</strong>
-              <span class="badge">${esc(g.cluster)}</span>
-              <span class="score-chip neg">Others ${g.others !== null ? g.others.toFixed(2) : '—'} · Self ${g.self !== null ? g.self.toFixed(2) : '—'} · Tarpas ${g.diff.toFixed(2)}</span>
+              <strong>${esc(lt(g.name))}</strong>
+              <span class="badge">${esc(lt(g.cluster))}</span>
+              <span class="score-chip neg">Kiti ${g.others !== null ? g.others.toFixed(2) : '—'} · Aš ${g.self !== null ? g.self.toFixed(2) : '—'} · Tarpas ${g.diff.toFixed(2)}</span>
             </div>
             <div class="suggest">💡 ${esc(SUGGESTIONS[g.name] || 'Apibrėžkite konkretų, matuojamą elgesį ir 30/60/90 d. planą.')}</div>
           </li>`).join('');
@@ -399,13 +397,13 @@ const GLA = (()=>{
       const isRelative = agg.strengths.length > 0 && agg.strengths[0]._relative;
       if(isRelative){
         el.innerHTML = `<li class="alert info" style="list-style:none;margin-bottom:8px;">
-          ℹ️ Vertintojai visose gebėjimo sritise įvertino žemiau nei Self. Žemiau – santykinai stipriausios sritys.
+          ℹ️ Vertintojai visose srityse įvertino žemiau nei savivertinimas. Žemiau – santykinai stipriausios sritys.
         </li>` + agg.strengths.map(s => `
           <li>
             <div class="sg-title">
-              <strong>${esc(s.name)}</strong>
-              <span class="badge">${esc(s.cluster)}</span>
-              <span class="score-chip neutral">Others ${s.others !== null ? s.others.toFixed(2) : '—'} · Self ${s.self !== null ? s.self.toFixed(2) : '—'} · ${s.diff.toFixed(2)}</span>
+              <strong>${esc(lt(s.name))}</strong>
+              <span class="badge">${esc(lt(s.cluster))}</span>
+              <span class="score-chip neutral">Kiti ${s.others !== null ? s.others.toFixed(2) : '—'} · Aš ${s.self !== null ? s.self.toFixed(2) : '—'} · ${s.diff.toFixed(2)}</span>
             </div>
             <div class="suggest">🚀 ${esc(CAPITALIZE)}</div>
           </li>`).join('');
@@ -413,9 +411,9 @@ const GLA = (()=>{
         el.innerHTML = agg.strengths.map(s => `
           <li>
             <div class="sg-title">
-              <strong>${esc(s.name)}</strong>
-              <span class="badge">${esc(s.cluster)}</span>
-              <span class="score-chip pos">Others ${s.others !== null ? s.others.toFixed(2) : '—'} · Self ${s.self !== null ? s.self.toFixed(2) : '—'} · +${s.diff.toFixed(2)}</span>
+              <strong>${esc(lt(s.name))}</strong>
+              <span class="badge">${esc(lt(s.cluster))}</span>
+              <span class="score-chip pos">Kiti ${s.others !== null ? s.others.toFixed(2) : '—'} · Aš ${s.self !== null ? s.self.toFixed(2) : '—'} · +${s.diff.toFixed(2)}</span>
             </div>
             <div class="suggest">🚀 ${esc(CAPITALIZE)}</div>
           </li>`).join('');
@@ -430,10 +428,10 @@ const GLA = (()=>{
       el.innerHTML = '<li class="muted">Komentarų nėra.</li>';
       return;
     }
-    // Group by role for anonymity – show role but not rater number
+    const roleLabels = { self:'Pats lyderis', boss:'Vadovas', peer:'Kolega', report:'Pavaldinys', other:'Kitas' };
     el.innerHTML = agg.comments.map(c => `
       <li>
-        <span class="badge">${esc(c.role.toUpperCase())}</span>
+        <span class="badge">${esc(roleLabels[c.role] || c.role.toUpperCase())}</span>
         <span class="badge secondary">${c.type === 'strengths' ? '💪 Stiprybės' : '🎯 Tobulinti'}</span>
         ${esc(c.text)}
       </li>`).join('');
@@ -461,6 +459,7 @@ const GLA = (()=>{
     renderRadar,
     renderClusters,
     renderStrengthsGaps,
-    renderComments
+    renderComments,
+    lt  // export lt() for use in plan.html and other pages
   };
 })();
