@@ -570,11 +570,7 @@
   ];
 
   
-  // ── Load competency list for manual picker ───────────────────────────────
-  // Uses PLAN_DB keys directly - no async needed, no GLA dependency
-  function initManualPicker(){
-    const picker = document.getElementById('manualPicker');
-    if(!picker) return;
+
 
     // Competency → cluster mapping (mirrors questions.json structure)
     const COMP_CLUSTERS = {
@@ -613,6 +609,12 @@
       'Appreciating Diversity':           'Įvairovės vertinimas',
     };
     const ltComp = name => COMP_LT[name] || name;
+  
+    // ── Load competency list for manual picker ───────────────────────────────
+  // Uses PLAN_DB keys directly - no async needed, no GLA dependency
+  function initManualPicker(){
+    const picker = document.getElementById('manualPicker');
+    if(!picker) return;
 
     const comps = Object.keys(PLAN_DB);
     picker.innerHTML = comps.map(name => `
