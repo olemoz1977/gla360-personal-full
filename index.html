@@ -28,7 +28,7 @@
 
   <section class="card">
     <h2>Naujas vertinimas</h2>
-    <p class="muted">Įveskite savo vardą, nurodykite kiek žmonių vertins kiekvienoje grupėje ir spauskite <strong>Sukurti</strong>. Gausite nuorodas, kurias išsiųsite vertintojams per Anonimiškumo sergėtoja jeigu norite didesnio anonimiškumo .</p>
+    <p class="muted">Įveskite savo vardą, nurodykite kiek žmonių vertins kiekvienoje grupėje ir spauskite <strong>Sukurti</strong>. Gausite nuorodas, kurias išsiųsite vertintojams.</p>
 
     <div class="grid2 mt">
       <label>Jūsų vardas
@@ -78,9 +78,9 @@
     <h2>Kaip tai veikia?</h2>
     <ol style="padding-left:18px; line-height:2;">
       <li>Sukurkite vertinimą aukščiau → gausite <strong>Assessment ID</strong> ir nuorodas.</li>
-      <li>Išsiųskite nuorodas per Anonimiškumo sergėtoja savo vertintojams el. paštu arba žinute.</li>
-      <li>Kiekvienas vertintojas atsakys į klausimus naršyklėje ir atsisiųs <code>*.json</code> failą kuri persius Anonimiškumo sergėtoju.</li>
-      <li>Surinkite visus <code>*.json</code> failus  per Anonimiškumo sergėtoja ir atidarykite <a href="report.html">📊 Ataskaita</a>.</li>
+      <li>Išsiųskite nuorodas savo rateriams el. paštu arba žinute.</li>
+      <li>Kiekvienas rateris atsakys į klausimus naršyklėje ir atsisiųs <code>*.json</code> failą.</li>
+      <li>Surinkite visus <code>*.json</code> failus ir atidarykite <a href="report.html">report.html</a>.</li>
       <li>Peržiūrėkite rezultatus: radaras, klasteriai, Top 3 spragos ir stiprybės.</li>
     </ol>
     <p class="muted mt">🔒 Privatumas: jokių duomenų į serverį. Viskas vyksta naršyklėje.</p>
@@ -127,6 +127,7 @@
       u.searchParams.set('aid', aid);
       u.searchParams.set('role', role);
       u.searchParams.set('i', i);
+      if(leader) u.searchParams.set('ln', leader);
       if(gName)  u.searchParams.set('gn', gName);
       if(gEmail) u.searchParams.set('ge', gEmail);
       return u.toString();
@@ -159,7 +160,7 @@
       }
     });
 
-    html += `<p class="muted mt">Išsiųskite šias vertintojams per Anonimiškumo sergėtoja. Užpildę jie atsisiųs <code>*.json</code> ir  per Anonimiškumo sergėtoja perduos jums.</p>`;
+    html += `<p class="muted mt">Išsiųskite šias nuorodas rateriams. Užpildę jie atsisiųs <code>*.json</code> ir atsiųs jums.</p>`;
     document.getElementById('links').innerHTML = html;
     document.getElementById('links').scrollIntoView({ behavior:'smooth', block:'start' });
   });
