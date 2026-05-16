@@ -94,9 +94,10 @@
     <section class="card no-print">
       <h2>Eksportas ir tolimesni žingsniai</h2>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-        <button id="saveJson" type="button">⬇ Atsisiųsti JSON</button>
-        <button type="button" onclick="window.print()" class="secondary">🖨 Spausdinti / PDF</button>
-        <a href="plan.html" class="btn" style="background:var(--accent);">📋 Generuoti 90 d. planą →</a>
+     <button id="saveJson" type="button">⬇ Atsisiųsti JSON</button>
+<button type="button" onclick="window.print()" class="secondary">🖨 Spausdinti / PDF</button>
+<a href="plan.html"    class="btn" style="background:var(--accent);">📋 Generuoti 90 d. planą →</a>
+<button id="goCompare" type="button" class="secondary" style="border-color:rgba(90,200,250,.4);">📈 Palyginti su ankstesniu ciklu →</button>
       </div>
       <p class="muted mt" style="font-size:.88rem;">
         Atsisiųskite JSON ir įkelkite jį į <strong>90 dienų plano</strong> generatorių – 
@@ -219,6 +220,14 @@
     document.getElementById('results').style.display = 'block';
     document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
     document.getElementById('saveJson').onclick = () => GLA.download('gla360_ataskaita_' + Date.now() + '.json', lastAgg);
+    document.getElementById('goCompare').addEventListener('click', () => {
+  if(!lastAgg){ alert('Pirmiausia apskaičiuokite rezultatus.'); return; }
+  // Pažymime ciklą eksportuojamame JSON
+  const aggWithCycle = { ...lastAgg, cycle: 1 };
+  try {
+    sessionStorage.setItem('gla360_agg_for_compare', JSON.stringify(aggWithCycle));
+  } catch(e){}
+  window.location.href = 'compare.html';
   });
 })();
 </script>
