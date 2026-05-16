@@ -1141,14 +1141,16 @@
     }
 
     // 3. Iš delta items — top regressed/stagnated
-    if(!targetComps.length && delta?.items?.length){
-      const sorted = [...delta.items]
-        .filter(i => i.trend === 'regressed' || i.trend === 'stagnated')
-        .sort((a,b) => a.delta_others - b.delta_others)
-        .slice(0,3);
-      if(sorted.length) targetComps = sorted.map(i => i.name);
+    if(targetComps.length < 3 && delta?.items?.length){
+      const existing = new Set(targetComps);
+      const extra = delta.items
+        .filter(i => !existing.has(i.name))
+        .filter(i => i.c2_others !== null && i.c2_others < 3.5)
+        .sort((a,b) => (a.c2_others ?? 5) - (b.c2_others ?? 5))
+        .slice(0, 3 - targetComps.length)
+        .map(i => i.name);
+      targetComps = [...targetComps, ...extra];
     }
-
     // 4. Iš agg JSON failo
     if(!targetComps.length && aggFile.files?.[0]){
       try {
