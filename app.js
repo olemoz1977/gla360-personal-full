@@ -359,9 +359,9 @@ const GLA = (()=>{
     const SUGGESTIONS = {
       'Demonstrating Integrity':          'Savaitiniai įsipareigojimų apžvalgos ritualai; viešas statuso ataskaitos šablonas.',
       'Encouraging Dialogue':             'Įveskite 2 min. tylos + klausimų raundą kiekviename susitikime.',
-      'Creating Shared Vision':           'Vienas vizijos šablonas: tikslas → kliento vertė → sėkmės metrika.',
+      'Creating Shared Vision':           'Vienas vizijos šablonas: tikslas → kliento vertė → KPI.',
       'Developing Technological Savvy':   'Kas 2 savaitės 30 min. tech peržiūra + 1 pritaikymas komandoje.',
-      'Ensuring Customer Satisfaction':   'Mėnesio ritmas: CSAT/NPS įžvalgos → konkretūs veiksmai.',
+      'Ensuring Customer Satisfaction':   'Mėnesio ritmas: Klientų (CSAT/NPS) įžvalgos → konkretūs veiksmai.',
       'Maintaining Competitive Advantage':'Ketvirtis: 2 konkurentų analizės + 1 eksperimentas.',
       'Developing People':                '1:1 – konkreti grįžtamoji informacija ir augimo klausimas kas 2 sav.',
       'Building Partnerships':            'Kas mėnesį – 1 nauja partnerystė su aiškiu abipusės vertės tikslu.',
