@@ -1128,10 +1128,11 @@
     const leader = (document.getElementById('leaderNamePlan').value || 'Lyderis').trim();
     let targetComps = [];
 
-    // 1. Iš reflect sessionStorage
-    const { reflect, delta } = loadSession();
+   const { reflect, delta } = loadSession();
+ 
+    // 1. Regressed iš reflect
     if(reflect?.items?.length){
-      targetComps = reflect.items.slice(0,3).map(i => i.name);
+      targetComps = reflect.items.map(i => i.name);
     }
 
     // 2. Iš delta sessionStorage (gaps_c2)
