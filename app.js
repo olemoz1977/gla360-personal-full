@@ -442,7 +442,111 @@ const GLA = (()=>{
     return String(s||'').replace(/[&<>"']/g, m =>
       ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
   }
-
+// ─────────────────────────────────────────────────────────────────────────────
+// GLA360 Personal – app.js PAPILDYMAI
+// Pridėkite šį kodą į app.js pabaigą, prieš uždarymo  `return { ... }` bloką
+// ─────────────────────────────────────────────────────────────────────────────
+ 
+// ── Delta ribos ───────────────────────────────────────────────────────────────
+const DELTA_THRESHOLDS = {
+  improved:      0.5,   // Δ >= +0.5  → aiškus pagerėjimas
+  mild_improved: 0.2,   // Δ >= +0.2  → šiek tiek pagerėjo
+  stagnated_pos: 0.2,   // |Δ| < 0.2  → nepasikeitė
+  stagnated_neg:-0.2,   // |Δ| < 0.2  → nepasikeitė
+  regressed:    -0.2,   // Δ <= -0.2  → pablogėjo
+};
+ 
+// ── getTrend ──────────────────────────────────────────────────────────────────
+// Grąžina: 'improved' | 'mild_improved' | 'stagnated' | 'regressed' | 'first_time'
+function getTrend(delta){
+  if(delta === null || delta === undefined) return 'first_time';
+  if(delta >= DELTA_THRESHOLDS.improved)      return 'improved';
+  if(delta >= DELTA_THRESHOLDS.mild_improved) return 'mild_improved';
+  if(delta > DELTA_THRESHOLDS.stagnated_neg)  return 'stagnated';
+  return 'regressed';
+}
+ 
+// ── getTrendLabel ─────────────────────────────────────────────────────────────
+function getTrendLabel(trend){
+  return {
+    improved:      { lt:'Aiškiai pagerėjo',    icon:'↑↑', css:'pos'     },
+    mild_improved: { lt:'Šiek tiek pagerėjo',  icon:'↑',  css:'pos'     },
+    stagnated:     { lt:'Nepasikeitė',          icon:'→',  css:'neutral' },
+    regressed:     { lt:'Pablogėjo',            icon:'↓',  css:'neg'     },
+    first_time:    { lt:'Naujas vertinimas',    icon:'★',  css:'brand'   },
+  }[trend] || { lt:'Nežinoma', icon:'?', css:'muted' };
+}
+ 
+// ── compareAggregates ─────────────────────────────────────────────────────────
+// agg1 = ankstesnis ciklas (C1), agg2 = dabartinis (C2)
+// Grąžina delta objektą su pilna palyginimo informacija
+function compareAggregates(agg1, agg2){
+  const comps = agg2.bank.competencies;
+ 
+  const items = comps.map((comp, ci) => {
+    const c1_self   = agg1.means?.self?.[ci]   ?? null;
+    const c2_self   = agg2.means?.self?.[ci]   ?? null;
+    const c1_others = agg1.others?.[ci]         ?? null;
+    const c2_others = agg2.others?.[ci]         ?? null;
+ 
+    const delta_others = (c1_others !== null && c2_others !== null)
+      ? parseFloat((c2_others - c1_others).toFixed(3))
+      : null;
+ 
+    const delta_self = (c1_self !== null && c2_self !== null)
+      ? parseFloat((c2_self - c1_self).toFixed(3))
+      : null;
+ 
+    const trend = getTrend(delta_others);
+ 
+    return {
+      ci,
+      name:        comp.name,
+      cluster:     comp.cluster,
+      c1_self,
+      c2_self,
+      c1_others,
+      c2_others,
+      delta_others,
+      delta_self,
+      trend,
+      trendLabel:  getTrendLabel(trend),
+    };
+  });
+ 
+  // Suvestinė statistika
+  const withDelta    = items.filter(i => i.delta_others !== null);
+  const improved     = items.filter(i => i.trend === 'improved' || i.trend === 'mild_improved');
+  const stagnated    = items.filter(i => i.trend === 'stagnated');
+  const regressed    = items.filter(i => i.trend === 'regressed');
+  const avgDelta     = withDelta.length
+    ? parseFloat((withDelta.reduce((s,i) => s + i.delta_others, 0) / withDelta.length).toFixed(3))
+    : null;
+ 
+  // Top pagerėjusios ir pablogėjusios
+  const topImproved  = [...improved].sort((a,b) => b.delta_others - a.delta_others).slice(0,3);
+  const topRegressed = [...regressed].sort((a,b) => a.delta_others - b.delta_others).slice(0,3);
+ 
+  return {
+    schema:      'gla360-compare@1',
+    generatedAt: new Date().toISOString().slice(0,10),
+    cycle_c1:    agg1.cycle || 1,
+    cycle_c2:    agg2.cycle || 2,
+    items,
+    summary: {
+      total:        items.length,
+      improved:     improved.length,
+      stagnated:    stagnated.length,
+      regressed:    regressed.length,
+      avgDelta,
+    },
+    topImproved,
+    topRegressed,
+    hasRegressed:  regressed.length > 0,
+    gaps_c2:       agg2.gaps  || [],
+    weights_c2:    agg2.weights || {},
+  };
+}
   // ── Public API ────────────────────────────────────────────────────────────
   return {
     newAssessmentId,
@@ -460,6 +564,10 @@ const GLA = (()=>{
     renderClusters,
     renderStrengthsGaps,
     renderComments,
-    lt  // export lt() for use in plan.html and other pages
+    lt,// export lt() for use in plan.html and other pages
+    compareAggregates,
+     getTrend,
+    getTrendLabel,
+    DELTA_THRESHOLDS,   
   };
 })();
