@@ -1177,7 +1177,25 @@
   // ── ICS Export ────────────────────────────────────────────────────────────
   function icsDate(d){ return d.toISOString().slice(0,10).replace(/-/g,''); }
   function icsDatetime(d){ return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''); }
-  function escIcs(s){ return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); }
+function escIcs(s){
+    const escaped = String(s)
+      .replace(/\\/g,'\\\\')
+      .replace(/;/g,'\\;')
+      .replace(/,/g,'\\,')
+      .replace(/\n/g,'\\n');
+    // ICS line folding: max 75 chars per line, continuation with CRLF + space
+    let result = '';
+    let line = '';
+    for(const ch of escaped){
+      if((line + ch).length > 74){
+        result += line + '\r\n ';
+        line = ch;
+      } else {
+        line += ch;
+      }
+    }
+    return result + line;
+  }
 
   function freqToIcs(freq, phaseOffset){
     const f = freq.toLowerCase();
@@ -1224,7 +1242,7 @@
         'END:VALARM'
       );
       lines.push(
-        `SUMMARY:GLA360: ${escIcs(item.text.slice(0,60))}${item.text.length>60?'...':''}`,
+        `SUMMARY:GLA360: ${escIcs(item.text.slice(0,50))}`,
         `DESCRIPTION:${escIcs(item.comp+'\n'+item.freq+'\n\n'+item.text)}`,
         'CATEGORIES:GLA360,Lyderystė','STATUS:CONFIRMED',
         `DTSTAMP:${icsDatetime(new Date())}`,
