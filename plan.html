@@ -1234,19 +1234,18 @@ function escIcs(s){
         `DTSTART;VALUE=DATE:${icsDate(eventDate)}`,
         `DTEND;VALUE=DATE:${icsDate(dateAddDays(eventDate,1))}`);
       if(rrule){ const until = icsDate(dateAddDays(startDate,90)); lines.push(`RRULE:${rrule};UNTIL=${until}`); }
-     lines.push(
-        'BEGIN:VALARM',
-        'TRIGGER:-PT15M',
-        'ACTION:DISPLAY',
-        `DESCRIPTION:GLA360: ${escIcs(item.text.slice(0,80))}`,
-        'END:VALARM'
-      );
       lines.push(
         `SUMMARY:GLA360: ${escIcs(item.text.slice(0,50))}`,
         `DESCRIPTION:${escIcs(item.comp+'\n'+item.freq+'\n\n'+item.text)}`,
         'CATEGORIES:GLA360,Lyderystė','STATUS:CONFIRMED',
         `DTSTAMP:${icsDatetime(new Date())}`,
-        'END:VEVENT');
+        'BEGIN:VALARM',
+        'TRIGGER:-PT15M',
+        'ACTION:DISPLAY',
+        'DESCRIPTION:GLA360 priminimas',
+        'END:VALARM',
+        'END:VEVENT'
+      );
     });
     lines.push('END:VCALENDAR');
     return lines.join('\r\n');
