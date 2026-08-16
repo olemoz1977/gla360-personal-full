@@ -16,11 +16,13 @@ const FOCUS = {
   AD: 'Įvairovės vertinimas'
 };
 
+const DAY_MS = 24 * 60 * 60 * 1000;
 const CADENCE_MS = {
-  weekly: 7 * 24 * 60 * 60 * 1000,
-  twice: 3.5 * 24 * 60 * 60 * 1000,
-  milestones: 30 * 24 * 60 * 60 * 1000
+  weekly: 7 * DAY_MS,
+  twice: 3.5 * DAY_MS
 };
+const MILESTONE_DAYS = [30, 60, 90];
+const SILENCE_GRACE_MS = 7 * DAY_MS;
 
 export default {
   async fetch(request, env) {
@@ -143,9 +145,12 @@ async function handleCallback(query, env) {
 
   if (data.startsWith('cadence:')) {
     const cadence = data.split(':')[1];
-    if (!CADENCE_MS[cadence]) return;
+    if (![...Object.keys(CADENCE_MS), 'milestones'].includes(cadence)) return;
 
-    const nextDue = new Date(Date.now() + CADENCE_MS[cadence]).toISOString();
+    const user = await getUser(chatId, env);
+    if (!user) return sendMessage(chatId, 'Pradėkite nuo /start.', env);
+
+    const nextDue = nextDueAt({ ...user, cadence });
     await env.DB.prepare(`
       UPDATE users
       SET cadence = ?, status = 'active', awaiting = 'commitment', next_due_at = ?, updated_at = ?
@@ -219,16 +224,20 @@ async function handleCheckinResult(chatId, result, env) {
 
   if (result === 'partial' || result === 'notyet') {
     await recordCheckin(chatId, commitment.id, result, null, env);
+    await reschedule(chatId, env);
     await env.DB.prepare(`UPDATE users SET awaiting = 'blocker', updated_at = ? WHERE chat_id = ?`)
       .bind(isoNow(), chatId).run();
     return sendMessage(chatId, 'Jei nori, vienu sakiniu užfiksuok kas sutrukdė. Jei nenori rašyti, siųsk „-“.', env);
   }
 
   if (result === 'later') {
-    const nextDue = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
+    const nextDue = new Date(Date.now() + 2 * DAY_MS).toISOString();
     await recordCheckin(chatId, commitment.id, 'later', null, env);
-    await env.DB.prepare(`UPDATE users SET next_due_at = ?, updated_at = ? WHERE chat_id = ?`)
-      .bind(nextDue, isoNow(), chatId).run();
+    await env.DB.prepare(`
+      UPDATE users
+      SET status = 'active', awaiting = NULL, next_due_at = ?, updated_at = ?
+      WHERE chat_id = ?
+    `).bind(nextDue, isoNow(), chatId).run();
     return sendMessage(chatId, 'Gerai. Grįšiu prie šio pažado po 2 dienų.', env);
   }
 }
@@ -248,7 +257,6 @@ async function saveBlocker(chatId, text, env) {
 
   await env.DB.prepare(`UPDATE users SET awaiting = NULL, updated_at = ? WHERE chat_id = ?`)
     .bind(isoNow(), chatId).run();
-  await reschedule(chatId, env);
 
   return sendMessage(chatId, note ? 'Kliūtis užfiksuota.' : 'Gerai, be papildomo komentaro.', env);
 }
@@ -266,7 +274,11 @@ async function status(chatId, env) {
   const codes = (user.focus_codes || '').split(',').filter(Boolean);
   const focusText = codes.length ? codes.map(c => FOCUS[c] || c).join(', ') : 'neperduotas';
   const active = commitments.results || [];
-  const next = user.status === 'paused' ? 'pauzė' : (user.next_due_at || 'nenustatyta');
+  const next = user.status === 'paused'
+    ? 'pauzė'
+    : user.status === 'waiting'
+      ? 'laukiu tavo atsakymo'
+      : compactDate(user.next_due_at);
 
   const body = [
     `Fokusas: ${focusText}`,
@@ -281,8 +293,14 @@ async function status(chatId, env) {
 }
 
 async function pause(chatId, env) {
-  await env.DB.prepare(`UPDATE users SET status = 'paused', next_due_at = NULL, awaiting = NULL, updated_at = ? WHERE chat_id = ?`)
-    .bind(isoNow(), chatId).run();
+  const user = await getUser(chatId, env);
+  if (!user) return sendMessage(chatId, 'Pradėkite nuo /start.', env);
+
+  await env.DB.prepare(`
+    UPDATE users
+    SET status = 'paused', next_due_at = NULL, awaiting = NULL, updated_at = ?
+    WHERE chat_id = ?
+  `).bind(isoNow(), chatId).run();
   return sendMessage(chatId, 'Pauzė įjungta. Kol neparašysi /resume, priminimų nebus.', env);
 }
 
@@ -290,9 +308,16 @@ async function resume(chatId, env) {
   const user = await getUser(chatId, env);
   if (!user) return sendMessage(chatId, 'Pradėkite nuo /start.', env);
 
-  const nextDue = new Date(Date.now() + (CADENCE_MS[user.cadence] || CADENCE_MS.weekly)).toISOString();
-  await env.DB.prepare(`UPDATE users SET status = 'active', next_due_at = ?, updated_at = ? WHERE chat_id = ?`)
-    .bind(nextDue, isoNow(), chatId).run();
+  const nextDue = nextDueAt(user);
+  if (!nextDue && user.cadence === 'milestones') {
+    return sendMessage(chatId, '90 dienų ciklas jau pasibaigęs. Laikas pakartotiniam Leadership 360° vertinimui.', env);
+  }
+
+  await env.DB.prepare(`
+    UPDATE users
+    SET status = 'active', awaiting = NULL, next_due_at = ?, updated_at = ?
+    WHERE chat_id = ?
+  `).bind(nextDue, isoNow(), chatId).run();
   return sendMessage(chatId, 'Tęsiam. Priminsiu pagal tavo pasirinktą ritmą.', env);
 }
 
@@ -309,6 +334,9 @@ async function markCurrentDone(chatId, env) {
 }
 
 async function deleteUser(chatId, env) {
+  const user = await getUser(chatId, env);
+  if (!user) return sendMessage(chatId, 'Companion duomenų šiam pokalbiui nėra.', env);
+
   await env.DB.batch([
     env.DB.prepare(`DELETE FROM checkins WHERE chat_id = ?`).bind(chatId),
     env.DB.prepare(`DELETE FROM commitments WHERE chat_id = ?`).bind(chatId),
@@ -320,13 +348,30 @@ async function deleteUser(chatId, env) {
 async function sendDueCheckins(env) {
   const now = isoNow();
   const due = await env.DB.prepare(`
-    SELECT chat_id, cadence, started_at, focus_codes
+    SELECT chat_id, cadence, started_at, focus_codes, status, next_due_at
     FROM users
-    WHERE status = 'active' AND next_due_at IS NOT NULL AND next_due_at <= ?
+    WHERE status IN ('active','waiting')
+      AND next_due_at IS NOT NULL
+      AND next_due_at <= ?
+    ORDER BY next_due_at ASC
     LIMIT 100
   `).bind(now).all();
 
   for (const user of due.results || []) {
+    if (user.status === 'waiting') {
+      await sendMessage(
+        user.chat_id,
+        'Nenoriu tavęs vaikytis. Šiam kartui priminimus sustabdau. Kai norėsi tęsti, parašyk /resume.',
+        env
+      );
+      await env.DB.prepare(`
+        UPDATE users
+        SET status = 'paused', next_due_at = NULL, awaiting = NULL, updated_at = ?
+        WHERE chat_id = ?
+      `).bind(isoNow(), user.chat_id).run();
+      continue;
+    }
+
     const commitment = await currentCommitment(user.chat_id, env);
 
     if (!commitment) {
@@ -336,13 +381,14 @@ async function sendDueCheckins(env) {
     }
 
     const milestone = milestoneNumber(user.started_at);
-    const prefix = milestone
-      ? `${milestone} dienų etapas. `
+    const prefix = milestone ? `${milestone} dienų etapas. ` : '';
+    const repeatNote = milestone === 90
+      ? '\n\nPo šio check-in jau verta grįžti į pakartotinį Leadership 360° ciklą: https://omesg360.eu/leadership-360/'
       : '';
 
     await sendMessage(
       user.chat_id,
-      `${prefix}Tavo pažadas:\n“${commitment.text}”\n\nKur esi dabar?`,
+      `${prefix}Tavo pažadas:\n“${commitment.text}”\n\nKur esi dabar?${repeatNote}`,
       env,
       {
         inline_keyboard: [
@@ -359,19 +405,41 @@ async function sendDueCheckins(env) {
       }
     );
 
-    await env.DB.prepare(`UPDATE users SET last_checkin_at = ?, next_due_at = NULL, updated_at = ? WHERE chat_id = ?`)
-      .bind(now, now, user.chat_id).run();
+    const silenceDeadline = new Date(Date.now() + SILENCE_GRACE_MS).toISOString();
+    await env.DB.prepare(`
+      UPDATE users
+      SET status = 'waiting', last_checkin_at = ?, next_due_at = ?, updated_at = ?
+      WHERE chat_id = ?
+    `).bind(now, silenceDeadline, now, user.chat_id).run();
   }
 }
 
 async function reschedule(chatId, env) {
   const user = await getUser(chatId, env);
-  if (!user || user.status !== 'active') return;
+  if (!user || user.status === 'paused') return;
 
-  const ms = CADENCE_MS[user.cadence] || CADENCE_MS.weekly;
-  const nextDue = new Date(Date.now() + ms).toISOString();
-  await env.DB.prepare(`UPDATE users SET next_due_at = ?, last_checkin_at = ?, updated_at = ? WHERE chat_id = ?`)
-    .bind(nextDue, isoNow(), isoNow(), chatId).run();
+  const nextDue = nextDueAt(user);
+  await env.DB.prepare(`
+    UPDATE users
+    SET status = 'active', next_due_at = ?, last_checkin_at = ?, updated_at = ?
+    WHERE chat_id = ?
+  `).bind(nextDue, isoNow(), isoNow(), chatId).run();
+}
+
+function nextDueAt(user, nowMs = Date.now()) {
+  if (user.cadence === 'milestones') {
+    const startMs = new Date(user.started_at).getTime();
+    if (!Number.isFinite(startMs)) return null;
+
+    for (const day of MILESTONE_DAYS) {
+      const dueMs = startMs + day * DAY_MS;
+      if (dueMs > nowMs + 60 * 1000) return new Date(dueMs).toISOString();
+    }
+    return null;
+  }
+
+  const interval = CADENCE_MS[user.cadence] || CADENCE_MS.weekly;
+  return new Date(nowMs + interval).toISOString();
 }
 
 async function currentCommitment(chatId, env) {
@@ -404,17 +472,24 @@ function parseFocusCodes(payload) {
 
 function milestoneNumber(startedAt) {
   if (!startedAt) return null;
-  const days = Math.floor((Date.now() - new Date(startedAt).getTime()) / (24 * 60 * 60 * 1000));
-  if (days >= 88 && days <= 95) return 90;
-  if (days >= 58 && days <= 65) return 60;
-  if (days >= 28 && days <= 35) return 30;
+  const days = Math.floor((Date.now() - new Date(startedAt).getTime()) / DAY_MS);
+  if (days >= 88 && days <= 97) return 90;
+  if (days >= 58 && days <= 67) return 60;
+  if (days >= 28 && days <= 37) return 30;
   return null;
 }
 
 function cadenceLabel(cadence) {
   if (cadence === 'twice') return '2× per savaitę';
-  if (cadence === 'milestones') return 'tik etapai';
+  if (cadence === 'milestones') return 'tik 30/60/90 d. etapai';
   return '1× per savaitę';
+}
+
+function compactDate(value) {
+  if (!value) return 'nenustatyta';
+  const d = new Date(value);
+  if (!Number.isFinite(d.getTime())) return value;
+  return d.toISOString().slice(0, 10);
 }
 
 async function sendMessage(chatId, text, env, replyMarkup) {
@@ -439,11 +514,14 @@ async function sendMessage(chatId, text, env, replyMarkup) {
 
 async function answerCallback(callbackQueryId, env) {
   if (!callbackQueryId) return;
-  await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+  const res = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ callback_query_id: callbackQueryId })
   });
+  if (!res.ok) {
+    console.error('Telegram answerCallbackQuery failed', res.status, await res.text());
+  }
 }
 
 function isoNow() {
