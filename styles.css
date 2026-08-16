@@ -361,3 +361,7 @@ code {
 .self-bar   { background: rgba(90,200,250,.75); }
 .others-bar { background: rgba(126,224,129,.75); }
 .bar-val    { font-size: .8rem; font-weight: 600; white-space: nowrap; min-width: 80px; }
+
+/* The old daily/paid Telegram companion promo is deprecated.
+   Keep it hidden until the low-noise 90-day companion is ready. */
+#botCard { display: none !important; }
