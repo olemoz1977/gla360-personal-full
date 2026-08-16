@@ -23,6 +23,8 @@ The MVP deliberately does not require an LLM. That keeps cost, complexity and be
 - No raw 360° responses are stored here.
 - Store only what the companion needs: Telegram chat/user ID, selected focus codes, commitments, reminder state and check-in history.
 - `/pause` must immediately stop reminders. `/resume` restarts them.
+- If a user ignores a check-in, the companion waits seven days, sends one short non-judgemental closing message, then auto-pauses. It does not keep chasing.
+- Milestone-only mode is anchored to the original cycle start: day 30, day 60 and day 90. It does not drift just because a user answered late.
 
 ## Telegram start payload
 
@@ -76,18 +78,21 @@ The user writes a short commitment. More can be added later with `/add`.
 
 ### 3. Check-in
 
-A scheduled check-in shows the current commitment and four buttons:
+A scheduled check-in shows the current commitment and buttons:
 
 - Padaryta
 - Iš dalies
 - Dar ne
+- Po 2 dienų
 - Pauzė
 
 `Iš dalies` and `Dar ne` can be followed by one short blocker note.
 
+If the check-in is ignored, the bot does not continue indefinitely. After seven days it sends one short message explaining that reminders are being paused. The user can restart them with `/resume`.
+
 ### 4. Milestones
 
-At roughly 30, 60 and 90 days the bot asks for a short reflection and can show a simple progress count. The 90-day milestone should point the user back to the repeat Leadership 360° cycle.
+At roughly 30, 60 and 90 days the bot marks the milestone in the check-in. In milestone-only mode those dates are calculated from the original cycle start. At day 90 it points the user back to the repeat Leadership 360° cycle.
 
 ## Commands
 
@@ -124,7 +129,7 @@ At roughly 30, 60 and 90 days the bot asks for a short reflection and can show a
 4. Add Worker secrets.
 5. Deploy Worker.
 6. Set Telegram webhook with the same secret token.
-7. Smoke-test `/start`, cadence, one commitment, `/pause`, `/resume`, and one forced due reminder.
+7. Smoke-test `/start`, cadence, one commitment, `/pause`, `/resume`, one forced due reminder, ignored-reminder auto-pause, and the 30/60/90 schedule.
 8. Only after that change `plan.html` from the legacy deep-link format to short focus codes.
 
 ## Not in MVP
