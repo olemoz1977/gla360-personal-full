@@ -18,7 +18,7 @@ The MVP deliberately does not require an LLM. That keeps cost, complexity and be
 
 The companion is one product and one backend with an LT/EN presentation layer.
 
-- One Telegram bot, intended public identity: `@OMESG360Bot`.
+- One Telegram bot, confirmed public identity: `@OMESG360Bot`.
 - One Worker and one D1 database.
 - One shared set of competency codes and reminder states.
 - Lithuanian and English labels/messages are rendered from the same state machine.
@@ -27,7 +27,7 @@ The companion is one product and one backend with an LT/EN presentation layer.
 - `/language` lets the user change language later.
 - Adding another language later should require copy/localization work, not a new bot or new database schema.
 
-The final Telegram username must be confirmed in BotFather before deployment. Do not expose a public bot link until that is done.
+Telegram bot confirmed in BotFather: `@OMESG360Bot`. Public bot link: `https://t.me/OMESG360Bot`. Do not expose it from the product UI until the Worker, D1 and Telegram webhook pass a real smoke test.
 
 ## Product rules
 
@@ -158,14 +158,14 @@ Commands remain the same in both languages so the backend and support documentat
 
 ## Deployment checklist
 
-1. Create/confirm the Telegram bot in BotFather. Preferred identity: `@OMESG360Bot` if available.
-2. Generate a fresh bot token for deployment.
+1. Telegram bot confirmed in BotFather: `@OMESG360Bot`.
+2. Keep the BotFather token private. Add it directly to Cloudflare as the `TELEGRAM_BOT_TOKEN` Worker secret; never commit it to GitHub or paste it into public documentation.
 3. Create D1 database.
 4. Put its `database_id` into `wrangler.toml`.
 5. Apply `schema.sql`.
-6. Add Worker secrets.
+6. Add `TELEGRAM_WEBHOOK_SECRET` as a separate Worker secret.
 7. Deploy Worker.
-8. Set Telegram webhook with the same secret token.
+8. Set Telegram webhook with the same webhook secret token.
 9. Smoke-test generic `/start` language choice, direct LT deep link, direct EN deep link, `/language`, cadence, one commitment, `/pause`, `/resume`, one forced due reminder, ignored-reminder auto-pause and the 30/60/90 schedule.
 10. Only after that change the public Leadership 360° plan-page handoff to the new language-aware deep link.
 
