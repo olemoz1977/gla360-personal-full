@@ -1,0 +1,11 @@
+name = "leadership-360-companion"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+
+[triggers]
+crons = ["0 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "leadership-360-companion"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
