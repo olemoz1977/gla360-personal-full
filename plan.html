@@ -14,12 +14,12 @@
   <script>
   (async function(){
     try {
-      const response = await fetch('plan-core.html?v=20260818-bot-sync-v2', { cache:'no-store' });
+      const response = await fetch('plan-core.html?v=20260818-bot-sync-v3', { cache:'no-store' });
       if(!response.ok) throw new Error('HTTP ' + response.status);
       let html = await response.text();
 
       const appTag = '<scr' + 'ipt src="app.js"></scr' + 'ipt>';
-      const syncTag = '<scr' + 'ipt src="bot-sync.js?v=20260818-bot-sync-v2"></scr' + 'ipt>\n' + appTag;
+      const syncTag = '<scr' + 'ipt src="bot-sync.js?v=20260818-bot-sync-v3"></scr' + 'ipt>\n' + appTag;
       html = html.replace(appTag, syncTag);
 
       const calendarButton = '<button id="exportIcs" type="button">📅 Eksportuoti į kalendorių (.ics)</button>';
