@@ -221,7 +221,7 @@
 
     document.getElementById('results').style.display = 'block';
     document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
-    document.getElementById('saveJson').onclick = () => GLA.download('gla360_ataskaita_' + Date.now() + '.json', lastAgg);
+    document.getElementById('saveJson').onclick = () => GLA.download('leadership360_ataskaita_' + Date.now() + '.json', lastAgg);
     document.getElementById('goCompare').addEventListener('click', () => {
   if(!lastAgg){ alert('Pirmiausia apskaičiuokite rezultatus.'); return; }
   // Pažymime ciklą eksportuojamame JSON

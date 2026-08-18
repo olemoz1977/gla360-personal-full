@@ -162,7 +162,7 @@
         <label class="file-drop" id="drop1" style="padding:18px;">
           <input id="file1" type="file" accept="application/json" style="display:none">
           <span class="file-drop-icon">📄</span>
-          <span class="file-drop-text" style="font-size:.85rem;">gla360_ataskaita_C1.json</span>
+          <span class="file-drop-text" style="font-size:.85rem;">leadership360_ataskaita_C1.json</span>
           <span id="info1" class="file-drop-count"></span>
         </label>
       </div>
@@ -172,7 +172,7 @@
         <label class="file-drop" id="drop2" style="padding:18px;border-color:rgba(126,224,129,.4);">
           <input id="file2" type="file" accept="application/json" style="display:none">
           <span class="file-drop-icon">📄</span>
-          <span class="file-drop-text" style="font-size:.85rem;">gla360_ataskaita_C2.json</span>
+          <span class="file-drop-text" style="font-size:.85rem;">leadership360_ataskaita_C2.json</span>
           <span id="info2" class="file-drop-count"></span>
         </label>
       </div>
@@ -558,7 +558,7 @@
   // ── Save delta JSON ───────────────────────────────────────────────────────
   document.getElementById('saveDeltaBtn').addEventListener('click', () => {
     if(!_cmp){ alert('Pirmiausia atlikite palyginimą.'); return; }
-    GLA.download('gla360_delta_' + Date.now() + '.json', _cmp);
+    GLA.download('leadership360_delta_' + Date.now() + '.json', _cmp);
   });
 
   // ── Navigate to reflect ───────────────────────────────────────────────────
