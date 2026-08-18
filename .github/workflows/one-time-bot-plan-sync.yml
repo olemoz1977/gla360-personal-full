@@ -3,8 +3,6 @@ name: One-time Leadership 360 bot plan sync
 on:
   push:
     branches: [main]
-    paths:
-      - .github/workflows/one-time-bot-plan-sync.yml
 
 permissions:
   contents: write
