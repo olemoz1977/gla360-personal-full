@@ -1,4 +1,5 @@
 (() => {
+  // Leadership 360° → OMESG360Bot handoff client.
   const WORKER_URL = 'https://omesg360bot.olemoz1977.workers.dev';
   const MAX_ITEMS = 3;
 
