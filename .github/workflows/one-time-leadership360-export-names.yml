@@ -1,0 +1,64 @@
+name: One-time Leadership 360 export names
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/one-time-leadership360-export-names.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rename-export-names:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rename new export filenames and visible hints
+        shell: python
+        run: |
+          from pathlib import Path
+
+          replacements = {
+              'report.html': {
+                  "GLA.download('gla360_ataskaita_' + Date.now() + '.json', lastAgg)": "GLA.download('leadership360_ataskaita_' + Date.now() + '.json', lastAgg)",
+              },
+              'compare.html': {
+                  'gla360_ataskaita_C1.json': 'leadership360_ataskaita_C1.json',
+                  'gla360_ataskaita_C2.json': 'leadership360_ataskaita_C2.json',
+                  "GLA.download('gla360_delta_' + Date.now() + '.json', _cmp)": "GLA.download('leadership360_delta_' + Date.now() + '.json', _cmp)",
+              },
+              'plan.html': {
+                  'Įkelti gla360_ataskaita_*.json': 'Įkelti Leadership 360° ataskaitos JSON',
+              },
+          }
+
+          changed = []
+          for filename, pairs in replacements.items():
+              path = Path(filename)
+              old = path.read_text(encoding='utf-8')
+              new = old
+              for source, target in pairs.items():
+                  new = new.replace(source, target)
+              if new != old:
+                  path.write_text(new, encoding='utf-8')
+                  changed.append(filename)
+          print('Changed:', ', '.join(changed) if changed else 'none')
+
+      - name: Remove one-time workflow
+        run: rm .github/workflows/one-time-leadership360-export-names.yml
+
+      - name: Commit export naming migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Rename new exports to Leadership 360"
+          git push origin HEAD:main
