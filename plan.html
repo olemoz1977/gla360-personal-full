@@ -1222,7 +1222,7 @@ function escIcs(s){
       'BEGIN:VCALENDAR','VERSION:2.0',
       'PRODID:-//Leadership 360°//Tobulėjimo planas//LT',
       'CALSCALE:GREGORIAN','METHOD:PUBLISH',
-      `X-WR-CALNAME:GLA360 - ${escIcs(leaderName)} 90d`,
+      `X-WR-CALNAME:Leadership 360° - ${escIcs(leaderName)} 90d`,
       'X-WR-TIMEZONE:Europe/Vilnius',
     ];
     items.forEach((item, idx) => {
@@ -1235,14 +1235,14 @@ function escIcs(s){
         `DTEND;VALUE=DATE:${icsDate(dateAddDays(eventDate,1))}`);
       if(rrule){ const until = icsDate(dateAddDays(startDate,90)); lines.push(`RRULE:${rrule};UNTIL=${until}`); }
       lines.push(
-        `SUMMARY:GLA360: ${escIcs(item.text.slice(0,50))}`,
+        `SUMMARY:Leadership 360°: ${escIcs(item.text.slice(0,50))}`,
         `DESCRIPTION:${escIcs(item.comp+'\n'+item.freq+'\n\n'+item.text)}`,
-        'CATEGORIES:GLA360,Lyderystė','STATUS:CONFIRMED',
+        'CATEGORIES:Leadership 360,Lyderystė','STATUS:CONFIRMED',
         `DTSTAMP:${icsDatetime(new Date())}`,
         'BEGIN:VALARM',
         'TRIGGER:-PT15M',
         'ACTION:DISPLAY',
-        'DESCRIPTION:GLA360 priminimas',
+        'DESCRIPTION:Leadership 360° priminimas',
         'END:VALARM',
         'END:VEVENT'
       );
