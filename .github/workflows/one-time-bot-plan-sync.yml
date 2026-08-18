@@ -1,0 +1,109 @@
+name: One-time Leadership 360 bot plan sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/one-time-bot-plan-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  wire-plan-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wire selected plan actions to OMESG360Bot
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          path = Path('plan.html')
+          text = path.read_text(encoding='utf-8')
+          original = text
+
+          if '<script src="bot-sync.js"></script>' not in text:
+              text = text.replace(
+                  '<script src="app.js"></script>',
+                  '<script src="bot-sync.js"></script>\n<script src="app.js"></script>',
+                  1
+              )
+
+          bot_card = '''    <section class="card" id="botCard" style="display:none;">
+      <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+        <div style="font-size:2.5rem;line-height:1;">🤖</div>
+        <div style="flex:1;">
+          <h2 style="margin-bottom:6px;">OMESG360Bot – 90 dienų plano palydovas</h2>
+          <p class="muted" style="margin-bottom:14px;">
+            Kalendorius rodo visą planą. Botas seka tik 1–3 svarbiausius pažadus ir primena apie juos be papildomo planavimo sluoksnio.
+          </p>
+          <div style="background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:14px;font-size:.9rem;">
+            <strong>Kaip perduoti:</strong>
+            <ol style="margin:8px 0 0 18px;line-height:2;">
+              <li>Plane varnelėmis pažymėkite 1–3 veiksmus, kuriuos norite sekti.</li>
+              <li>Spauskite „Perduoti į Telegram“.</li>
+              <li>Telegram atsidarys @OMESG360Bot ir prijungs būtent tuos veiksmus.</li>
+            </ol>
+          </div>
+          <button id="botSyncBtn" type="button">📲 Perduoti 1–3 veiksmus į Telegram</button>
+          <p id="botSyncStatus" class="muted" style="font-size:.82rem;margin-top:10px;">
+            Į botą perduodami tik pasirinktų veiksmų tekstai, fazė ir priminimo datos. 360° atsakymai ir komentarai nesiunčiami. Perdavimo nuoroda galioja 30 min.
+          </p>
+        </div>
+      </div>
+    </section>'''
+
+          text, card_count = re.subn(
+              r'    <section class="card" id="botCard".*?</section>',
+              bot_card,
+              text,
+              count=1,
+              flags=re.S
+          )
+          if card_count != 1:
+              raise SystemExit(f'Expected one botCard section, changed {card_count}')
+
+          new_wiring = '''    // Bot handoff uses the same checked plan actions as calendar export.
+    const botCard = document.getElementById('botCard');
+    if(botCard) botCard.style.display = 'block';
+
+    wireCalendarExport(leader);
+    if(window.Leadership360BotSync){
+      window.Leadership360BotSync.wire({ startDate: planStartDate });
+    }'''
+
+          text, wiring_count = re.subn(
+              r'    // Bot card\n.*?    wireCalendarExport\(leader\);',
+              new_wiring,
+              text,
+              count=1,
+              flags=re.S
+          )
+          if wiring_count != 1:
+              raise SystemExit(f'Expected one legacy bot wiring block, changed {wiring_count}')
+
+          text = text.replace(
+              "const fname = `GLA360_${leader.replace(/\\s+/g,'_')}_90d.ics`;",
+              "const fname = `Leadership360_${leader.replace(/\\s+/g,'_')}_90d.ics`;"
+          )
+
+          if text == original:
+              raise SystemExit('No plan.html changes produced')
+
+          path.write_text(text, encoding='utf-8')
+
+      - name: Remove one-time workflow
+        run: rm .github/workflows/one-time-bot-plan-sync.yml
+
+      - name: Commit plan handoff
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Connect Leadership 360 plan to OMESG360Bot"
+          git push origin HEAD:main
