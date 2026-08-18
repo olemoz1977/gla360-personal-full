@@ -1,0 +1,1291 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Leadership 360° – 90 dienų tobulėjimo planas</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .plan-phase {
+      border-left: 3px solid var(--brand);
+      padding-left: 16px;
+      margin: 18px 0;
+    }
+    .plan-phase.phase2 { border-color: var(--accent); }
+    .plan-phase.phase3 { border-color: var(--warn); }
+    .phase-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .phase-days {
+      font-size: .78rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: var(--surface2);
+      color: var(--muted);
+    }
+    .action-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .action-item:last-child { border-bottom: none; }
+    .action-cb { flex-shrink: 0; width: 18px; height: 18px; margin-top: 2px; accent-color: var(--brand); }
+    .action-text { font-size: .92rem; line-height: 1.5; }
+    .action-freq { font-size: .75rem; font-weight: 600; color: var(--brand); white-space: nowrap; margin-top: 2px; }
+    .comp-gap-card { background: var(--surface2); border-radius: 10px; padding: 12px 14px; margin: 10px 0; }
+    .comp-gap-title { font-weight: 700; font-size: .95rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    /* ── Cycle context banner ── */
+    .cycle-banner {
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 4px;
+      font-size: .92rem;
+      line-height: 1.6;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .cycle-banner.first-time { background: rgba(26,86,219,.07);  border: 1px solid rgba(26,86,219,.2);  }
+    .cycle-banner.has-delta  { background: rgba(5,122,85,.07);   border: 1px solid rgba(5,122,85,.2);   }
+    .cycle-banner.has-reflect{ background: rgba(180,83,9,.07);   border: 1px solid rgba(180,83,9,.2);   }
+    .cycle-banner .icon { font-size: 1.4rem; flex-shrink: 0; }
+
+    /* ── Trend chip on gap card ── */
+    .trend-chip {
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .trend-chip.improved      { background: rgba(5,122,85,.12);   color: var(--accent); }
+    .trend-chip.mild_improved { background: rgba(5,122,85,.07);   color: var(--accent); }
+    .trend-chip.stagnated     { background: rgba(169,180,196,.15);color: var(--muted);  }
+    .trend-chip.regressed     { background: rgba(192,57,43,.10);  color: var(--danger); }
+    .trend-chip.first_time    { background: rgba(26,86,219,.10);  color: var(--brand);  }
+
+    /* ── Maintenance (improved) single phase ── */
+    .maintenance-block {
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin: 18px 0;
+    }
+    .maintenance-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--accent);
+    }
+
+    @media print {
+      .no-print { display: none !important; }
+      .plan-phase, .maintenance-block { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
+  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
+    <a href="audit.html"   style="color:var(--muted);text-decoration:none;">🔍 Auditas</a>
+    <a href="index.html"   style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
+    <a href="report.html"  style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
+    <a href="compare.html" style="color:var(--muted);text-decoration:none;">📈 Palyginimas</a>
+    <a href="reflect.html" style="color:var(--muted);text-decoration:none;">✍ Refleksija</a>
+    <a href="plan.html"    style="color:var(--brand);text-decoration:none;font-weight:600;">📋 90 d. planas</a>
+    <a href="README.html"  style="color:var(--muted);text-decoration:none;">📖 Aprašas</a>
+    <a href="PRIVACY.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a>
+  </div>
+</nav>
+
+<header class="head">
+  <h1>Leadership 360° – 90 dienų tobulėjimo planas</h1>
+  <p>Įkelkite apibendrintą JSON iš ataskaitos arba pasirinkite spragų kompetencijas rankiniu būdu.</p>
+</header>
+
+<main class="wrap">
+
+  <!-- Input section -->
+  <section class="card no-print" id="inputSection">
+    <h2>Duomenų šaltinis</h2>
+
+    <!-- Cycle context banner — shown when sessionStorage data found -->
+    <div id="cycleBanner" style="display:none;"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;" class="source-grid">
+      <div>
+        <p style="font-weight:700;margin-bottom:8px;">A) Įkelti apibendrintą JSON</p>
+        <p class="muted" style="font-size:.88rem;margin-bottom:10px;">Atsisiųskite iš report.html → „Atsisiųsti JSON", tada įkelkite čia.</p>
+        <label class="file-drop" id="aggDrop" style="padding:16px;">
+          <input id="aggFile" type="file" accept="application/json" style="display:none">
+          <span class="file-drop-icon">📄</span>
+          <span class="file-drop-text" style="font-size:.85rem;">Įkelti Leadership 360° ataskaitos JSON</span>
+          <span id="aggFileInfo" class="file-drop-count"></span>
+        </label>
+      </div>
+      <div>
+        <p style="font-weight:700;margin-bottom:8px;">B) Pasirinkti rankiniu būdu</p>
+        <p class="muted" style="font-size:.88rem;margin-bottom:10px;">Pasirinkite iki 3 gebėjimų, kurioms generuoti planą.</p>
+        <div id="manualPicker"></div>
+      </div>
+    </div>
+
+    <div class="mt" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <label style="font-weight:600;">Lyderio vardas
+        <input type="text" id="leaderNamePlan" placeholder="Vardas Pavardė" style="width:200px;display:inline-block;margin-left:8px;">
+      </label>
+    </div>
+    <div class="mt">
+      <button id="generateBtn" type="button">📋 Generuoti 90 d. planą</button>
+    </div>
+  </section>
+
+  <!-- Plan output -->
+  <div id="planOutput" style="display:none;">
+
+    <section class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;">
+        <div>
+          <h2 id="planTitle">90 dienų lyderystės tobulėjimo planas</h2>
+          <p class="muted" id="planMeta"></p>
+        </div>
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button id="exportIcs" type="button">📅 Eksportuoti į kalendorių (.ics)</button>
+          <button onclick="window.print()" class="secondary">🖨 Spausdinti / PDF</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gaps summary -->
+    <section class="card">
+      <h2>Tobulintinos sritys</h2>
+      <div id="planGapsSummary"></div>
+    </section>
+
+    <!-- Dynamic plan content rendered here -->
+    <div id="planPhases"></div>
+
+    <!-- Habits -->
+    <section class="card">
+      <h2>📅 Savaitinis ritmas (visa 90 d.)</h2>
+      <div id="weeklyHabits"></div>
+    </section>
+
+    <!-- Success metrics -->
+    <section class="card">
+      <h2>✅ Sėkmės rodikliai po 90 dienų</h2>
+      <div id="successMetrics"></div>
+    </section>
+
+    <!-- Companion bot -->
+    <section class="card" id="botCard" style="display:none;">
+      <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+        <div style="font-size:2.5rem;line-height:1;">🤖</div>
+        <div style="flex:1;">
+          <h2 style="margin-bottom:6px;">Neužmiršk plano — companion bot</h2>
+          <p class="muted" style="margin-bottom:14px;">Telegram bot kas dieną paklaus: „Ar padarei bent 1 veiksmą?" Trumpas check-in = nuoseklumas = rezultatai.</p>
+          <div style="background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:14px;font-size:.9rem;">
+            <strong>Kaip pradėti:</strong>
+            <ol style="margin:8px 0 0 18px;line-height:2;">
+              <li>Spauskite mygtuką žemiau → atsidarys Telegram</li>
+              <li>Parašykite <code>/start</code></li>
+              <li>Bot pradės lydėti jus</li>
+            </ol>
+          </div>
+          <div id="botSummaryBox" style="background:rgba(90,200,250,.08);border:1px solid rgba(90,200,250,.2);border-radius:10px;padding:12px;margin-bottom:14px;font-size:.88rem;display:none;">
+            <strong>📋 Jūsų plano fokusas (bot žinos):</strong>
+            <div id="botCompList" style="margin-top:6px;color:var(--muted);"></div>
+          </div>
+          <a id="botLink" href="https://t.me/personalGLABot" target="_blank" rel="noopener"
+             style="display:inline-flex;align-items:center;gap:8px;background:#0088cc;color:#fff;padding:.6rem 1.2rem;border-radius:10px;font-weight:700;text-decoration:none;font-size:.95rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.26 13.4l-2.948-.924c-.64-.203-.658-.64.135-.953l11.57-4.461c.537-.194 1.006.131.877.159z"/>
+            </svg>
+            Pradėti su Telegram bot (Testavimo stadija.) 
+          </a>
+          <p class="muted" style="font-size:.78rem;margin-top:8px;">⚠️ Botas nemokamai lydės jūsų transformacijos kelionę 7 dienas, jeigu ši funkcija patiks ir reikės tolimesnio palaikimo – minimalus mokestis.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script src="app.js"></script>
+<script>
+(function(){
+
+  let planStartDate = null;
+
+  function dateAddDays(base, days){
+    const d = new Date(base);
+    d.setDate(d.getDate() + days);
+    return d;
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PLAN_DB — first_time veiksmų rinkiniai (originalūs)
+  // + maintenance (improved), retry (stagnated), micro (regressed + nevykdytas)
+  // ════════════════════════════════════════════════════════════════════════
+  const PLAN_DB = {
+    'Demonstrating Integrity': {
+      p1: [
+        { text: 'Peržiūrėkite paskutinius 30 d. įsipareigojimus komandai – kokie terminai praleisti ar pakeisti be paaiškinimo?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pamainos meistro/operatoriaus ar techniko: „Ar mano žodžiai atitinka veiksmus cecho lygmeniu?"', freq: 'Vieną kartą' },
+        { text: 'Sukurkite paprastą skaičiuoklę: Įsipareigojimas → Terminas → Statusas. Peržiūrėkite kas pirmadienį.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvieną pirmadienį / pirmos pamainos pradžioje: viešai paskelbkite komandai 3 svarbiausius savaitės tikslus (gamybos rodikliai, saugos veiksmai, kokybės taškai).', freq: 'Kas savaitę' },
+        { text: 'Kai tenka keisti gamybos planą – iš karto informuokite cechą ir paaiškinkite priežastį.', freq: 'Kiekvieną kartą' },
+        { text: 'Penktadienį / paskutinės pamainos pabaigoje: 5 min. apžvalga – „Ką pažadėjau savaitei? Ką įvykdžiau?"', freq: 'Kas savaitę' },
+      ],
+      p3: [
+        { text: 'Paprašykite 2 pavaldinių: „Ar pastebėjote, kad laikomasi terminų geriau nei anksčiau?"', freq: '70-ąją dieną' },
+        { text: 'Pristatykite komandai mėnesio pasiektus rezultatus lyginant su paskelbtais tikslais.', freq: 'Kas mėnesį' },
+        { text: 'Fiksuokite įvykdytų įsipareigojimų procentą (tikslas: >85%).', freq: 'Kas savaitę' },
+      ],
+      maintenance: [
+        { text: 'Tęskite pirmadienio tikslų paskelbimo ritualą — jis veikia. Pasitikrinkite: ar komanda vis dar girdi ir reaguoja?', freq: 'Kas savaitę' },
+        { text: 'Kas mėnesį peržiūrėkite įvykdytų įsipareigojimų rodiklį — ar išlaikote >85%?', freq: 'Kas mėnesį' },
+        { text: 'Pasirinkite vieną naują sritį kurioje galite dar labiau padidinti skaidrumą su komanda.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj skaičiuoklės — pabandykite fizinę lentą cecho lygmeniu: Pažadas → Terminas → Atlikta. Matomumas veikia geriau nei skaitmeniniai įrankiai.', freq: 'Vieną kartą' },
+        { text: 'Kiekvieną savaitę viešai paskelbkite VIENĄ pagrindinį įsipareigojimą — ne tris. Mažiau, bet patikimiau.', freq: 'Kas savaitę' },
+        { text: 'Paprašykite vieno patikimo pavaldinio: „Kai matai kad vyksta neatitikimas — pasakyk man tą pačią dieną."', freq: 'Vieną kartą' },
+      ],
+      micro: [
+        { text: 'Šiandien: užrašykite VIENĄ įsipareigojimą kurį duosite komandai šią savaitę. Tik vieną.', freq: 'Kasdien' },
+        { text: 'Kiekvieną penktadienį: patikrinkite ar tas vienas įsipareigojimas įvykdytas. Jei ne — pasakykite komandai kodėl.', freq: 'Kas savaitę' },
+        { text: 'Po 30 dienų: padidinkite iki dviejų įsipareigojimų per savaitę.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Pirmadienio rytas / pirmos pamainos pradžia: 3 savaitės gamybos prioritetai paskelbti komandai. Penktadienis: patikrinimas kas įvykdyta.',
+      metrics: ['Įvykdytų gamybinių įsipareigojimų rodiklis >85%', 'Komanda praneša, kad pokyčiai pastebimi', 'Nė vienas terminas nepermestas be išankstinio pranešimo']
+    },
+
+    'Encouraging Dialogue': {
+      p1: [
+        { text: 'Stebėkite kitus 3 pamainos susitikimus (briefings): kas kalba? Ar tik vadovas?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pavaldinių per anoniminę apklausą: „Ar galite laisvai be baimių pranešti apie problemas?"', freq: 'Vieną kartą' },
+        { text: 'Išmokite 3 klausimus gamybos kontekstui: „Kur yra kliūtis?" „Ko trūksta?" „Ką galėtume daryti kitaip?"', freq: 'Išmokti' },
+      ],
+      p2: [
+        { text: 'Kiekviename pamainos briefinige: 2 min. leidžiate meistrui ar technikiui pranešti problemą prieš pradedant pačiam.', freq: 'Kas susitikimas' },
+        { text: 'Aktyviai klauskite tyliau kalbančių darbuotojų: „Petrai, ką manai dėl šio gedimo priežasties?"', freq: 'Kas susitikimas' },
+        { text: 'Po kiekvieno incidento ar stop: „Ką galėjome pastebėti anksčiau?" – ne kaltinimas, o mokymasis.', freq: 'Kiekvieną kartą' },
+      ],
+      p3: [
+        { text: 'Pakartokite anoniminę apklausą: „Ar galite laisvai pranešti apie problemas?" – palyginkite.', freq: '80-ąją dieną' },
+        { text: 'Fiksuokite: ar padidėjo pranešimų apie gedimus ar anomalijas skaičius? (Tai teigiamas ženklas.)', freq: 'Kas mėnesį' },
+        { text: 'Pristatykite komandai, ką pakeitėte susitikimų struktūroje.', freq: '90-ąją dieną' },
+      ],
+      maintenance: [
+        { text: 'Išlaikykite „pirma klausi, tada kalbi" principą kiekviename susitikime — tai jūsų stiprybė dabar.', freq: 'Kas susitikimas' },
+        { text: 'Įveskite naują elementą: kas mėnesį paklauskite komandos vieno anoniminio klausimo apie darbo aplinką.', freq: 'Kas mėnesį' },
+        { text: 'Pasidalinkite su komanda kaip pasikeitė komunikacija per pastaruosius 90 dienų — tai sustiprina kultūrą.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj klausimų briefinige — pabandykite „kliūčių korteles": kiekvienas darbuotojas anonimiškai užrašo vieną kliūtį per savaitę.', freq: 'Kas savaitę' },
+        { text: 'Suraskite VIENĄ darbuotoją kuris labiausiai vengia kalbėti — investuokite į santykį su juo asmeniškai.', freq: 'Vieną kartą' },
+        { text: 'Kiekvieno susitikimo pabaigoje: 1 min. „kas geriausiai pavyko šiandien?" — pozityvus uždarymas atveria dialogą.', freq: 'Kas susitikimas' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: užduokite VIENĄ atvirą klausimą VIENAM darbuotojui. Ne grupei — vienam žmogui.', freq: 'Kasdien' },
+        { text: 'Užsirašykite atsakymą ir grįžkite prie jo kitą dieną: „Vakar kalbėjomės apie X — kaip sekasi?"', freq: 'Kasdien' },
+        { text: 'Po 2 savaičių: ar darbuotojai patys pradeda kalbėti? Fiksuokite pokytį.', freq: '14-ąją dieną' },
+      ],
+      weekly: 'Kiekviename pamainos briefinige: pirma klausi komandos – tik tada kalbate patys.',
+      metrics: ['Pranešimų apie anomalijas skaičius padidėjo (darbuotojai nebijo)', 'Komanda praneša, kad jaučiasi išgirsta', 'Pamainos briefingas tampa dvikrypčiu, ne tik informavimo srautu']
+    },
+
+    'Creating Shared Vision': {
+      p1: [
+        { text: 'Parašykite vienu sakiniu: „Mūsų cecho/skyriaus tikslas šiam ketvirtaliui yra..." – ar visi komandoje pasakytų tą patį?', freq: 'Vieną kartą' },
+        { text: 'Apklauskite 3 tiesioginius pavaldinius: „Koks mūsų pagrindinis KPI šiam mėnesiui?"', freq: 'Vieną kartą' },
+        { text: 'Sukurkite vizualų (A3 formatas arba ekranas cecho lentoje): OEE tikslas, kokybės rodiklis, saugos tikslas.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvieno naujo projekto ar gamybos užsakymo pradžioje: 3 min. „kodėl tai svarbu klientui ir gamyklai".', freq: 'Kiekvienam projektui' },
+        { text: 'Mėnesio gamybos apžvalgoje: 10 min. rezultatų ryšys su metiniais tikslais.', freq: 'Kas mėnesį' },
+        { text: 'Atnaujinkite cecho lentą su savaitės rezultatais – matomumas skatina atsakomybę.', freq: 'Kas savaitę' },
+      ],
+      p3: [
+        { text: 'Pakartokite klausimą: „Koks mūsų pagrindinis KPI?" – ar atsakymai sulygiuoti?', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite vizualų ant cecho lentos – ar tikslai pasikeitę? Atnaujinkite.', freq: 'Kas ketvirtį' },
+        { text: 'Pamainos retrospektyva: ką pasiekėme vs. pradžioje paskelbtą planą?', freq: '90-ąją dieną' },
+      ],
+      maintenance: [
+        { text: 'Cecho lenta veikia — tęskite savaitinį atnaujinimą. Pridėkite naują elementą: komandos siūlomas „savaitės pagerėjimas".', freq: 'Kas savaitę' },
+        { text: 'Kitam ketvirtaliui: leiskite komandai patiems pasiūlyti vieną KPI kurį norėtų sekti.', freq: 'Vieną kartą' },
+        { text: 'Pasidalinkite su vadovybe kaip vizija komunikuojama cecho lygmeniu — tai jūsų stiprybė.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj vieno vizualo — pabandykite „tikslų pokalbį": 10 min. kiekvieną mėnesį komanda diskutuoja apie svarbiausią rodiklį.', freq: 'Kas mėnesį' },
+        { text: 'Leiskite vienam pavaldiniui pačiam pristatyti savaitės tikslus briefinige — ne jūs.', freq: 'Kas savaitę' },
+        { text: 'Suraskite ryšį tarp kiekvienos konkrečios užduoties ir galutinio kliento — padarykite jį matomą.', freq: 'Vieną kartą' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: prieš duodami užduotį — vieną sakinį apie „kodėl tai svarbu". Ne daugiau.', freq: 'Kasdien' },
+        { text: 'Savaitgalio pabaigoje: užrašykite kitą savaitę rodysiamą numerį ant cecho lentos.', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: paklauskite vieno darbuotojo ar žino mėnesio tikslą. Fiksuokite atsakymą.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Kiekvieną pirmadienį / pirmos pamainos susirinkime: „Kaip šios savaitės užduotys prisideda prie mėnesio OEE/kokybės tikslo?"',
+      metrics: ['100% meistrų gali pasakyti pagrindinį mėnesio KPI', 'Cecho lenta atnaujinama kiekvieną savaitę', 'Sprendimai susieti su gamybos tikslais, ne tik skubiais poreikiais']
+    },
+
+    'Developing Technological Savvy': {
+      p1: [
+        { text: 'Sudarykite sąrašą skaitmeninių įrankių naudojamų gamykloje (MES, SCADA, ERP, kokybės sistemos). Kuriuos naudojate mažiausiai?', freq: 'Vieną kartą' },
+        { text: 'Pasirinkite 1 įrankį kurį naudojate nepakankamai ir skirkite 30 min./sav. jį išmokti geriau.', freq: 'Kas savaitę' },
+        { text: 'Paklauskite IT ar proceso inžinieriaus: „Kokios funkcijos mūsų sistemose nenaudojamos, bet galėtų padėti?"', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas 2 savaites 30 min. komandos tech apžvalga: vienas naujas įrankis ar funkcija pristatoma meistrų susitikime.', freq: 'Kas 2 sav.' },
+        { text: 'Paleiskite 1 pilotą: pvz., skaitmeninis gedimų žurnalas vietoj popieriaus, arba QR kodai ant įrangos TPM kortelėms.', freq: 'Per 30–60 d.' },
+        { text: 'Dalinkitės 1 praktine gamybos technologijų įžvalga per mėnesį (iš pramonės žurnalo, gamintojo seminaro ir pan.).', freq: 'Kas mėnesį' },
+      ],
+      p3: [
+        { text: 'Įvertinkite piloto rezultatus: ar skaitmenizuotas procesas sutaupė laiko ar sumažino klaidų? Dokumentuokite.', freq: '60-ąją dieną' },
+        { text: 'Pristatykite vadovybei 3 išmoktus dalykus apie skaitmeninimą jūsų srityje.', freq: '90-ąją dieną' },
+        { text: 'Nustatykite reguliarų tech-apžvalgos ritmą su IT ir proceso inžinieriais.', freq: 'Kas mėnesį' },
+      ],
+      maintenance: [
+        { text: 'Tęskite tech-apžvalgos rytualą su IT. Pridėkite naują elementą: kas ketvirtį — vienas naujas piloto eksperimentas.', freq: 'Kas ketvirtį' },
+        { text: 'Padėkite vienam pavaldiniui įvaldyti sistemą kurią jūs jau gerai žinote — dalinkitės žiniomis.', freq: 'Per 30 d.' },
+        { text: 'Dokumentuokite jūsų geriausias tech praktikos ir pasidalinkite su kita pamaina.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj plataus mokymosi — pasirinkite VIENĄ sistemą ir išmokite VIENĄ jos funkciją iki tobulumo. Gylis geriau nei plotis.', freq: 'Per 30 d.' },
+        { text: 'Raskite komandoje žmogų kuris geriausiai moka sistemą — mokykitės iš jo, ne iš manualo.', freq: 'Vieną kartą' },
+        { text: 'Kiekvieną penktadienį: 10 min. pažiūrėkite į vieno rodiklio istoriją sistemoje. Tik vieno.', freq: 'Kas savaitę' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: atidarykite MES/SCADA ir peržiūrėkite VIENĄ rodiklį. Užsirašykite ką matote.', freq: 'Kasdien' },
+        { text: 'Kas savaitę: pasidalinkite su vienu žmogumi ką pastebėjote sistemose. Vienas faktas, vienas pokalbis.', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar sistemų duomenys padėjo priimti bent vieną sprendimą? Fiksuokite.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Penktadienį: 15 min. peržiūra – ar MES/ERP duomenys teisingi? Ar yra neatitikimų kuriuos reikia taisyti?',
+      metrics: ['Išbandytas ir pristatytas bent 1 skaitmenizacijos sprendimas', 'Komanda naudoja sistemą tiksliau ir dažniau', 'Reguliarus tech-apžvalgos ritmas su IT įtvirtintas']
+    },
+
+    'Ensuring Customer Satisfaction': {
+      p1: [
+        { text: 'Peržiūrėkite paskutinių 30 d. klientų reklamacijas ar grąžinimus – kas kartojasi? Koks pagrindinis gedimų modelis?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite kokybės skyriaus: „Kokie mūsų 3 didžiausi klientų nusiskundimai šį ketvirtį?"', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 1 kokybės problemą kurią galite išspręsti cecho lygmeniu per 30 d.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas mėnesį 30 min. su kokybės komanda: „Ką klientai praneša?" → konkretūs gamybos proceso pakeitimai.', freq: 'Kas mėnesį' },
+        { text: 'Kiekvieną savaitę 1 kokybės rodiklis (defektų %, grąžinimai) pasidalinamas su pamainos komanda.', freq: 'Kas savaitę' },
+        { text: 'Nustatykite aiškų atsakymo klientui terminą per kokybės skyrių ir stebėkite jo laikymąsi.', freq: 'Stebėti' },
+      ],
+      p3: [
+        { text: 'Palyginkite defektų rodiklį prieš ir po – ar pagerėjo?', freq: '85-ąją dieną' },
+        { text: 'Dokumentuokite 3 išspręstas kokybės problemas su root cause analize.', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite mėnesio kokybės peržiūrą kaip pamainos standartą.', freq: 'Nuolat' },
+      ],
+      maintenance: [
+        { text: 'Mėnesio kokybės peržiūra veikia — tęskite. Pridėkite: vienas komandos narys pristato kokybės temą kas mėnesį.', freq: 'Kas mėnesį' },
+        { text: 'Išplėskite ryšį su kokybės skyriumi: kas ketvirtį — bendra sesija su klientų atsiliepimų analize.', freq: 'Kas ketvirtį' },
+        { text: 'Dokumentuokite jūsų geriausią kokybės praktiką ir pasiūlykite ją kaip standartą kitoms pamainoms.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj bendros kokybės apžvalgos — koncentruokitės į VIENĄ pasikartojančią defekto tipą. Išspręskite ją visiškai.', freq: 'Per 30 d.' },
+        { text: 'Pakvieskite kokybės specialistą į vieną pamainos susitikimą — tiesioginė komunikacija be tarpininkų.', freq: 'Vieną kartą' },
+        { text: 'Kiekvieną savaitę: vienas konkretus veiksmas dėl kokybės — ne apžvalga, o veiksmas.', freq: 'Kas savaitę' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: pažiūrėkite į vienos linijos defektų rodiklį. Užsirašykite ar jis gerėja ar blogėja.', freq: 'Kasdien' },
+        { text: 'Kas savaitę: paklauskite vieno operatoriaus — „Ką tu matai kaip didžiausią kokybės problemą?"', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar pasikeitė defektų rodiklis? Palyginkite su pradžia.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Pirmadienį: kokybės rodikliai iš praėjusios savaitės peržiūrimi su komanda. Kas keitėsi?',
+      metrics: ['Defektų rodiklis sumažėjo lyginant su pradiniu matavimu', 'Reklamacijų skaičius sumažėjo arba greitesnis atsakymas', 'Mėnesio kokybės peržiūra tapo pamainos standartu']
+    },
+
+    'Maintaining Competitive Advantage': {
+      p1: [
+        { text: 'Peržiūrėkite: kuo jūsų gamyklos procesas geresnis nei konkurentų? Kur esate prastesni? (Savikaina, kokybė, greitis, lankstumas)', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pardavimų ar marketingo komandos: „Ką klientai sako apie mūsų konkurentus?"', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 1 procesą kurį galite optimizuoti per 90 d. ir padidinti konkurencinį pranašumą.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas mėnesį: peržiūrėkite pramonės ataskaitas ar lankykite 1 seminare – ką daro geriausi gamytojai jūsų srityje?', freq: 'Kas mėnesį' },
+        { text: 'Sugeneruokite 1 proceso gerinimo hipotezę ir paleiskite kaizen ar A3 projektą.', freq: 'Per 30–60 d.' },
+        { text: 'Prioritizuokite gamybos iniciatyvas pagal įtaką gamybos savikainai ir kokybei – eliminuokite mažiausiai vertingas.', freq: 'Kas mėnesį' },
+      ],
+      p3: [
+        { text: 'Peržiūrėkite strategines prielaidas: ar OEE, savikaina, kokybė juda tinkama kryptimi?', freq: '75-ąją dieną' },
+        { text: 'Pristatykite vadovybei: „Ką išmokome apie mūsų konkurencinę padėtį per 90 d."', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite ketvirtinę proceso strategijos peržiūrą su vadovybe.', freq: 'Kas ketvirtį' },
+      ],
+      maintenance: [
+        { text: 'Kaizen projektas veikia — tęskite ketvirtinį ciklą. Kitam ketvirtaliui: leiskite komandai pasiūlyti temą.', freq: 'Kas ketvirtį' },
+        { text: 'Pasidalinkite rezultatais su kitomis pamainomis — konkurencinis pranašumas stiprėja kai visa gamykla gerėja.', freq: 'Vieną kartą' },
+        { text: 'Ieškokite naujos srities optimizavimui — ne tos pačios. Augimas reikalauja naujų iššūkių.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj plataus efektyvumo gerinimo — rinkitės VIENĄ mažą procesą ir optimizuokite iki galo. Greitas laimėjimas motyvuoja.', freq: 'Per 30 d.' },
+        { text: 'Paklauskite komandos: „Kur labiausiai gaištame laiką?" — jie žino atsakymą geriau nei duomenys.', freq: 'Vieną kartą' },
+        { text: 'Kiekvieną savaitę: vienas klausimas sau — „Ką galėjome padaryti greičiau ar pigiau?"', freq: 'Kas savaitę' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: stebėkite VIENĄ OEE komponentą (prieinamumas, našumas arba kokybė). Tik vieną.', freq: 'Kasdien' },
+        { text: 'Kas savaitę: paklauskite operatoriaus — „Kas labiausiai stabdo tavo darbą?"', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar pastebėjote vieną pasikartojantį švaistymą? Dokumentuokite ir pristatykite.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Penktadienį / paskutinę pamainą: 15 min. – ar šios savaitės gamybos rodikliai gerina mūsų konkurencinę padėtį?',
+      metrics: ['Identifikuotas ir įgyvendintas bent 1 proceso gerinimas', 'OEE arba kokybės rodiklis pagerėjo', 'Ketvirtinė proceso strategijos peržiūra įtvirtinta']
+    },
+
+    'Developing People': {
+      p1: [
+        { text: 'Su kiekvienu tiesiogiu pavaldiniu: 15 min. pokalbis – „Kur nori augti profesiškai per 90 d.?"', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite darbuotojų gebėjimų matricą – ar yra kritinių spragų jei kas išeina atostogų ar palieka?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite paprastą augimo planą: Darbuotojas → Tikslas → Veiksmai → Terminas.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas 2 savaites trumpas 1:1 su kiekvienu komandos nariu: 1 konkreti grįžtamoji informacija + 1 augimo klausimas.', freq: 'Kas 2 sav.' },
+        { text: 'Deleguokite 1 naują atsakomybę (pvz., TPM koordinavimas, naujo darbuotojo mokymas) su aiškiais lūkesčiais.', freq: 'Per 30–45 d.' },
+        { text: 'Viešai pažymėkite darbuotojo pažangą ar gerai atliktą darbą pamainos susitikime.', freq: 'Kiekvieną kartą' },
+      ],
+      p3: [
+        { text: 'Paklauskite komandos: „Ar jaučiatės, kad galite augti šioje įmonėje?" – anoniminė apklausa.', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite augimo planus: kas pasiekta? Kompetencijų matrica atnaujinta?', freq: '90-ąją dieną' },
+        { text: 'Pasirūpinkite, kad bent 1 darbuotojas galėtų pavaduoti jus kritiniuose procesuose.', freq: '90-ąją dieną' },
+      ],
+      maintenance: [
+        { text: '1:1 ritmas veikia — tęskite. Praturtinkite klausimą: „Ką išmokai per pastarąsias 2 savaites?"', freq: 'Kas 2 sav.' },
+        { text: 'Parinkite kitą darbuotoją naujai delegavimo atsakomybei — plėskite komandos pajėgumus.', freq: 'Vieną kartą' },
+        { text: 'Paklauskite vieno ugdyto darbuotojo ar jis jau gali pats mokyti kitus — tai brandos ženklas.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj augimo plano — vienas konkretus klausimas per 1:1: „Kas tave labiausiai frustruoja darbe?" Klausykite, ne spręskite.', freq: 'Kas 2 sav.' },
+        { text: 'Pasirinkite VIENĄ darbuotoją ir investuokite į jį intensyviai 30 dienų. Gilumas geriau nei plotis.', freq: 'Per 30 d.' },
+        { text: 'Suteikite vienam darbuotojui galimybę pristatyti savo srities žinias komandai — 5 min. briefinige.', freq: 'Vieną kartą' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: pasakykite VIENAM darbuotojui ką jis padarė gerai. Konkrečiai, ne bendrai.', freq: 'Kasdien' },
+        { text: 'Kas savaitę: 10 min. su vienu darbuotoju apie jo darbą — ne apie užduotis, o apie jo augimą.', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar darbuotojai patys pradeda klausti augimo klausimų? Fiksuokite.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Pirmadienį / pirmą bloko pamainą: patikrinkite augimo planus. Savaitę: ar davėte bent vienam darbuotojui konkrečią grįžtamąją informaciją?',
+      metrics: ['100% tiesioginių pavaldinių turi augimo planą', 'Kompetencijų matrica atnaujinta ir padengtos kritinės spragos', 'Bent 1 darbuotojas gali pavaduoti vadovą kritiniuose procesuose']
+    },
+
+    'Building Partnerships': {
+      p1: [
+        { text: 'Sudarykite partnerystės žemėlapį: su kuo PRIVALOTE gerai bendradarbiauti? (Priežiūra, kokybė, logistika, planavimas, IT)', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 1 ryšį su partneriais kuris yra įtemptas ar neveikia – kas to priežastis?', freq: 'Vieną kartą' },
+        { text: 'Susitikite su tech. priežiūros ar planavimo skyriaus atstovais: „Kaip galime geriau koordinuotis?"', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Nustatykite savaitinį 30 min. koordinacijos susitikimą su tech. priežiūros ir/ar logistikos atstovais.', freq: 'Kas savaitę' },
+        { text: 'Kai pasiekiamas bendras rezultatas – viešai dalinkitės kreditu su partneriu.', freq: 'Kiekvieną kartą' },
+        { text: 'Sukurkite bendrą problemų žurnalą su tech. priežiūros skyriumi – matomos problemos sprendžiamos greičiau.', freq: 'Per 30 d.' },
+      ],
+      p3: [
+        { text: 'Įvertinkite partnerystes: ar koordinacija pagerėjo? Ar sumažėjo tarpfunkcinių konfliktų?', freq: '80-ąją dieną' },
+        { text: 'Paklauskite partnerių (priežiūra, logistika): „Kaip galime dar geriau dirbti kartu?"', freq: '75-ąją dieną' },
+        { text: 'Dokumentuokite 3 sėkmingos tarpfunkcinės koordinacijos atvejus.', freq: '90-ąją dieną' },
+      ],
+      maintenance: [
+        { text: 'Savaitinis koordinacijos susitikimas veikia — tęskite. Pridėkite agendą: vienas bendras tikslas kitai savaitei.', freq: 'Kas savaitę' },
+        { text: 'Išplėskite partnerystę: pakvieskite naują funkciją (pvz., planavimas) į koordinacijos susitikimą.', freq: 'Vieną kartą' },
+        { text: 'Pasiūlykite bendrą „pamainos perdavimo" šabloną su priežiūros skyriumi — standartizuokite.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj koordinacijos susitikimo — pabandykite kasdienį 5 min. kontaktą su vienu partneriu. Dažnumas svarbiau nei trukmė.', freq: 'Kasdien' },
+        { text: 'Suraskite VIENĄ bendrą problemą su tech. priežiūra ir išspręskite ją kartu — tai kuria pasitikėjimą greičiau nei susitikimai.', freq: 'Per 30 d.' },
+        { text: 'Paklauskite priežiūros vadovo: „Ką mes darome kas jums apsunkina darbą?" Klausykite be gynybos.', freq: 'Vieną kartą' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: vienas trumpas kontaktas su vienu partneriu (priežiūra, kokybė arba logistika). 2 min. pakanka.', freq: 'Kasdien' },
+        { text: 'Kas savaitę: pasidalinkite viena įžvalga su partneriu apie tai kas vyksta jūsų pamainoje.', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar partneriai kreipiasi į jus patys? Tai rodiklis kad ryšys stiprėja.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Trečiadienį / bloko viduryje: trumpas kontaktas su priežiūros atstovu – ar yra planuojamų darbų kurie paveiks gamybą?',
+      metrics: ['Savaitinė koordinacija su tech. priežiūra ir logistika įtvirtinta', 'Tarpfunkcinių konfliktų skaičius sumažėjęs', 'Įrangos sustojimų dėl koordinacijos problemų mažiau']
+    },
+
+    'Sharing Leadership': {
+      p1: [
+        { text: 'Stebėkite savaitę: kiek sprendimų cecho lygmeniu priimate patys, o kiek leidžiate pavaldinams spręsti?', freq: '1 savaitę' },
+        { text: 'Paklauskite pavaldinių: „Ar jaučiatės, kad galite priimti sprendimus savo lygmeniu be mano patvirtinimo?"', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 sprendimus kuriuos galite perduoti pavaldinui su aiškiais rėmais (kokybės parametrai, saugos ribos).', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvienam deleguotam sprendimui – aiškus formatas: Situacija → Leistini veiksmai → Kada eskaluoti.', freq: 'Kiekvieną kartą' },
+        { text: 'Pamainos susitikimas: pirma klausiate meistro diagnozės – tik tada komentuojate.', freq: 'Kas susitikimas' },
+        { text: 'Leiskite meistrui priimti sprendimą dėl perplanavimo ar gedimo – stebėkite ir palaikykite tik jei prašo.', freq: 'Bent 2 kartus' },
+      ],
+      p3: [
+        { text: 'Pakartokite klausimą pavaldiniui: „Ar jaučiatės, kad galite spręsti savarankiškai?" – palyginkite su pradiniu.', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite: kiek gamybinių sprendimų deleguota lyginant su pradiniu matavimu?', freq: '90-ąją dieną' },
+        { text: 'Vadovų susitikime: pavaldiniai pristato savo pamainų rezultatus – ne jūs už juos.', freq: 'Nuolat' },
+      ],
+      maintenance: [
+        { text: 'Delegavimas veikia — tęskite. Kitam ciklui: deleguokite vieną sudėtingesnį sprendimą nei anksčiau.', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pavaldinių: „Ar yra sričių kur norėtumėte daugiau autonomijos?" Klausykite.', freq: 'Vieną kartą' },
+        { text: 'Dokumentuokite delegavimo praktiką kaip standartą — pasidalinkite su kitais vadovais.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj delegavimo kelių sprendimų — deleguokite VIENĄ ir stebėkite iki galo. Kaip sekėsi? Ko išmokote abu?', freq: 'Per 30 d.' },
+        { text: 'Paklauskite savęs: „Ar aš tikrai pasitikiu šiuo žmogumi?" Jei ne — kodėl? Tai yra tikroji problema.', freq: 'Vieną kartą' },
+        { text: 'Susitarkite su pavaldiniu: „Šią savaitę tu priimai šį sprendimą. Aš stebiu ir neįsikišu."', freq: 'Kas savaitę' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: prieš priimdami sprendimą — paklausite savęs „Ar tai gali padaryti mano komanda be manęs?"', freq: 'Kasdien' },
+        { text: 'Kas savaitę: vienas sprendimas kurį šią savaitę priėmė pavaldinis, ne jūs. Fiksuokite.', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar pavaldiniai patys pradeda siūlyti sprendimus? Tai augimo ženklas.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Pirmadienį / pirmą bloko pamainą: išsirinkite 1 sprendimą kurį šią savaitę priims pavaldinis, ne jūs.',
+      metrics: ['Pavaldinių savarankiškų sprendimų rodiklis padidėjo', 'Komanda praneša, kad jaučiasi labiau įgalinta', 'Mažiau gamybos sprendimų „grįžta" pas vadovą']
+    },
+
+    'Achieving Personal Mastery': {
+      p1: [
+        { text: 'Stebėkite savaitę: kokiose situacijose prarandate ramybę ar reaguojate pernelyg emocingai?', freq: '1 savaitę' },
+        { text: 'Identifikuokite 3 „energijos vagis" – kas labiausiai išsekina per darbo dieną?', freq: 'Vieną kartą' },
+        { text: 'Nustatykite savo 3 svarbiausius prioritetus šiems 90 dienų (ne visą sąrašą – tik 3).', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Prieš kiekvieną pamainos pradžią / darbo dieną: 5 min. – „Kokie 3 svarbiausi dalykai?" Nesileiskite į reaktyvų veikimą.', freq: 'Kasdien' },
+        { text: 'Pamainos / dienos pabaigoje: 5 min. refleksija – „Ką galėjau daryti geriau? Ką darysiu kitaip rytoj?"', freq: 'Kas savaitę' },
+        { text: 'Identifikuokite laiko „vagis" ir sukurkite filtrą: kas tikrai reikalauja jūsų?', freq: 'Kasdien' },
+      ],
+      p3: [
+        { text: 'Palyginkite energijos lygį ir streso valdymą su pradžia – kas pasikeitė?', freq: '80-ąją dieną' },
+        { text: 'Peržiūrėkite: ar prioritetai teisūs? Ar laiko paskirstymas atitinka tai, kas svarbiausia?', freq: '90-ąją dieną' },
+        { text: 'Pasidalinkite su 1 kolega ar mentoriumi: ko išmokote apie save per 90 d.', freq: '90-ąją dieną' },
+      ],
+      maintenance: [
+        { text: 'Ryto ritualas veikia — tęskite. Pridėkite: savaitės pabaigoje peržiūrėkite ar 3 prioritetai buvo teisingi.', freq: 'Kas savaitę' },
+        { text: 'Raskite vieną naują „energijos vagį" kurį dar neidentifikavote — sistema visada turi naujų iššūkių.', freq: 'Vieną kartą' },
+        { text: 'Pasidalinkite savo prioritetų valdymo sistema su vienu kolega — mokykite kitus.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj 3 prioritetų — tik VIENAS. Kiekvieną dieną vienas svarbiausias dalykas. Paprasta sistema veikia geriau.', freq: 'Kasdien' },
+        { text: 'Identifikuokite VIENĄ situaciją kur dažniausiai prarandate kontrolę — ir sukurkite vieną konkretų atsaką tai situacijai.', freq: 'Vieną kartą' },
+        { text: 'Raskite 10 minučių ryte prieš pamainą — tik jums. Nė vienas el. laiškas, nė vienas skambutis.', freq: 'Kasdien' },
+      ],
+      micro: [
+        { text: 'Kiekvieną rytą: prieš eidami į cechą — užsirašykite VIENĄ svarbiausią dalyką šiai dienai.', freq: 'Kasdien' },
+        { text: 'Kiekvieną vakarą: ar tas vienas dalykas buvo padarytas? Jei ne — kodėl? Vienas sakinys.', freq: 'Kasdien' },
+        { text: 'Po savaitės: ar matote modelį? Kokie trukdžiai kartojasi? Fiksuokite.', freq: '7-ąją dieną' },
+      ],
+      weekly: 'Pamainos / darbo dienos pradžia: 3 prioritetai. Pabaiga: trumpa refleksija kas pavyko.',
+      metrics: ['Reaktyvaus valdymo situacijų sumažėjo', 'Pamainos pradžios ritualas įtvirtintas kaip įprotis', 'Prioritetai valdomi, ne tik reagavimas į skubius reikalus']
+    },
+
+    'Anticipating Opportunities': {
+      p1: [
+        { text: 'Peržiūrėkite paskutinių 6 mėn. gamybos sustojimus – ar buvo ankstyvų signalų kurių nepastebėjote?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite 2 scenarijus: „Jei gamybos apimtis padidės 20%" ir „Jei padidės defektų rodiklis" – ką darysime?', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 ankstyvų signalų šaltinius: įrangos vibracijos duomenys, tiekėjų vėlavimai, darbuotojų kaita.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kas savaitę 15 min.: peržiūrėkite įrangos būklės duomenis ir tiekėjų atsargų lygius – ar yra artėjančių problemų?', freq: 'Kas savaitę' },
+        { text: 'Mėnesio pabaigoje: „Ar įvyko tai, ko tikėjomės? Ko nepastebėjome laiku?" – aptarimas su komanda.', freq: 'Kas mėnesį' },
+        { text: 'Pristatykite vadovybei 1 ankstyvą signalą ir siūlomą prevencinį veiksmą prieš problema tampa krize.', freq: 'Kas mėnesį' },
+      ],
+      p3: [
+        { text: 'Peržiūrėkite scenarijus – ar jie vis dar aktualūs? Kokie nauji rizikos veiksniai atsirado?', freq: '75-ąją dieną' },
+        { text: 'Identifikuokite 1 situaciją kurią pastebėjote anksčiau ir išvengėte problemos.', freq: '90-ąją dieną' },
+        { text: 'Įtvirtinkite savaitinę ankstyvų signalų peržiūrą kaip pamainos standartą.', freq: 'Nuolat' },
+      ],
+      maintenance: [
+        { text: 'Savaitinė signalų peržiūra veikia — tęskite. Pridėkite: kas mėnesį atnaujinkite scenarijus naujais rizikos veiksniais.', freq: 'Kas mėnesį' },
+        { text: 'Išmokykite vieną pavaldinį ankstyvų signalų stebėjimo — decentralizuokite šią funkciją.', freq: 'Per 30 d.' },
+        { text: 'Dokumentuokite išvengtų problemų atvejus — tai vertinga patirtis kitam ciklui.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj kelių signalų šaltinių — koncentruokitės į VIENĄ: įrangos duomenys. Išmokite skaityti juos gerai.', freq: 'Kas savaitę' },
+        { text: 'Kiekvieną savaitę paklauskite vieno operatoriaus: „Ar matote kažką neįprasta?" Jie dažnai žino anksčiau.', freq: 'Kas savaitę' },
+        { text: 'Sukurkite vieną paprastą „rizikos klausimą" kiekvienam briefingiui: „Kas šiandien gali nueiti ne taip?"', freq: 'Kas susitikimas' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: vienas klausimas sau — „Kas šiandien gali sukurti problemą rytoj?"', freq: 'Kasdien' },
+        { text: 'Kas savaitę: 10 min. pažiūrėkite į įrangos duomenis. Ar matote pokytį lyginant su praėjusia savaite?', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar pastebėjote bent vieną problemą anksčiau nei ji tapo krize? Fiksuokite.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Trečiadienį / bloko viduryje: 15 min. – įrangos duomenys, tiekėjų statusas, darbuotojų signalai. Ar artėja problema?',
+      metrics: ['Savaitinė ankstyvų signalų peržiūra veikia kaip standartas', 'Bent 1 problema pastebėta ir išspręsta proaktyviai', 'Neplanuotų gamybos sustojimų skaičius sumažėjęs']
+    },
+
+    'Leading Change': {
+      p1: [
+        { text: 'Identifikuokite 1 svarbų gamybos pokyčio projektą – kas jam labiausiai priešinasi ir kodėl?', freq: 'Vieną kartą' },
+        { text: 'Sukurkite pokyčio komunikacijos šabloną: Kas keičiasi → Kodėl → Ką tai reiškia pamainos lygmeniu → Kokie rūpesčiai.', freq: 'Vieną kartą' },
+        { text: 'Suraskite 2–3 „ankstyvuosius pritariančiuosius" cecho lygmeniu – dirbkite su jais pirmiausia.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Prieš kiekvieną gamybos proceso pakeitimą: aiški komunikacija „kas/ką/kada/kodėl" PRIEŠ pradedant – ne po.', freq: 'Kiekvienam pokyčiui' },
+        { text: 'Per pirmąsias 2 savaites: demonstruokite 1 „greitą laimėjimą" – matomą pagerėjimą kurį matys cechas.', freq: 'Per 30 d.' },
+        { text: 'Reguliariai kalbėkitės su skeptikais – supraskite jų techninius rūpesčius, ne ignoruokite.', freq: 'Kas 2 sav.' },
+      ],
+      p3: [
+        { text: 'Įtvirtinkite pokyčius darbo instrukcijose, SOP ar valdymo plane – ne tik žodiniai susitarimai.', freq: '60–90 d.' },
+        { text: 'Pamainos retrospektyva: „Kas buvo sunku? Ko išmokome apie pokyčių diegimą šiame ceche?"', freq: '90-ąją dieną' },
+        { text: 'Dokumentuokite pokyčių valdymo metodiką – naudokite ateičiai kaip vidinis standartas.', freq: '90-ąją dieną' },
+      ],
+      maintenance: [
+        { text: 'Pokyčių valdymo metodika veikia — tęskite. Kitam pokyčiui: leiskite komandai patiems pasiūlyti „greitą laimėjimą".', freq: 'Kiekvienam pokyčiui' },
+        { text: 'Paklauskite buvusių skeptikų: „Kaip vertinate pokyčio rezultatą dabar?" Jų nuomonė yra vertingiausia.', freq: 'Vieną kartą' },
+        { text: 'Pasidalinkite pokyčių valdymo sėkme su vadovybe — tai stiprina jūsų poziciją.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj plataus pokyčio komunikacijos — pokalbis su VIENU žmogumi kuris labiausiai priešinasi. Supraskite jo priežastis.', freq: 'Vieną kartą' },
+        { text: 'Raskite mažiausią įmanomą pokyčio žingsnį — kažką ką galima padaryti šią savaitę ir matoma komandai.', freq: 'Šią savaitę' },
+        { text: 'Paklauskite komandos: „Ką reikėtų pakeisti kad šis pokytis veiktų geriau?" Įtraukite juos į sprendimą.', freq: 'Vieną kartą' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: ar yra kažkas kas keičiasi gamykloje? Kaip apie tai sužino jūsų komanda?', freq: 'Kasdien' },
+        { text: 'Kas savaitę: vienas konkretus veiksmas kuris rodo pokytį — ne tik žodžiai, o veiksmas.', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar komanda pradeda pati inicijuoti mažus patobulinimus? Tai brandos ženklas.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Pirmadienį: ar esame teisingame kelyje su pokyčio projektu? Kas priešinasi? Kaip reaguosime?',
+      metrics: ['Gamybos pokyčio projektas įgyvendintas laiku su komandos palaikymu', 'Skeptikai tapo neutraliais ar pritariančiais', 'Pokyčiai įtvirtinti darbo instrukcijose']
+    },
+
+    'Empowering People': {
+      p1: [
+        { text: 'Paklauskite pavaldinių: „Kur jaučiate, kad negalite veikti savarankiškai? Kas jums trukdo?"', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite: kur gamybos procese esate nereikalingas „butelio kaklelis" – kas laukia jūsų sprendimo?', freq: 'Vieną kartą' },
+        { text: 'Identifikuokite 3 biurokratines ar proceso kliūtis kurias galite pašalinti šią savaitę.', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvienam pavaldiniui raštu apibrėžkite sprendimų ribas: „Šioje situacijoje tu gali spręsti pats, šioje – eskaluok."', freq: 'Vieną kartą' },
+        { text: 'Pašalinkite bent 1 proceso kliūtį per savaitę (nereikalingas patvirtinimas, perteklinis dokumentas, laukimo laikas).', freq: 'Kas savaitę' },
+        { text: 'Kai pavaldinis imasi iniciatyvos – palaikykite viešai, net jei sprendimas nebuvo tobulas.', freq: 'Kiekvieną kartą' },
+      ],
+      p3: [
+        { text: 'Pakartokite klausimą: „Ar jaučiate, kad galite veikti savarankiškai?" – palyginkite su pradiniu.', freq: '80-ąją dieną' },
+        { text: 'Suskaičiuokite: kiek proceso kliūčių pašalinta per 90 d.?', freq: '90-ąją dieną' },
+        { text: 'Sukurkite „kliūčių šalinimo" procesą kaip standartą – reguliarus valdymo agendos punktas.', freq: 'Nuolat' },
+      ],
+      maintenance: [
+        { text: 'Kliūčių šalinimo ritmas veikia — tęskite. Kitam ciklui: leiskite komandai patiems identifikuoti kliūtis agendoje.', freq: 'Kas savaitę' },
+        { text: 'Paklauskite: „Ar yra sričių kur vis dar jaučiatės suvaržyti?" Naujų kliūčių visada atsiranda.', freq: 'Kas mėnesį' },
+        { text: 'Dokumentuokite pašalintas kliūtis — tai rodiklis valdymui apie sistemos brandą.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj kliūčių sąrašo — eidami po cechą paklauskite tiesiai: „Kas šiandien labiausiai trukdo tavo darbui?" Veiksmas tą pačią dieną.', freq: 'Kasdien' },
+        { text: 'Pašalinkite VIENĄ kliūtį šią savaitę — ne tris, ne penkias. Vieną iki galo. Matomai.', freq: 'Šią savaitę' },
+        { text: 'Susitarkite su komanda: „Nuo šiol jei yra kliūtis — sakykite man tą pačią dieną. Aš reaguosiu per 24 val."', freq: 'Vieną kartą' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: ar šiandien kažkas turėjo laukti jūsų sprendimo? Ar galėjo spręsti pats?', freq: 'Kasdien' },
+        { text: 'Kas savaitę: viena kliūtis pašalinta. Fiksuokite. Komandai pasakykite.', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar pavaldiniai dažniau priima sprendimus be jūsų? Palyginkite su pradžia.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Pirmadienį / pirmą pamainų bloko dieną: „Kokia viena kliūtis labiausiai trukdo pamainos darbui šią savaitę?" – ir pašalinkite ją.',
+      metrics: ['Komanda praneša apie didesnę autonomiją', 'Kliūčių skaičius sumažėjęs (fiksuojama)', 'Pavaldiniai priima daugiau sprendimų savarankiškai']
+    },
+
+    'Thinking Globally': {
+      p1: [
+        { text: 'Identifikuokite: kaip jūsų gamybos procesas veikia galutinį klientą? Ar žinote kas yra jūsų gaminių naudotojai?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pardavimų ar eksporto skyriaus: „Kokie rinkų reikalavimai skiriasi nuo vietinių?"', freq: 'Vieną kartą' },
+        { text: 'Peržiūrėkite 1 neseniai priimtą gamybos sprendimą – kaip jis paveikė skirtingus klientus ar rinkas?', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekvieną svarbų proceso sprendimą tikrinkite: „Ar tai atitinka eksportinių rinkų reikalavimus (CE, ISO, klientų specifikacijos)?"', freq: 'Kiekvienam sprendimui' },
+        { text: 'Kas mėnesį 1 valanda: pramonės standartas, tarptautinis geriausios praktikos dokumentas ar lankymasis pas pažangų gamybos partnerį.', freq: 'Kas mėnesį' },
+        { text: 'Bendradarbiaujant su kokybės ar eksporto skyriumi: pirma klausiate apie rinkos reikalavimus, tada siūlote proceso sprendimus.', freq: 'Nuolat' },
+      ],
+      p3: [
+        { text: 'Ar gamybos sprendimai labiau atitinka tarptautinius standartus? Paklauskite kokybės auditoriaus.', freq: '80-ąją dieną' },
+        { text: 'Pristatykite komandai 3 globalios gamybos tendencijų įžvalgas kurias įgijote per 90 d.', freq: '90-ąją dieną' },
+        { text: 'Įtraukite „globalios rinkos reikalavimų" klausimą į proceso pakeitimų patvirtinimo procesą.', freq: 'Nuolat' },
+      ],
+      maintenance: [
+        { text: 'Tęskite mėnesinį tarptautinių standartų peržiūros ritualą. Kitam ciklui: vienas vizitas pas pažangų partnerį.', freq: 'Kas mėnesį' },
+        { text: 'Pakvieskite kokybės auditorių į vieną pamainos susitikimą — tiesioginė perspektyva iš išorės.', freq: 'Vieną kartą' },
+        { text: 'Pasidalinkite globaliomis įžvalgomis su vadovybe kaip strateginės pozicijos dalimi.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj plačių rinkų analizių — suraskite VIENĄ konkretų kliento reikalavimą kurį galite geriau atitikti. Veikite.', freq: 'Per 30 d.' },
+        { text: 'Pakalbėkite su vienu pardavimų atstovu: „Ką klientai skundžiasi dėl mūsų kokybės ar pristatymo?" Klausykite.', freq: 'Vieną kartą' },
+        { text: 'Kiekvieną savaitę: vienas klausimas sau — „Ar šios savaitės sprendimai atitinka tarptautinį standartą?"', freq: 'Kas savaitę' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: prieš priimdami gamybos sprendimą — „Kaip tai paveiks galutinį klientą?"', freq: 'Kasdien' },
+        { text: 'Kas savaitę: 10 min. su eksporto ar kokybės dokumentais — ar yra naujų reikalavimų?', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar sprendimai labiau orientuoti į klientą nei prieš mėnesį? Paklauskite kokybės skyriaus.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Trečiadienį / bloko viduryje: ar šios savaitės gamybos sprendimai atitinka eksportinių klientų standartus?',
+      metrics: ['Gamybos sprendimai dokumentuojami su tarptautinių standartų analize', 'Kokybės auditorius patvirtina geresnį atitikimą', 'Globalios rinkos klausimas įtrauktas į proceso pakeitimų šabloną']
+    },
+
+    'Appreciating Diversity': {
+      p1: [
+        { text: 'Peržiūrėkite komandos sudėtį: ar skirtingų patirčių (seniūnai, naujokai, skirtingų profesijų) nuomonės atstovaujamos sprendimų procese?', freq: 'Vieną kartą' },
+        { text: 'Stebėkite susitikimą: ar tik patyrę darbuotojai kalba? Ar naujokai ar operatoriai iš kitų padalinių turi balsą?', freq: 'Vieną kartą' },
+        { text: 'Paklauskite pavaldinio: „Ką tu matai šiame procese, ko mes, vadovai, nepastebime?"', freq: 'Vieną kartą' },
+      ],
+      p2: [
+        { text: 'Kiekviename problemų sprendimo susitikime: kvieskite pavaldinius iš skirtingų pozicijų – jie mato problemą iš arčiausiai.', freq: 'Kas susitikimas' },
+        { text: 'Aktyviai klauskite vyresnių darbuotojų: „Kaip tai buvo daroma anksčiau?" – jų patirtis turi vertę.', freq: 'Nuolat' },
+        { text: 'Kai pastebite, kad tik vienos grupės nuomonė dominuoja – sąmoningai paklauskite kitų.', freq: 'Kiekvieną kartą' },
+      ],
+      p3: [
+        { text: 'Paklauskite komandos: „Ar jaučiate, kad jūsų patirtis ir nuomonė yra vertinama?" – anoniminė apklausa.', freq: '80-ąją dieną' },
+        { text: 'Dokumentuokite atvejus, kai pavaldinio ar naujos perspektyvos įžvalga padėjo išspręsti problemą geriau.', freq: '90-ąją dieną' },
+        { text: 'Pristatykite komandai, kaip pasikeitė įtraukimas į sprendimų procesą per 90 d.', freq: '90-ąją dieną' },
+      ],
+      maintenance: [
+        { text: 'Įvairių perspektyvų įtraukimas veikia — tęskite. Pridėkite: leiskite naujokui ar operatoriui vadovauti vienai diskusijai.', freq: 'Vieną kartą' },
+        { text: 'Ieškokite naujų balsų: ar yra darbuotojų kurių nuomonės dar negirdėjote? Paklauskite jų.', freq: 'Kas mėnesį' },
+        { text: 'Dokumentuokite geriausius sprendimus kurie atėjo iš „netikėtų" šaltinių — tai stiprina kultūrą.', freq: 'Vieną kartą' },
+      ],
+      retry: [
+        { text: 'Vietoj grupinių diskusijų — individuali apklausa: paklauskite kiekvieno darbuotojo ATSKIRAI. Grupėje tylieji tyli.', freq: 'Kas savaitę' },
+        { text: 'Suraskite VIENĄ darbuotoją kurio nuomonė beveik niekada negirdima — specialiai paklauskite jo.', freq: 'Vieną kartą' },
+        { text: 'Pabandykite anonimines idėjų korteles briefinige: kiekvienas užrašo vieną mintį. Skaityti garsiai — be vardo.', freq: 'Kas savaitę' },
+      ],
+      micro: [
+        { text: 'Kiekvieną dieną: vienas klausimas vienam žmogui kuris paprastai nekalbą susitikimuose.', freq: 'Kasdien' },
+        { text: 'Kas savaitę: ar kažkas pasakė kažką netikėto ar nauja? Fiksuokite ir grįžkite prie to.', freq: 'Kas savaitę' },
+        { text: 'Po mėnesio: ar įvairesni žmonės aktyviau dalyvauja? Palyginkite su pradžia.', freq: '30-ąją dieną' },
+      ],
+      weekly: 'Kiekviename susitikime: „Ar čia atstovaujama visų perspektyva, ar tik vadovų?"',
+      metrics: ['Darbuotojai aktyviau dalyvauja problemų sprendimo procesuose', 'Komanda praneša, kad jų patirtis vertinama', 'Mažiau sprendimų priimama be tų, kurių darbo vietą tai paveikia']
+    }
+  };
+
+  // Universal habits
+  const UNIVERSAL_HABITS = [
+    { text: 'Pirmadienis / pamainų bloko pradžia: 3 savaitės gamybos prioritetai → paskelbiami komandai', freq: 'Kas pirmadienį' },
+    { text: 'Penktadienis / pamainų bloko pabaiga: 5 min. refleksija – kas pavyko, kas nepavyko, ką daryti kitaip', freq: 'Kas penktadienį' },
+    { text: 'Trumpas 1:1 su kiekvienu pavaldiniu bent kas 2 savaites', freq: 'Kas 2 sav.' },
+  ];
+
+  const COMP_CLUSTERS = {
+    'Demonstrating Integrity':'Komunikacija','Encouraging Dialogue':'Komunikacija','Creating Shared Vision':'Komunikacija',
+    'Developing Technological Savvy':'Sėkmės užtikrinimas','Ensuring Customer Satisfaction':'Sėkmės užtikrinimas','Maintaining Competitive Advantage':'Sėkmės užtikrinimas',
+    'Developing People':'Žmonių įtraukimas','Building Partnerships':'Žmonių įtraukimas','Sharing Leadership':'Žmonių įtraukimas',
+    'Achieving Personal Mastery':'Nuolatinis tobulėjimas','Anticipating Opportunities':'Nuolatinis tobulėjimas','Leading Change':'Nuolatinis tobulėjimas',
+    'Empowering People':'Įtraukianti aplinka','Thinking Globally':'Įtraukianti aplinka','Appreciating Diversity':'Įtraukianti aplinka',
+  };
+  const COMP_LT = {
+    'Demonstrating Integrity':'Sąžiningumas ir patikimumas','Encouraging Dialogue':'Dialogo skatinimas','Creating Shared Vision':'Bendros krypties kūrimas',
+    'Developing Technological Savvy':'Technologinis išprusimas','Ensuring Customer Satisfaction':'Kliento pasitenkinimas','Maintaining Competitive Advantage':'Konkurencinis pranašumas',
+    'Developing People':'Žmonių ugdymas','Building Partnerships':'Partnerystės kūrimas','Sharing Leadership':'Lyderiavimo dalijimasis',
+    'Achieving Personal Mastery':'Asmeninis tobulėjimas','Anticipating Opportunities':'Galimybių numatymas','Leading Change':'Pokyčių valdymas',
+    'Empowering People':'Žmonių įgalinimas','Thinking Globally':'Globalus mąstymas','Appreciating Diversity':'Įvairovės vertinimas',
+  };
+  const ltComp = name => COMP_LT[name] || name;
+
+  // ════════════════════════════════════════════════════════════════════════
+  // SESSION DATA — hierarchija: reflect → delta → agg/manual
+  // ════════════════════════════════════════════════════════════════════════
+  function loadSession(){
+    try {
+      const reflectRaw = sessionStorage.getItem('gla360_reflect');
+      const deltaRaw   = sessionStorage.getItem('gla360_delta');
+      const reflect    = reflectRaw ? JSON.parse(reflectRaw) : null;
+      const delta      = deltaRaw   ? JSON.parse(deltaRaw)   : null;
+      return { reflect, delta };
+    } catch(e){ return { reflect: null, delta: null }; }
+  }
+
+  // Gauti trend ir cause iš sesijos pagal kompetencijos vardą
+  function getCompContext(name, reflect, delta){
+    // 1. Reflect turi prioritetą (regressed + cause)
+    if(reflect?.items){
+      const item = reflect.items.find(i => i.name === name);
+      if(item) return { trend: 'regressed', cause: item.cause, delta: item.delta };
+    }
+    // 2. Delta
+    if(delta?.items){
+      const item = delta.items.find(i => i.name === name);
+      if(item) return { trend: item.trend, cause: null, delta: item.delta_others };
+    }
+    // 3. Pirmas ciklas
+    return { trend: 'first_time', cause: null, delta: null };
+  }
+
+  // Pasirinkti tinkamą veiksmų rinkinį pagal trend + cause
+  function selectActions(db, trend, cause){
+    if(!db) return { p1: [], p2: [], p3: [], mode: 'first_time' };
+
+    if(trend === 'improved' || trend === 'mild_improved'){
+      return { maintenance: db.maintenance || db.p1, mode: 'maintenance' };
+    }
+
+    if(trend === 'stagnated'){
+      return { p1: db.retry || db.p1, p2: db.p2, p3: db.p3, mode: 'retry' };
+    }
+
+    if(trend === 'regressed'){
+      if(cause === 'plan_not_executed'){
+        return { p1: db.micro || db.p1, p2: db.p2, p3: db.p3, mode: 'micro' };
+      }
+      if(cause === 'plan_wrong'){
+        return { p1: db.retry || db.p1, p2: db.p2, p3: db.p3, mode: 'retry' };
+      }
+      // circumstances arba other — standartinis bet su papildomu kontekstu
+      return { p1: db.p1, p2: db.p2, p3: db.p3, mode: 'regressed_context' };
+    }
+
+    // first_time arba default
+    return { p1: db.p1, p2: db.p2, p3: db.p3, mode: 'first_time' };
+  }
+
+  // Trend chip HTML
+  function trendChip(trend, delta){
+    const labels = {
+      improved:      '↑↑ Aiškiai pagerėjo',
+      mild_improved: '↑ Pagerėjo',
+      stagnated:     '→ Nepasikeitė',
+      regressed:     '↓ Pablogėjo',
+      first_time:    '★ Pirmas ciklas',
+    };
+    const d = delta !== null && delta !== undefined
+      ? ` (${delta >= 0 ? '+' : ''}${Number(delta).toFixed(2)})`
+      : '';
+    return `<span class="trend-chip ${trend}">${labels[trend]||trend}${d}</span>`;
+  }
+
+  // Mode badge
+  function modeBadge(mode){
+    const map = {
+      first_time:        { icon:'🎯', text:'Pirmas ciklas — pilnas planas',         cls:'neg'   },
+      maintenance:       { icon:'✅', text:'Palaikymo fazė — trumpas planas',        cls:'pos'   },
+      retry:             { icon:'🔄', text:'Pakartojimas — alternatyvūs veiksmai',   cls:'warn'  },
+      micro:             { icon:'🪜', text:'Mikro-žingsniai — pradedame iš naujo',   cls:'neg'   },
+      regressed_context: { icon:'⚠️', text:'Konteksto pokytis — originalus planas',  cls:'warn'  },
+    };
+    const m = map[mode] || map.first_time;
+    return `<span class="score-chip ${m.cls}" style="font-size:.78rem;">${m.icon} ${m.text}</span>`;
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // INIT — cycle banner + auto-fill from session
+  // ════════════════════════════════════════════════════════════════════════
+  function initCycleBanner(){
+    const { reflect, delta } = loadSession();
+    const banner = document.getElementById('cycleBanner');
+    if(!banner) return;
+
+    if(reflect){
+      const regNames = reflect.items.map(i => ltComp(i.name)).join(', ');
+      banner.className = 'cycle-banner has-reflect';
+      banner.innerHTML = `<span class="icon">🪞</span>
+        <div>
+          <strong>Refleksija rasta.</strong> Planas bus adaptuotas pagal jūsų refleksijos rezultatus.<br>
+          <span class="muted" style="font-size:.82rem;">Pablogėję sritys: ${regNames}</span>
+        </div>`;
+      banner.style.display = 'flex';
+    } else if(delta){
+      banner.className = 'cycle-banner has-delta';
+      banner.innerHTML = `<span class="icon">📈</span>
+        <div>
+          <strong>Palyginimo duomenys rasti.</strong> Planas bus adaptuotas pagal ciklų delta.<br>
+          <span class="muted" style="font-size:.82rem;">
+            Pagerėjo: ${delta.summary?.improved || 0} · Nepasikeitė: ${delta.summary?.stagnated || 0} · Pablogėjo: ${delta.summary?.regressed || 0}
+          </span>
+        </div>`;
+      banner.style.display = 'flex';
+    } else {
+      banner.className = 'cycle-banner first-time';
+      banner.innerHTML = `<span class="icon">★</span>
+        <div><strong>Pirmas ciklas.</strong> Generuojamas standartinis 90 dienų planas.</div>`;
+      banner.style.display = 'flex';
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // RENDER PLAN
+  // ════════════════════════════════════════════════════════════════════════
+  function renderPlan(leader, comps){
+    const today = new Date();
+    planStartDate = today;
+    const { reflect, delta } = loadSession();
+
+    document.getElementById('planTitle').textContent =
+      `${leader} – 90 dienų tobulėjimo planas`;
+    document.getElementById('planMeta').textContent =
+      `Pradžia: ${today.toLocaleDateString('lt-LT')} · Pabaiga: ${dateAddDays(today,90).toLocaleDateString('lt-LT')} · Sritys: ${comps.map(ltComp).join(', ')}`;
+
+    // Gaps summary
+    document.getElementById('planGapsSummary').innerHTML = comps.map(name => {
+      const ctx  = getCompContext(name, reflect, delta);
+      const acts = selectActions(PLAN_DB[name], ctx.trend, ctx.cause);
+      return `<div class="comp-gap-card">
+        <div class="comp-gap-title">
+          ${modeBadge(acts.mode)}
+          <strong>${ltComp(name)}</strong>
+          ${trendChip(ctx.trend, ctx.delta)}
+        </div>
+        <p style="font-size:.84rem;color:var(--muted);margin-top:4px;">
+          ${COMP_CLUSTERS[name] || ''} · Veiksmai aprašyti žemiau.
+        </p>
+      </div>`;
+    }).join('');
+
+    // Phases — dynamic per comp
+    const phasesEl = document.getElementById('planPhases');
+    phasesEl.innerHTML = '';
+
+    comps.forEach(name => {
+      const db   = PLAN_DB[name];
+      const ctx  = getCompContext(name, reflect, delta);
+      const acts = selectActions(db, ctx.trend, ctx.cause);
+
+      if(acts.mode === 'maintenance'){
+        // Single maintenance phase
+        const section = document.createElement('section');
+        section.className = 'card';
+        let html = `<div class="maintenance-block">
+          <div class="maintenance-title">
+            ✅ ${ltComp(name)} — palaikymo fazė
+            <span class="phase-days">Visa 90 d.</span>
+          </div>
+          <p class="muted" style="font-size:.88rem;margin-bottom:12px;">
+            Ši sritis pagerėjo. Tikslas — išlaikyti pažangą ir neįkristi atgal.
+          </p>`;
+        (acts.maintenance || []).forEach((a, ai) => {
+          const calId = `cal_maint_${name.replace(/\s/g,'_')}_${ai}`;
+          html += actionItemHtml(a, calId, 'maintenance', name);
+        });
+        html += '</div>';
+        section.innerHTML = html;
+        phasesEl.appendChild(section);
+
+      } else {
+        // Standard 3-phase (or retry/micro variants)
+        const phaseData = [
+          { key:'p1', num:1, cls:'phase1', icon:'🔍', title:'1 fazė – Suvokimas ir diagnozė',      days:'1–30 dienos',
+            desc: acts.mode==='micro'
+              ? 'Pradedame mažais, kasdieniais žingsniais. Tikslas — įtvirtinti bet kokį veiksmą per pirmąjį mėnesį.'
+              : acts.mode==='retry'
+              ? 'Naujas požiūris. Tikslas — suprasti kodėl ankstesni veiksmai neveikė ir rasti kitą kelią.'
+              : 'Tikslas: suprasti, kodėl spraga egzistuoja. Rinkti duomenis, kalbėtis su komanda.' },
+          { key:'p2', num:2, cls:'phase2', icon:'🛠',  title:'2 fazė – Eksperimentai ir praktika', days:'31–60 dienos',
+            desc:'Tikslas: išbandyti konkrečius naujus elgesius. Kiekvienas veiksmas turi būti matomas komandai.' },
+          { key:'p3', num:3, cls:'phase3', icon:'📈', title:'3 fazė – Įtvirtinimas ir peržiūra',  days:'61–90 dienos',
+            desc:'Tikslas: paversti naujus elgesius įpročiu. Gauti grįžtamąjį ryšį, fiksuoti pažangą.' },
+        ];
+
+        phaseData.forEach(ph => {
+          const actions = acts[ph.key] || [];
+          if(!actions.length) return;
+          const section = document.createElement('section');
+          section.className = 'card';
+          let html = `<div class="plan-phase ${ph.cls}">
+            <div class="phase-title">
+              ${ph.icon} ${ph.title}
+              <span class="phase-days">${ph.days}</span>
+            </div>
+            <p class="muted" style="font-size:.88rem;margin-bottom:12px;">${ph.desc}</p>
+            <div style="font-size:.82rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">
+              ${ltComp(name)}
+            </div>`;
+          actions.forEach((a, ai) => {
+            const calId = `cal_${ph.key}_${name.replace(/\s/g,'_')}_${ai}`;
+            html += actionItemHtml(a, calId, ph.key, name);
+          });
+          html += '</div>';
+          section.innerHTML = html;
+          phasesEl.appendChild(section);
+        });
+      }
+    });
+
+    // Weekly habits
+    let habitsHtml = '<div style="margin-bottom:12px;">';
+    let wIdx = 0;
+    comps.forEach(name => {
+      const db = PLAN_DB[name];
+      if(db?.weekly){
+        const calId = `cal_weekly_${wIdx++}`;
+        habitsHtml += `<div class="action-item" data-text="${esc(name+': '+db.weekly)}" data-freq="Kas savaitę" data-phase="weekly" data-comp="${name}">
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;width:100%;">
+            <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--brand);width:16px;height:16px;margin-top:3px;flex-shrink:0;">
+            <div style="flex:1;">
+              <div class="action-text"><strong>${ltComp(name)}:</strong> ${db.weekly}</div>
+              <div style="margin-top:3px;"><span class="action-freq">📅 Kas savaitę</span></div>
+            </div>
+          </label>
+        </div>`;
+      }
+    });
+    UNIVERSAL_HABITS.forEach((h, hi) => {
+      const calId = `cal_univ_${hi}`;
+      habitsHtml += `<div class="action-item" data-text="${esc(h.text)}" data-freq="${h.freq}" data-phase="weekly" data-comp="universal">
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;width:100%;">
+          <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--brand);width:16px;height:16px;margin-top:3px;flex-shrink:0;">
+          <div style="flex:1;">
+            <div class="action-text">${h.text}</div>
+            <div style="margin-top:3px;"><span class="action-freq">📅 ${h.freq}</span></div>
+          </div>
+        </label>
+      </div>`;
+    });
+    habitsHtml += '</div>';
+    document.getElementById('weeklyHabits').innerHTML = habitsHtml;
+
+    // Success metrics
+    let metricsHtml = '';
+    comps.forEach(name => {
+      const db = PLAN_DB[name];
+      if(!db?.metrics) return;
+      metricsHtml += `<div style="margin-bottom:12px;">
+        <div style="font-size:.82rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">${ltComp(name)}</div>`;
+      db.metrics.forEach(m => {
+        metricsHtml += `<div class="action-item" style="padding:8px 0;"><div class="action-text">✅ ${m}</div></div>`;
+      });
+      metricsHtml += '</div>';
+    });
+    document.getElementById('successMetrics').innerHTML = metricsHtml;
+
+    document.getElementById('planOutput').style.display = 'block';
+    document.getElementById('planOutput').scrollIntoView({ behavior:'smooth', block:'start' });
+
+    // Bot card
+    const botCard = document.getElementById('botCard');
+    if(botCard){
+      botCard.style.display = 'block';
+      const botSummary = document.getElementById('botSummaryBox');
+      const botList    = document.getElementById('botCompList');
+      if(botSummary && botList){
+        botList.innerHTML = comps.map((name, i) =>
+          `<div style="padding:2px 0;">${i===0?'🔴':i===1?'🟡':'🟢'} <strong>${i+1}.</strong> ${ltComp(name)}</div>`
+        ).join('');
+        botSummary.style.display = 'block';
+      }
+      const botBase = document.getElementById('botLink').href.split('?')[0];
+      const param = encodeURIComponent(comps.slice(0,3).join('|').slice(0,50));
+      document.getElementById('botLink').href = botBase + '?start=plan_' + param;
+    }
+
+    wireCalendarExport(leader);
+  }
+
+  // Action item HTML helper
+  function actionItemHtml(a, calId, phase, name){
+    return `<div class="action-item" data-text="${esc(a.text)}" data-freq="${a.freq}" data-phase="${phase}" data-comp="${name}">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;width:100%;">
+        <input type="checkbox" class="cal-cb" id="${calId}" style="accent-color:var(--brand);width:16px;height:16px;margin-top:3px;flex-shrink:0;">
+        <div style="flex:1;">
+          <div class="action-text">${a.text}</div>
+          <div style="margin-top:3px;"><span class="action-freq">📅 ${a.freq}</span></div>
+        </div>
+      </label>
+    </div>`;
+  }
+
+  function esc(s){
+    return String(s||'').replace(/"/g,'&quot;');
+  }
+
+  // ── Manual picker ─────────────────────────────────────────────────────────
+  function initManualPicker(){
+    const picker = document.getElementById('manualPicker');
+    if(!picker) return;
+    picker.innerHTML = Object.keys(PLAN_DB).map(name => `
+      <label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.88rem;font-weight:400;cursor:pointer;">
+        <input type="checkbox" class="manual-comp" value="${name}" style="accent-color:var(--brand);">
+        <span><strong>${ltComp(name)}</strong> <span class="muted">${COMP_CLUSTERS[name]||''}</span></span>
+      </label>`).join('');
+    picker.addEventListener('change', () => {
+      const checked = picker.querySelectorAll('.manual-comp:checked');
+      if(checked.length > 3){ checked[checked.length-1].checked = false; alert('Pasirinkite ne daugiau 3 gebėjimų.'); }
+    });
+  }
+
+  // ── File drop ─────────────────────────────────────────────────────────────
+  const aggFile = document.getElementById('aggFile');
+  const aggDrop = document.getElementById('aggDrop');
+  aggDrop.addEventListener('click', () => aggFile.click());
+  aggDrop.addEventListener('dragover',  e => { e.preventDefault(); aggDrop.classList.add('drag-over'); });
+  aggDrop.addEventListener('dragleave', () => aggDrop.classList.remove('drag-over'));
+  aggDrop.addEventListener('drop', e => {
+    e.preventDefault(); aggDrop.classList.remove('drag-over');
+    aggFile.files = e.dataTransfer.files;
+    document.getElementById('aggFileInfo').textContent = aggFile.files[0]?.name || '';
+  });
+  aggFile.addEventListener('change', () => {
+    document.getElementById('aggFileInfo').textContent = aggFile.files[0]?.name || '';
+  });
+
+  // ── Generate button ───────────────────────────────────────────────────────
+  document.getElementById('generateBtn').addEventListener('click', async () => {
+    const leader = (document.getElementById('leaderNamePlan').value || 'Lyderis').trim();
+    let targetComps = [];
+
+   const { reflect, delta } = loadSession();
+ 
+    // 1. Regressed iš reflect
+    if(reflect?.items?.length){
+      targetComps = reflect.items.map(i => i.name);
+    }
+
+    // 2. Iš delta sessionStorage (gaps_c2)
+    if(!targetComps.length && delta?.gaps_c2?.length){
+      targetComps = delta.gaps_c2.slice(0,3).map(g => g.name);
+    }
+
+    // 3. Iš delta items — top regressed/stagnated
+    if(targetComps.length < 3 && delta?.items?.length){
+      const existing = new Set(targetComps);
+      const extra = delta.items
+        .filter(i => !existing.has(i.name))
+        .filter(i => i.c2_others !== null && i.c2_others < 3.5)
+        .sort((a,b) => (a.c2_others ?? 5) - (b.c2_others ?? 5))
+        .slice(0, 3 - targetComps.length)
+        .map(i => i.name);
+      targetComps = [...targetComps, ...extra];
+    }
+    // 4. Iš agg JSON failo
+    if(!targetComps.length && aggFile.files?.[0]){
+      try {
+        const agg = JSON.parse(await aggFile.files[0].text());
+        if(agg.gaps?.length)       targetComps = agg.gaps.slice(0,3).map(g => g.name);
+        else if(agg.diffs?.length) targetComps = agg.diffs.filter(d=>d.diff<0).slice(0,3).map(d=>d.name);
+      } catch(e){ alert('Nepavyko nuskaityti JSON: ' + e.message); return; }
+    }
+
+    // 5. Rankinis
+    if(!targetComps.length){
+      const checked = document.querySelectorAll('.manual-comp:checked');
+      targetComps = Array.from(checked).map(cb => cb.value);
+    }
+
+    if(!targetComps.length){
+      alert('Įkelkite apibendrintą JSON arba pasirinkite kompetencijas rankiniu būdu.');
+      return;
+    }
+
+    renderPlan(leader, targetComps);
+  });
+
+  // ── ICS Export ────────────────────────────────────────────────────────────
+  function icsDate(d){ return d.toISOString().slice(0,10).replace(/-/g,''); }
+  function icsDatetime(d){ return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''); }
+function escIcs(s){
+    const escaped = String(s)
+      .replace(/\\/g,'\\\\')
+      .replace(/;/g,'\\;')
+      .replace(/,/g,'\\,')
+      .replace(/\n/g,'\\n');
+    // ICS line folding: max 75 chars per line, continuation with CRLF + space
+    let result = '';
+    let line = '';
+    for(const ch of escaped){
+      if((line + ch).length > 74){
+        result += line + '\r\n ';
+        line = ch;
+      } else {
+        line += ch;
+      }
+    }
+    return result + line;
+  }
+
+  function freqToIcs(freq, phaseOffset){
+    const f = freq.toLowerCase();
+    if(f.includes('kas savaitę')||f.includes('kas susitikimas')) return { rrule:'FREQ=WEEKLY;BYDAY=MO;COUNT=13', dayOffset:phaseOffset };
+    if(f.includes('kas 2 sav'))  return { rrule:'FREQ=WEEKLY;INTERVAL=2;BYDAY=MO;COUNT=7', dayOffset:phaseOffset };
+    if(f.includes('kas mėnesį')) return { rrule:'FREQ=MONTHLY;COUNT=3', dayOffset:phaseOffset };
+    if(f.includes('kas pirmadienį')) return { rrule:'FREQ=WEEKLY;BYDAY=MO;COUNT=13', dayOffset:phaseOffset };
+    if(f.includes('kas penktadienį')) return { rrule:'FREQ=WEEKLY;BYDAY=FR;COUNT=13', dayOffset:phaseOffset };
+    if(f.includes('kasdien')) return { rrule:'FREQ=DAILY;COUNT=90', dayOffset:phaseOffset };
+    const dayMatch = freq.match(/(\d+)/);
+    if(dayMatch) return { rrule:null, dayOffset:parseInt(dayMatch[1])-1 };
+    return { rrule:null, dayOffset:phaseOffset };
+  }
+
+  function phaseToOffset(phase){
+    if(phase==='p1'||phase==='weekly'||phase==='maintenance') return 0;
+    if(phase==='p2') return 30;
+    if(phase==='p3') return 60;
+    return 0;
+  }
+
+  function generateIcs(items, startDate, leaderName){
+    const lines = [
+      'BEGIN:VCALENDAR','VERSION:2.0',
+      'PRODID:-//Leadership 360°//Tobulėjimo planas//LT',
+      'CALSCALE:GREGORIAN','METHOD:PUBLISH',
+      `X-WR-CALNAME:Leadership 360° - ${escIcs(leaderName)} 90d`,
+      'X-WR-TIMEZONE:Europe/Vilnius',
+    ];
+    items.forEach((item, idx) => {
+      const pOffset = phaseToOffset(item.phase);
+      const { rrule, dayOffset } = freqToIcs(item.freq, pOffset);
+      const eventDate = dateAddDays(startDate, dayOffset);
+      const uid = `gla360-${Date.now()}-${idx}@gla360.local`;
+      lines.push('BEGIN:VEVENT',`UID:${uid}`,
+        `DTSTART;VALUE=DATE:${icsDate(eventDate)}`,
+        `DTEND;VALUE=DATE:${icsDate(dateAddDays(eventDate,1))}`);
+      if(rrule){ const until = icsDate(dateAddDays(startDate,90)); lines.push(`RRULE:${rrule};UNTIL=${until}`); }
+      lines.push(
+        `SUMMARY:Leadership 360°: ${escIcs(item.text.slice(0,50))}`,
+        `DESCRIPTION:${escIcs(item.comp+'\n'+item.freq+'\n\n'+item.text)}`,
+        'CATEGORIES:Leadership 360,Lyderystė','STATUS:CONFIRMED',
+        `DTSTAMP:${icsDatetime(new Date())}`,
+        'BEGIN:VALARM',
+        'TRIGGER:-PT15M',
+        'ACTION:DISPLAY',
+        'DESCRIPTION:Leadership 360° priminimas',
+        'END:VALARM',
+        'END:VEVENT'
+      );
+    });
+    lines.push('END:VCALENDAR');
+    return lines.join('\r\n');
+  }
+
+  function downloadIcs(filename, content){
+    const blob = new Blob([content],{type:'text/calendar;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  }
+
+  function wireCalendarExport(leader){
+    const btn = document.getElementById('exportIcs');
+    if(!btn) return;
+    btn.addEventListener('click', () => {
+      const checked = document.querySelectorAll('.cal-cb:checked');
+      if(!checked.length){ alert('Pažymėkite bent vieną veiksmą žymimuoju langeliu.'); return; }
+      const items = [];
+      checked.forEach(cb => {
+        const row = cb.closest('.action-item');
+        if(!row) return;
+        items.push({ text:row.dataset.text||'', freq:row.dataset.freq||'Vieną kartą', phase:row.dataset.phase||'p1', comp:row.dataset.comp||'' });
+      });
+      const ics  = generateIcs(items, planStartDate||new Date(), leader);
+      const fname = `GLA360_${leader.replace(/\s+/g,'_')}_90d.ics`;
+      downloadIcs(fname, ics);
+      alert(`✅ Atsisiųsta: ${fname}\n\nGoogle Calendar: Nustatymai → Importuoti\nOutlook: Failas → Importuoti/eksportuoti`);
+    });
+  }
+
+  // ── DOMContentLoaded ──────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    initManualPicker();
+    initCycleBanner();
+  });
+
+})();
+</script>
+</body>
+</html>
