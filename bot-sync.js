@@ -53,33 +53,63 @@
     }).filter(Boolean);
   }
 
+  function inlineStatus(){
+    const button = document.getElementById('botSyncBtn');
+    if(!button) return null;
+    let el = document.getElementById('botSyncInlineStatus');
+    if(el) return el;
+    el = document.createElement('div');
+    el.id = 'botSyncInlineStatus';
+    el.style.width = '100%';
+    el.style.fontSize = '.82rem';
+    el.style.marginTop = '2px';
+    el.style.color = 'var(--muted)';
+    button.parentElement?.appendChild(el);
+    return el;
+  }
+
   function setStatus(text, isError = false){
+    const color = isError ? 'var(--danger, #c0392b)' : 'var(--muted)';
+    const top = inlineStatus();
+    if(top){
+      top.textContent = text;
+      top.style.color = color;
+    }
     const el = document.getElementById('botSyncStatus');
-    if(!el) return;
-    el.textContent = text;
-    el.style.color = isError ? 'var(--danger)' : 'var(--muted)';
+    if(el){
+      el.textContent = text;
+      el.style.color = color;
+    }
+  }
+
+  function showProblem(text){
+    setStatus(text, true);
+    window.alert(text);
   }
 
   function wire({ startDate } = {}){
     const button = document.getElementById('botSyncBtn');
     if(!button || button.dataset.wired === '1') return;
     button.dataset.wired = '1';
+    inlineStatus();
 
     const planStart = startDate instanceof Date ? startDate : new Date();
 
     button.addEventListener('click', async () => {
       const items = selectedItems(planStart);
       if(!items.length){
-        setStatus('Pažymėk 1–3 plano veiksmus varnelėmis.', true);
+        showProblem('Pirma pažymėkite 1–3 plano veiksmus varnelėmis žemiau. Telegram perduoda tik pažymėtus veiksmus.');
         return;
       }
       if(items.length > MAX_ITEMS){
-        setStatus('Botui pasirink ne daugiau kaip 3 svarbiausius veiksmus.', true);
+        showProblem('Telegram pasirinkite ne daugiau kaip 3 svarbiausius plano veiksmus.');
         return;
       }
 
+      const originalLabel = button.textContent;
       button.disabled = true;
-      setStatus('Ruošiu saugų perdavimą į Telegram…');
+      button.textContent = '⏳ Ruošiamas perdavimas…';
+      setStatus('Jungiu pasirinktus veiksmus su @OMESG360Bot…');
 
       try {
         const response = await fetch(`${WORKER_URL}/plan/import`, {
@@ -96,14 +126,17 @@
 
         const data = await response.json().catch(() => ({}));
         if(!response.ok || !data.telegramUrl){
-          throw new Error(data.error || 'Nepavyko paruošti perdavimo.');
+          throw new Error(data.error || `HTTP ${response.status}` || 'Nepavyko paruošti perdavimo.');
         }
 
         setStatus('Paruošta. Atidarau @OMESG360Bot…');
-        window.location.assign(data.telegramUrl);
+        button.textContent = '✅ Atidaromas Telegram…';
+        window.location.href = data.telegramUrl;
       } catch(error){
-        setStatus(`Nepavyko perduoti plano: ${error.message || error}`, true);
+        const message = `Nepavyko perduoti plano į Telegram: ${error?.message || error}`;
+        showProblem(message);
         button.disabled = false;
+        button.textContent = originalLabel;
       }
     });
   }
