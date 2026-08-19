@@ -1,26 +1,27 @@
 # Leadership 360° completion plan
 
-Status: active architecture checkpoint
+Status: architecture decision accepted; collector implementation started
 Date: 2026-08-19
 
 ## Goal
 Finish Leadership 360° as one coherent LT/EN product across setup, invitations, survey, response collection, reporting, 90-day plan, Telegram companion, and repeat cycle.
 
+## Accepted product decision
+Leadership 360° moves from a strict no-server model to a **minimal pseudonymous backend** so invitations, response collection and repeat cycles can be automated.
+
+The manual JSON-by-email workflow becomes fallback/recovery only. Privacy wording must be rewritten before collector mode is public.
+
 ## Current state
 - Public product name: Leadership 360°.
-- Current setup asks for leader/project, evaluator counts by role, and optional guardian name/email.
-- Current survey runs locally, downloads one JSON response, and instructs the evaluator to send that file to the guardian.
-- Current report requires manual upload of all response JSON files.
-- Current repeat-cycle comparison requires two manually saved aggregate JSON files.
-- Current privacy promise says responses are not sent to a server.
+- Current public setup still asks for leader/project, evaluator counts by role, and optional guardian name/email.
+- Current public survey still downloads one JSON response and instructs the evaluator to send that file to the guardian.
+- Current report still requires manual upload of response JSON files.
+- Current repeat-cycle comparison still requires two manually saved aggregate JSON files.
+- Current privacy page still contains the old no-server promise and therefore must not be treated as final collector privacy copy.
 - 90-day plan -> .ics works.
 - 90-day plan -> OMESG360Bot handoff works.
 - Bot UI has LT/EN support; Leadership 360° itself is still primarily LT.
-
-## Product decision proposed
-Replace the manual JSON-by-email workflow with a pseudonymous response collector. Keep JSON download/upload only as a fallback/debug/export path.
-
-This intentionally changes the product from "no server" to "minimal pseudonymous backend". Privacy copy must therefore be rewritten before public release.
+- `collector-worker/` now contains the first backend implementation with separate identity and response databases.
 
 ## Target architecture
 
@@ -46,8 +47,7 @@ Guardian fields:
 - guardian name
 - guardian email
 
-Recommended default: guardian required for anonymous/pseudonymous mode.
-Optional direct mode can remain for private self-use, but must be clearly labelled as lower anonymity.
+Collector mode uses a guardian as the normal privacy path. A future direct/private mode may exist, but it must be clearly labelled as lower anonymity.
 
 ### 4. Invitations
 Each evaluator gets a unique opaque invite token. The invite URL contains no evaluator email or name.
@@ -64,18 +64,19 @@ Invitation email includes:
 The leader can trigger invitations, but evaluator identity must not be embedded in response data.
 
 ### 5. Separation of identity and answers
-Keep roster/identity data separate from response data.
+Identity and responses are stored in **separate D1 databases**.
 
-Roster record may contain:
+Identity database may contain:
 - assessment_id
 - cycle
-- invite_token_hash
-- encrypted email
+- encrypted evaluator email
 - role
 - language
-- sent/completed status
+- invitation token hash
+- encrypted resendable token
+- sent/opened/completed status
 
-Response record contains:
+Response database contains:
 - assessment_id
 - cycle
 - response_id
@@ -85,14 +86,12 @@ Response record contains:
 - optional comments
 - submitted_at
 
-Response records must not contain evaluator email, evaluator name, or typed roster index.
-
-After successful submission, the live invite token should no longer be needed for reading the response.
+Response records must not contain evaluator email, evaluator name, invite id, or typed roster index.
 
 ### 6. Completion visibility
-Leader view: counts only by role, e.g. `Peer 2/3`, not "Jonas completed".
+Leader/guardian operational view shows counts by role, e.g. `Peer 2/3`, not "Jonas completed".
 
-Guardian view may manage the invitation roster and reminders, but response content must be separated from recipient identity.
+Guardian may manage the invitation roster and reminders, but response content is separated from recipient identity.
 
 This is pseudonymity/confidentiality, not a mathematically absolute anonymity guarantee. Privacy wording must say that plainly.
 
@@ -110,11 +109,12 @@ Open comments need extra care because wording can identify the writer. For small
 ### 8. Survey submit flow
 Primary flow:
 1. evaluator opens tokenized link
-2. answers survey
-3. presses `Submit`
-4. response is posted to the collector
-5. evaluator sees confirmation
-6. guardian/leader sees only updated completion count
+2. survey loads context through collector
+3. evaluator answers survey
+4. presses `Submit`
+5. response is posted to the response database
+6. evaluator sees confirmation
+7. guardian/leader sees only updated completion count
 
 Fallback:
 - `Download JSON` remains available for recovery/debug/manual use.
@@ -129,8 +129,6 @@ Preferred flow:
 - guardian can open a protected cycle page
 - guardian can export an anonymized response bundle if needed
 - report generator can read the collected cycle directly
-
-This is simpler and reduces accidental identity leakage via sender email metadata.
 
 ### 10. Report generation
 Normal flow should no longer require manual drag-and-drop of many rater JSON files.
@@ -151,7 +149,7 @@ At or near day 90:
 Do not require the user to manually upload two aggregate JSON files in the normal path.
 
 ### 12. OMESG360Bot role
-Bot remains the 90-day execution companion, not the research-data store.
+Bot remains the 90-day execution companion, not the survey-data store.
 
 Bot may:
 - hold selected 1-3 development commitments
@@ -177,10 +175,10 @@ Must cover:
 - .ics copy
 - OMESG360Bot handoff copy
 
-Response payload must store `language` but scoring keys remain language-neutral.
+Response payload stores `language` but scoring keys remain language-neutral.
 
 ### 14. Data schema migration
-Introduce a new neutral schema, e.g. `leadership360-response@3`, with at least:
+New collector semantics use `leadership360-response@3` with at least:
 - assessment_id
 - cycle
 - role
@@ -190,10 +188,10 @@ Introduce a new neutral schema, e.g. `leadership360-response@3`, with at least:
 - open
 - submitted_at
 
-Continue reading the old `gla360-personal@2` files for backward compatibility, but do not emit the old brand in new exports.
+Continue reading old `gla360-personal@2` files for backward compatibility, but do not emit the old brand in new exports.
 
 ### 15. Privacy rewrite
-Before enabling collector mode, replace all claims that answers "never leave the browser".
+Before enabling collector mode publicly, replace all claims that answers "never leave the browser".
 
 New privacy copy must explain:
 - what is sent
@@ -204,32 +202,39 @@ New privacy copy must explain:
 - deletion method
 - limits of anonymity for small groups and free-text comments
 
-## Implementation order
-1. Freeze current working LT prototype as compatibility baseline.
-2. Introduce assessment/cycle data model and new response schema.
-3. Replace role-count setup with evaluator roster + language + guardian.
-4. Build tokenized invitation model.
-5. Build minimal collector and completion-status API.
-6. Change survey from download-first to submit-first, keeping JSON fallback.
-7. Build guardian/cycle collection view.
-8. Make report read a collected cycle directly.
-9. Automate C2 creation/re-invitation and direct C1/C2 comparison.
-10. Complete full LT/EN layer.
-11. Rewrite privacy/README to match real data flow.
-12. E2E test: C1 -> report -> 90d plan -> bot -> C2 -> compare.
-13. Only after E2E pass, migrate public URL from old `gla360-personal-full` path.
+## Implementation status
+
+### Completed / implemented in repo
+- [x] Architecture decision accepted: minimal pseudonymous backend.
+- [x] Current LT prototype kept intact as compatibility baseline.
+- [x] New neutral response semantics defined: `leadership360-response@3`.
+- [x] Separate identity and response D1 schemas created.
+- [x] Tokenized invitation model implemented in `collector-worker`.
+- [x] Collector API implemented for assessment creation, invite context, submit, role-level status and anonymized export.
+- [x] Management bearer token implemented.
+- [x] Evaluator emails and resendable invitation tokens encrypted with AES-GCM using a Worker secret.
+- [x] C2-style later cycle creation implemented by cloning the previous roster.
+- [x] Assessment deletion implemented across both databases.
+- [x] Email-send endpoint implemented, gated until Cloudflare Email Service is configured.
+
+### Next
+- [ ] Configure two D1 databases and collector Worker deployment.
+- [ ] Configure Cloudflare Email Service sender/binding.
+- [ ] Replace role-count UI with evaluator roster + language + guardian.
+- [ ] Wire setup UI to collector assessment creation.
+- [ ] Change survey from download-first to submit-first, keeping JSON fallback.
+- [ ] Build guardian/cycle collection view.
+- [ ] Make report read a collected cycle directly.
+- [ ] Add roster editing before C2 and direct C1/C2 comparison.
+- [ ] Complete full LT/EN layer.
+- [ ] Rewrite privacy/README to match real data flow.
+- [ ] E2E test: C1 -> report -> 90d plan -> bot -> C2 -> compare.
+- [ ] Only after E2E pass, migrate public URL from old `gla360-personal-full` path.
 
 ## Explicitly not doing
 - No raw 360 answers in Telegram.
-- No evaluator email inside response JSON.
+- No evaluator email inside response JSON/database rows.
+- No response row linked by invite id or roster index.
 - No leader-facing "who answered what" view.
 - No cosmetic redesign until the data flow is stable.
 - No deletion of legacy JSON support until old C1 data can still be imported.
-
-## Decision gate before backend implementation
-We need one explicit product decision:
-
-**Do we accept moving Leadership 360° from a strict no-server model to a minimal pseudonymous backend so invitations and response collection can be automatic?**
-
-If YES, implement the collector architecture above.
-If NO, keep the current local-only model and only automate invitation templates / mailto links; JSON attachment sending will remain partly manual.
