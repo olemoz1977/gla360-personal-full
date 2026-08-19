@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Leadership 360° – Ciklo valdymas</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .group-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}.group-card{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);text-align:center}.group-card .n{font-size:1.7rem;font-weight:700}.group-card .lbl{font-size:.76rem;color:var(--muted);margin-top:4px}.secure-note{font-size:.8rem;color:var(--muted)}
+    @media(max-width:720px){.group-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<header class="head"><h1>Leadership 360°</h1><p>Anonimiškumo sergėtojo ciklo valdymas</p></header>
+<main class="wrap">
+  <section class="card">
+    <h2>Ciklas</h2>
+    <p><strong>Assessment ID:</strong> <code id="aid">—</code> · <strong id="cycleLabel">C1</strong></p>
+    <p class="secure-note">Valdymo raktas laikomas tik šios nuorodos fragmente. Neperduokite šios nuorodos vertintojams.</p>
+    <div id="statusText" class="muted" style="margin-top:8px;">Kraunama…</div>
+  </section>
+
+  <section class="card">
+    <h2>Užpildymo būsena</h2>
+    <div id="groups" class="group-grid"></div>
+    <div id="thresholds" class="muted" style="font-size:.84rem;margin-top:12px;"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+      <button id="refreshBtn" type="button" class="secondary">↻ Atnaujinti</button>
+      <button id="sendBtn" type="button">✉ Siųsti / pakartoti kvietimus</button>
+    </div>
+    <div id="actionStatus" class="muted" style="margin-top:10px;"></div>
+  </section>
+
+  <section class="card">
+    <h2>Duomenys ir ataskaita</h2>
+    <p class="muted">Ataskaita skaito pseudoniminį ciklo paketą. Vertintojų el. paštai į paketą nepatenka.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+      <a id="reportLink" class="btn" href="#">📊 Atidaryti ciklo ataskaitą</a>
+      <button id="exportBtn" type="button" class="secondary">⬇ Atsisiųsti anonimizuotą bundle</button>
+    </div>
+  </section>
+
+  <section class="card" id="nextCycleCard">
+    <h2>Pakartotinis ciklas</h2>
+    <p class="muted">C2 priklauso tam pačiam Assessment ID. Dabartinis rosteris nukopijuojamas į naują ciklą, o kvietimams sugeneruojami nauji tokenai.</p>
+    <button id="nextCycleBtn" type="button" class="secondary">Sukurti kitą ciklą →</button>
+  </section>
+</main>
+<script src="app.js"></script>
+<script src="collector-client.js"></script>
+<script>
+(function(){
+  const C=window.Leadership360Collector;
+  let auth=C.parseManageHash();
+  if(!auth.assessmentId || !auth.manageToken){
+    try{const saved=JSON.parse(sessionStorage.getItem('leadership360_last_manage')||'null');if(saved)auth=saved}catch(e){}
+  }
+  const roleLabel={self:'SELF',boss:'Vadovas',peer:'Kolegos',report:'Pavaldiniai',other:'Kiti'};
+  document.getElementById('aid').textContent=auth.assessmentId||'—';
+  document.getElementById('cycleLabel').textContent='C'+(auth.cycle||1);
+  document.getElementById('reportLink').href=C.reportUrl(auth);
+
+  function download(name,obj){GLA.download(name,obj)}
+  function msg(text){document.getElementById('actionStatus').textContent=text}
+
+  async function refresh(){
+    if(!auth.assessmentId||!auth.manageToken){document.getElementById('statusText').textContent='Trūksta saugaus valdymo rakto. Atidarykite originalią sergėtojo nuorodą.';return}
+    document.getElementById('statusText').textContent='Atnaujinama…';
+    try{
+      const data=await C.cycleStatus(auth.assessmentId,auth.cycle,auth.manageToken);
+      const map=Object.fromEntries((data.groups||[]).map(g=>[g.role,g]));
+      document.getElementById('groups').innerHTML=['self','boss','peer','report','other'].map(r=>{const g=map[r]||{total:0,completed:0,opened:0,sent:0};return `<div class="group-card"><div class="n">${g.completed}/${g.total}</div><div class="lbl">${roleLabel[r]}</div><div class="muted" style="font-size:.68rem;margin-top:4px">atidaryta ${g.opened||0}</div></div>`}).join('');
+      const warnings=[]; if((map.peer?.completed||0)>0&&(map.peer?.completed||0)<3)warnings.push('Kolegų atsakymų <3 – rolės lygmens anonimiškumas nepakankamas.'); if((map.report?.completed||0)>0&&(map.report?.completed||0)<3)warnings.push('Pavaldinių atsakymų <3 – rolės lygmens anonimiškumas nepakankamas.'); if((map.other?.completed||0)===1)warnings.push('„Kiti“ turi tik 1 atsakymą.');
+      document.getElementById('thresholds').textContent=warnings.length?'⚠️ '+warnings.join(' '):'Anonimiškumo ribos bus taikomos ataskaitos pateikime.';
+      document.getElementById('statusText').textContent='Būsena atnaujinta '+new Date().toLocaleTimeString('lt-LT',{hour:'2-digit',minute:'2-digit'});
+    }catch(e){document.getElementById('statusText').textContent='Nepavyko nuskaityti ciklo: '+e.message}
+  }
+
+  document.getElementById('refreshBtn').onclick=refresh;
+  document.getElementById('sendBtn').onclick=async()=>{
+    if(!confirm('Siųsti kvietimus visiems dar neužbaigusiems šio ciklo vertintojams?'))return;
+    msg('Siunčiama…'); try{const r=await C.sendInvitations(auth.assessmentId,auth.cycle,auth.manageToken);msg(`Išsiųsta: ${r.sent}. Nepavyko: ${r.failedCount||0}.`);await refresh()}catch(e){msg(e.message==='email_not_configured'?'Automatinis el. pašto siuntimas dar neaktyvuotas Cloudflare pusėje.':'Siuntimo klaida: '+e.message)}
+  };
+  document.getElementById('exportBtn').onclick=async()=>{msg('Ruošiamas bundle…');try{const b=await C.exportCycle(auth.assessmentId,auth.cycle,auth.manageToken);download(`leadership360_${auth.assessmentId}_C${auth.cycle}_bundle.json`,b);msg('Anonimizuotas bundle atsisiųstas.')}catch(e){msg('Eksporto klaida: '+e.message)}};
+  document.getElementById('nextCycleBtn').onclick=async()=>{
+    if(!confirm(`Sukurti C${auth.cycle+1} iš C${auth.cycle} rosterio?`))return;msg('Kuriamas naujas ciklas…');
+    try{const r=await C.createNextCycle(auth.assessmentId,auth.manageToken,{fromCycle:auth.cycle});auth.cycle=r.cycle;location.hash=C.manageHash(auth);sessionStorage.setItem('leadership360_last_manage',JSON.stringify(auth));document.getElementById('cycleLabel').textContent='C'+auth.cycle;document.getElementById('reportLink').href=C.reportUrl(auth);msg(`C${auth.cycle} sukurtas. Kvietimai dar neišsiųsti.`);await refresh()}catch(e){msg('Ciklo kūrimo klaida: '+e.message}
+  };
+  refresh();
+})();
+</script>
+</body>
+</html>
