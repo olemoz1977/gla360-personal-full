@@ -1,0 +1,170 @@
+{
+  "version": "1.1.1-en",
+  "competencies": [
+    {
+      "cluster": "Communication",
+      "name": "Demonstrating Integrity",
+      "items": [
+        {"key":"COMM_INT_1","stem":"Keeps promises and agreements made with the team."},
+        {"key":"COMM_INT_2","stem":"Applies rules consistently to all employees."},
+        {"key":"COMM_INT_3","stem":"Acknowledges own mistakes and helps correct them."},
+        {"key":"COMM_INT_4","stem":"Explains to the team why plans or priorities change."},
+        {"key":"COMM_INT_5","stem":"Keeps the team informed about problems and work progress."}
+      ]
+    },
+    {
+      "cluster": "Communication",
+      "name": "Encouraging Dialogue",
+      "items": [
+        {"key":"COMM_DIA_1","stem":"Allows employees to raise problems and express their views freely."},
+        {"key":"COMM_DIA_2","stem":"Listens to quieter members of the team."},
+        {"key":"COMM_DIA_3","stem":"Addresses problems calmly and without making them personal."},
+        {"key":"COMM_DIA_4","stem":"Makes clear agreements about who will do what."},
+        {"key":"COMM_DIA_5","stem":"Makes space for others to speak during shift briefings."}
+      ]
+    },
+    {
+      "cluster": "Communication",
+      "name": "Creating Shared Vision",
+      "items": [
+        {"key":"COMM_VSN_1","stem":"Explains work goals and priorities to the team."},
+        {"key":"COMM_VSN_2","stem":"Makes clear what good performance looks like."},
+        {"key":"COMM_VSN_3","stem":"Regularly reinforces the most important shift goals."},
+        {"key":"COMM_VSN_4","stem":"Checks that employees have understood their tasks."},
+        {"key":"COMM_VSN_5","stem":"Links everyday decisions to production goals."}
+      ]
+    },
+    {
+      "cluster": "Assure Success",
+      "name": "Developing Technological Savvy",
+      "items": [
+        {"key":"ASS_TECH_1","stem":"Looks for ways to improve work or processes."},
+        {"key":"ASS_TECH_2","stem":"Quickly adopts useful work tools or methods."},
+        {"key":"ASS_TECH_3","stem":"Shares practical work tips with the team."},
+        {"key":"ASS_TECH_4","stem":"Assesses risks to quality and production before making changes."},
+        {"key":"ASS_TECH_5","stem":"Tests new solutions and learns from the results."}
+      ]
+    },
+    {
+      "cluster": "Assure Success",
+      "name": "Ensuring Customer Satisfaction",
+      "items": [
+        {"key":"ASS_CUST_1","stem":"Makes sure the product meets quality requirements."},
+        {"key":"ASS_CUST_2","stem":"Responds quickly to quality or customer issues."},
+        {"key":"ASS_CUST_3","stem":"Pays attention to customer complaints and defects."},
+        {"key":"ASS_CUST_4","stem":"Takes action after problems to improve the situation."},
+        {"key":"ASS_CUST_5","stem":"Works to prevent the same mistakes from recurring."}
+      ]
+    },
+    {
+      "cluster": "Assure Success",
+      "name": "Maintaining Competitive Advantage",
+      "items": [
+        {"key":"ASS_COMP_1","stem":"Looks for ways to work more efficiently and consistently."},
+        {"key":"ASS_COMP_2","stem":"Suggests new ideas for improving the work."},
+        {"key":"ASS_COMP_3","stem":"Focuses most attention on the most important work."},
+        {"key":"ASS_COMP_4","stem":"Makes decisions with the outcome and value in mind."},
+        {"key":"ASS_COMP_5","stem":"Notices when the way work is organised needs to change."}
+      ]
+    },
+    {
+      "cluster": "Engaging People",
+      "name": "Developing People",
+      "items": [
+        {"key":"ENG_DEV_1","stem":"Helps employees who need more support to develop."},
+        {"key":"ENG_DEV_2","stem":"Provides clear and useful feedback."},
+        {"key":"ENG_DEV_3","stem":"Coaches employees practically at the workplace."},
+        {"key":"ENG_DEV_4","stem":"Notices and recognises progress and good work."},
+        {"key":"ENG_DEV_5","stem":"Shares own experience and knowledge."}
+      ]
+    },
+    {
+      "cluster": "Engaging People",
+      "name": "Building Partnerships",
+      "items": [
+        {"key":"ENG_PAR_1","stem":"Works well with other shifts or departments."},
+        {"key":"ENG_PAR_2","stem":"Makes clear agreements about shared work and responsibilities."},
+        {"key":"ENG_PAR_3","stem":"Resolves disagreements between employees quickly."},
+        {"key":"ENG_PAR_4","stem":"Shares credit with the team."},
+        {"key":"ENG_PAR_5","stem":"Maintains regular communication with other departments."}
+      ]
+    },
+    {
+      "cluster": "Engaging People",
+      "name": "Sharing Leadership",
+      "items": [
+        {"key":"ENG_SLD_1","stem":"Delegates tasks clearly and understandably."},
+        {"key":"ENG_SLD_2","stem":"Trusts employees to do their work."},
+        {"key":"ENG_SLD_3","stem":"Allows employees to demonstrate their strengths."},
+        {"key":"ENG_SLD_4","stem":"Listens to employees and avoids micromanaging details."},
+        {"key":"ENG_SLD_5","stem":"Allows the team to solve routine problems independently."}
+      ]
+    },
+    {
+      "cluster": "Continuous Change",
+      "name": "Achieving Personal Mastery",
+      "items": [
+        {"key":"CHG_MAS_1","stem":"Maintains an orderly and organised work rhythm."},
+        {"key":"CHG_MAS_2","stem":"Learns from own mistakes."},
+        {"key":"CHG_MAS_3","stem":"Sets work priorities appropriately."},
+        {"key":"CHG_MAS_4","stem":"Remains calm in difficult situations."},
+        {"key":"CHG_MAS_5","stem":"Maintains performance and manages stress during peak periods."}
+      ]
+    },
+    {
+      "cluster": "Continuous Change",
+      "name": "Anticipating Opportunities",
+      "items": [
+        {"key":"CHG_ANT_1","stem":"Spots potential problems or risks early."},
+        {"key":"CHG_ANT_2","stem":"Prepares in advance for more difficult situations."},
+        {"key":"CHG_ANT_3","stem":"Takes action without waiting for a problem to grow."},
+        {"key":"CHG_ANT_4","stem":"Sees how own decisions affect other processes."},
+        {"key":"CHG_ANT_5","stem":"Uses available information to prevent problems."}
+      ]
+    },
+    {
+      "cluster": "Continuous Change",
+      "name": "Leading Change",
+      "items": [
+        {"key":"CHG_LEAD_1","stem":"Clearly explains the purpose of changes to the team."},
+        {"key":"CHG_LEAD_2","stem":"Helps employees adapt to changes."},
+        {"key":"CHG_LEAD_3","stem":"Quickly implements improvements that deliver results."},
+        {"key":"CHG_LEAD_4","stem":"Ensures new ways of working are followed."},
+        {"key":"CHG_LEAD_5","stem":"Listens to employees' concerns before changes are made."}
+      ]
+    },
+    {
+      "cluster": "Boundary-less Inclusion",
+      "name": "Empowering People",
+      "items": [
+        {"key":"INC_EMP_1","stem":"Clearly states what each employee is responsible for."},
+        {"key":"INC_EMP_2","stem":"Encourages employees to show initiative."},
+        {"key":"INC_EMP_3","stem":"Helps remove obstacles that get in the way of work."},
+        {"key":"INC_EMP_4","stem":"Notices and recognises employees' efforts."},
+        {"key":"INC_EMP_5","stem":"Allows people to learn from mistakes without unnecessary fear."}
+      ]
+    },
+    {
+      "cluster": "Boundary-less Inclusion",
+      "name": "Thinking Globally",
+      "items": [
+        {"key":"INC_GLB_1","stem":"Considers the impact on production before making decisions."},
+        {"key":"INC_GLB_2","stem":"Tries to balance quality, safety and productivity."},
+        {"key":"INC_GLB_3","stem":"Respects different employee perspectives and experience."},
+        {"key":"INC_GLB_4","stem":"Makes decisions based on facts and the situation."},
+        {"key":"INC_GLB_5","stem":"Sees the broader picture beyond the boundaries of own shift."}
+      ]
+    },
+    {
+      "cluster": "Boundary-less Inclusion",
+      "name": "Appreciating Diversity",
+      "items": [
+        {"key":"INC_DIV_1","stem":"Listens to different employee opinions."},
+        {"key":"INC_DIV_2","stem":"Gives everyone an equal opportunity to speak."},
+        {"key":"INC_DIV_3","stem":"Values employees' different experience and knowledge."},
+        {"key":"INC_DIV_4","stem":"Does not tolerate disrespectful behaviour in the team."},
+        {"key":"INC_DIV_5","stem":"Creates an environment where employees feel respected."}
+      ]
+    }
+  ]
+}
