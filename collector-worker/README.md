@@ -28,6 +28,23 @@ This is pseudonymous/confidential processing, not an absolute anonymity guarante
 
 Management endpoints use `Authorization: Bearer <manageToken>`.
 
+## Browser integration already staged
+
+The legacy public LT flow remains untouched while the collector path is validated.
+
+New non-default pages/files:
+
+- `collector-client.js` — shared browser API client. Management key stays in URL fragment, not query string.
+- `setup-v2.html` — roster setup: SELF + evaluator email/role/LT-EN + guardian.
+- `survey-v2.html` — tokenized submit-first survey with local JSON recovery copy.
+- `guardian.html` — role-level completion dashboard, invitation trigger, anonymized export and C2 creation.
+- `report-v2.html` — loads a collector cycle directly; no multi-JSON drag/drop in the normal path.
+- `compare-v2.html` — loads C1/C2 directly and sends delta into the existing adaptive plan through `sessionStorage`.
+- `bank/questions.en.json` — EN question bank with the same 75 neutral scoring keys as LT.
+- `tools/validate-bilingual-bank.mjs` + GitHub workflow — enforces LT/EN bank parity.
+
+The old `index.html`, `survey.html`, `report.html` and manual JSON path remain available as compatibility fallback until collector E2E passes.
+
 ## D1 setup
 
 Create two D1 databases so identity and responses are not stored in the same database:
@@ -56,35 +73,77 @@ This key encrypts evaluator email addresses and resendable invitation tokens usi
 
 Do not put the key in GitHub.
 
+## Deploy without email first
+
+The first smoke test does not require an email provider. Assessment creation returns tokenized survey URLs which can be opened manually.
+
+```bash
+npm install
+npx wrangler deploy --dry-run
+npx wrangler deploy
+```
+
+Health check:
+
+```bash
+curl https://leadership-360-collector.<account-subdomain>.workers.dev/health
+```
+
+Expected:
+
+```json
+{"ok":true,"service":"Leadership 360 Collector","version":1}
+```
+
+The browser client currently expects the production worker name `leadership-360-collector`. If the Cloudflare account uses a different workers.dev subdomain, set `window.LEADERSHIP360_COLLECTOR_API` or update the default in `collector-client.js` before public activation.
+
 ## Email sending
 
-Collector code supports a native `EMAIL` binding. Email sending is intentionally disabled in `wrangler.toml` until the sending domain is onboarded in Cloudflare Email Service.
+Email sending is intentionally disabled until the sending domain is onboarded in Cloudflare Email Service.
 
-After onboarding, enable:
+After onboarding, add the email binding and `MAIL_FROM` to the **existing** `[vars]` table in `wrangler.toml`:
 
 ```toml
+[vars]
+PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey-v2.html"
+MAIL_FROM = "Leadership 360 <noreply@omesg360.eu>"
+
 [[send_email]]
 name = "EMAIL"
 remote = true
-
-[vars]
-MAIL_FROM = "Leadership 360 <noreply@your-domain>"
-PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey.html"
 ```
 
-Until then, assessment creation still returns tokenized survey URLs for manual E2E testing.
+Then `/cycles/:cycle/send` can send LT or EN invitation copy based on each roster row.
 
 ## Response schema
 
-New responses are emitted/stored as `leadership360-response@3` semantics. Legacy `gla360-personal@2` import remains a frontend compatibility concern and is not removed by this worker.
+New responses use `leadership360-response@3` semantics.
 
-## Next integration steps
+Response storage contains:
 
-1. Replace role-count fields in `index.html` with evaluator roster rows: email + role + LT/EN.
-2. Save the returned `assessmentId` and `manageToken` locally for the guardian/setup session.
-3. Change `survey.html` to load `/api/invite/:token` and use submit-first flow.
-4. Keep JSON download as recovery/debug fallback.
-5. Add guardian status page using role-level counts only.
-6. Make report load a collector cycle directly, retaining manual JSON upload as fallback.
-7. Add roster editing before C2, then automatic C1/C2 comparison.
-8. Rewrite privacy copy before collector mode is public.
+- `assessment_id`
+- `cycle`
+- `response_id`
+- `role`
+- `language`
+- `bank_version`
+- `answers`
+- optional `open`
+- `submitted_at`
+
+No evaluator email/name/invite id is stored in the response database.
+
+Legacy `gla360-personal@2` remains a frontend compatibility format and is not deleted.
+
+## Remaining gates before public switch
+
+1. Create both D1 databases and replace placeholder IDs.
+2. Add `ROSTER_KEY_HEX` secret.
+3. Deploy worker and run manual no-email C1 smoke test.
+4. Fix any collector/runtime issues found by that smoke test.
+5. Onboard email sending and test LT + EN invitations.
+6. Finish full LT/EN UI beyond the survey/question bank (setup, guardian, report, compare, plan and privacy copy).
+7. Define and implement retention/deletion schedule.
+8. Rewrite the public privacy page to match collector reality.
+9. E2E: C1 -> report -> 90d plan -> OMESG360Bot -> C2 -> compare -> adaptive plan.
+10. Only then switch the public entry from legacy pages to V2 and migrate the public URL.
