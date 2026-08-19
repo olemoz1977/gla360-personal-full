@@ -13,6 +13,7 @@ Status: frontend/privacy/contracts complete in repository; infrastructure E2E pe
 - Bilingual guardian/cycle management (`guardian.html`).
 - Bilingual collector report (`report-v2.html`).
 - Bilingual C1/C2 comparison (`compare-v2.html`).
+- Bilingual optional regression reflection (`reflect-v2.html`) using the existing `gla360-reflect@1` session contract.
 - English 90-day plan layer (`plan-en.html`) plus language routing in `plan.html`.
 - Bilingual Telegram handoff states/errors (`bot-sync.js`).
 - Collector invitation email copy is LT/EN based on each roster row.
@@ -27,7 +28,7 @@ Status: frontend/privacy/contracts complete in repository; infrastructure E2E pe
 - Small-group warnings for peer/report/other presentation.
 - Small-group free-text labels can be broadened to `Others`.
 - Full Assessment deletion endpoint is exposed in guardian UI and deletes both response and identity layers.
-- `PRIVACY-v2.html` truthfully describes pseudonymity, small-group/free-text limits, current beta retention state and deployment-specific controller responsibilities.
+- `PRIVACY-v2.html` describes pseudonymity, small-group/free-text limits, current beta retention state and deployment-specific controller responsibilities.
 - Legacy `PRIVACY.html` remains unchanged because the current public legacy flow is still local/no-server.
 
 ### Frontend ↔ Collector contracts
@@ -38,11 +39,12 @@ Status: frontend/privacy/contracts complete in repository; infrastructure E2E pe
 - Invite context is augmented with `assessmentId` without exposing evaluator identity.
 - Normal survey flow is Submit-first; JSON is recovery/fallback only.
 - Normal report flow reads the collected cycle directly; multi-file upload is legacy fallback only.
+- Reflection stays browser-session-only: it reads derived C1/C2 delta and does not call Collector or Telegram.
 - C2 currently clones C1 roster with fresh invite tokens and no responses.
 
 ### Static checks staged
 - `tools/validate-bilingual-bank.mjs` checks 15 competencies, 75 items, key/order parity and duplicate keys.
-- `tools/validate-v2-contracts.mjs` checks key privacy/frontend invariants.
+- `tools/validate-v2-contracts.mjs` checks privacy/frontend invariants including the reflection boundary.
 - `.github/workflows/validate-leadership360-v2.yml` is configured to run both validators on relevant changes.
 
 ## Not claimed complete yet
@@ -70,7 +72,7 @@ The following require the real Cloudflare runtime and therefore are **not** mark
 7. Complete SELF + test evaluators through LT and EN survey links.
 8. Verify guardian counts and that no person-level identity is exposed.
 9. Generate `report-v2` and 90-day plan; send 1–3 commitments to OMESG360Bot.
-10. Create C2, submit again and verify `compare-v2` + adapted plan.
+10. Create C2, submit again and verify `compare-v2`; when regressions exist, optionally run `reflect-v2` before the adapted plan.
 11. Only then enable/test automatic email invitations and switch the public entry to V2.
 
 ## Deferred product decision after first E2E
