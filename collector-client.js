@@ -13,12 +13,8 @@
 
   async function request(path, options = {}){
     const headers = new Headers(options.headers || {});
-    if(options.json !== undefined){
-      headers.set('content-type', 'application/json');
-    }
-    if(options.manageToken){
-      headers.set('authorization', 'Bearer ' + options.manageToken);
-    }
+    if(options.json !== undefined) headers.set('content-type', 'application/json');
+    if(options.manageToken) headers.set('authorization', 'Bearer ' + options.manageToken);
 
     let response;
     try {
@@ -45,42 +41,44 @@
     return data;
   }
 
+  function normaliseLang(value){
+    return String(value || '').toLowerCase().startsWith('en') ? 'en' : 'lt';
+  }
+
   function parseManageHash(hash = location.hash){
     const raw = String(hash || '').replace(/^#/, '');
     const qs = new URLSearchParams(raw);
     return {
       assessmentId: qs.get('aid') || '',
       manageToken: qs.get('key') || '',
-      cycle: Math.max(1, Number(qs.get('cycle') || 1) || 1)
+      cycle: Math.max(1, Number(qs.get('cycle') || 1) || 1),
+      lang: normaliseLang(qs.get('lang') || localStorage.getItem('leadership360_ui_lang') || navigator.language || 'lt')
     };
   }
 
-  function manageHash({ assessmentId, manageToken, cycle = 1 }){
+  function manageHash({ assessmentId, manageToken, cycle = 1, lang = 'lt' }){
     const qs = new URLSearchParams();
     qs.set('aid', assessmentId);
     qs.set('key', manageToken);
     qs.set('cycle', String(cycle));
+    qs.set('lang', normaliseLang(lang));
     return '#' + qs.toString();
   }
 
-  function guardianUrl({ assessmentId, manageToken, cycle = 1 }){
-    const u = new URL('guardian.html', location.href);
+  function pageUrl(page, auth){
+    const u = new URL(page, location.href);
     u.search = '';
-    u.hash = manageHash({ assessmentId, manageToken, cycle });
+    u.hash = manageHash(auth);
     return u.toString();
   }
 
-  function reportUrl({ assessmentId, manageToken, cycle = 1 }){
-    const u = new URL('report-v2.html', location.href);
-    u.search = '';
-    u.hash = manageHash({ assessmentId, manageToken, cycle });
-    return u.toString();
-  }
-
-  function compareUrl({ assessmentId, manageToken }){
-    const u = new URL('compare-v2.html', location.href);
-    u.search = '';
-    u.hash = manageHash({ assessmentId, manageToken, cycle: 2 });
+  function guardianUrl(auth){ return pageUrl('guardian.html', auth); }
+  function reportUrl(auth){ return pageUrl('report-v2.html', auth); }
+  function compareUrl(auth){ return pageUrl('compare-v2.html', { ...auth, cycle: 2 }); }
+  function privacyUrl(lang = 'lt'){
+    const u = new URL('PRIVACY-v2.html', location.href);
+    u.searchParams.set('lang', normaliseLang(lang));
+    u.hash = '';
     return u.toString();
   }
 
@@ -99,7 +97,9 @@
     manageHash,
     guardianUrl,
     reportUrl,
-    compareUrl
+    compareUrl,
+    privacyUrl,
+    normaliseLang
   };
 
   global.Leadership360Collector = api;
