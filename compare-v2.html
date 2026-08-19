@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Leadership 360° – C1 / C2 palyginimas</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    .delta-stat{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.dcard{padding:14px;border:1px solid var(--border);border-radius:12px;text-align:center}.dval{font-size:1.8rem;font-weight:700}.dlbl{font-size:.72rem;color:var(--muted);margin-top:4px}.delta-table{width:100%;border-collapse:collapse}.delta-table th,.delta-table td{padding:8px;border-bottom:1px solid var(--border);text-align:left;font-size:.84rem}.pos{color:var(--accent)}.neg{color:var(--danger)}
+    @media(max-width:650px){.delta-stat{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<header class="head"><h1>Leadership 360° – Pokytis</h1><p>C1 ir C2 palyginami tiesiogiai iš Collector</p></header>
+<main class="wrap">
+  <section class="card no-print">
+    <h2 id="title">C1 → C2</h2>
+    <p><strong id="aid">—</strong></p>
+    <div class="grid4 mt">
+      <label>Vadovas<input type="number" id="wBoss" min="0" max="1" step="0.05" value="0.30"></label>
+      <label>Kolegos<input type="number" id="wPeers" min="0" max="1" step="0.05" value="0.30"></label>
+      <label>Pavaldiniai<input type="number" id="wReports" min="0" max="1" step="0.05" value="0.30"></label>
+      <label>Kiti<input type="number" id="wOthers" min="0" max="1" step="0.05" value="0.10"></label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button id="loadBtn" type="button">📈 Skaičiuoti C1 → C2</button><a id="guardianLink" class="btn secondary" href="#">← Ciklo valdymas</a></div>
+    <div id="status" class="muted" style="margin-top:9px"></div>
+  </section>
+  <div id="results" style="display:none">
+    <div id="stats" class="delta-stat"></div>
+    <section class="card"><h2>Others C1 vs C2</h2><div style="max-width:600px;margin:auto"><canvas id="radar"></canvas></div></section>
+    <div class="grid2"><section class="card"><h2>↑ Labiausiai pagerėjo</h2><div id="topUp"></div></section><section class="card"><h2>↓ Labiausiai pablogėjo</h2><div id="topDown"></div></section></div>
+    <section class="card"><h2>Visos sritys</h2><div style="overflow:auto"><table class="delta-table"><thead><tr><th>Gebėjimas</th><th>C1 Others</th><th>C2 Others</th><th>Δ</th><th>Kryptis</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+    <section class="card no-print"><h2>Kitas 90 d. ciklas</h2><p class="muted">Delta į planą perduodama per naršyklės sesiją. Raw 360° atsakymai į planą ar Telegram nepatenka.</p><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="goPlan" type="button">📋 Generuoti adaptuotą planą →</button><button id="saveDelta" type="button" class="secondary">⬇ Atsisiųsti delta.json</button></div></section>
+  </div>
+</main>
+<script src="app.js"></script>
+<script src="collector-client.js"></script>
+<script>
+(function(){
+  const C=window.Leadership360Collector;let auth=C.parseManageHash(),delta=null,agg1=null,agg2=null,bank=null;
+  if(!auth.assessmentId||!auth.manageToken){try{const x=JSON.parse(sessionStorage.getItem('leadership360_last_manage')||'null');if(x)auth=x}catch(e){}}
+  document.getElementById('aid').textContent=auth.assessmentId||'—';document.getElementById('guardianLink').href='guardian.html'+C.manageHash({assessmentId:auth.assessmentId,manageToken:auth.manageToken,cycle:2});
+  const status=document.getElementById('status');function w(){return{boss:Number(document.getElementById('wBoss').value)||0,peer:Number(document.getElementById('wPeers').value)||0,report:Number(document.getElementById('wReports').value)||0,other:Number(document.getElementById('wOthers').value)||0}}
+  function packs(b){return(b.responses||[]).map(r=>({role:String(r.role||'other').toUpperCase(),answers:r.answers,open:r.open||{}}))}
+  function render(){const s=delta.summary;document.getElementById('stats').innerHTML=`<div class="dcard"><div class="dval">${s.improved}</div><div class="dlbl">Pagerėjo</div></div><div class="dcard"><div class="dval">${s.stagnated}</div><div class="dlbl">Nepasikeitė</div></div><div class="dcard"><div class="dval">${s.regressed}</div><div class="dlbl">Pablogėjo</div></div><div class="dcard"><div class="dval">${s.avgDelta===null?'—':(s.avgDelta>=0?'+':'')+s.avgDelta.toFixed(2)}</div><div class="dlbl">Vid. Δ</div></div>`;
+    document.getElementById('topUp').innerHTML=delta.topImproved.length?delta.topImproved.map(x=>`<p><strong>${GLA.lt(x.name)}</strong> <span class="pos">+${x.delta_others.toFixed(2)}</span></p>`).join(''):'<p class="muted">Aiškiai pagerėjusių sričių nėra.</p>';
+    document.getElementById('topDown').innerHTML=delta.topRegressed.length?delta.topRegressed.map(x=>`<p><strong>${GLA.lt(x.name)}</strong> <span class="neg">${x.delta_others.toFixed(2)}</span></p>`).join(''):'<p class="muted">Pablogėjusių sričių nėra.</p>';
+    document.getElementById('rows').innerHTML=delta.items.map(x=>`<tr><td>${GLA.lt(x.name)}</td><td>${x.c1_others===null?'—':x.c1_others.toFixed(2)}</td><td>${x.c2_others===null?'—':x.c2_others.toFixed(2)}</td><td class="${(x.delta_others||0)>=0?'pos':'neg'}">${x.delta_others===null?'—':(x.delta_others>=0?'+':'')+x.delta_others.toFixed(2)}</td><td>${x.trendLabel?.icon||''} ${x.trendLabel?.lt||x.trend}</td></tr>`).join('');
+    if(window.Chart){const old=Chart.getChart('radar');if(old)old.destroy();new Chart(document.getElementById('radar'),{type:'radar',data:{labels:bank.competencies.map(c=>GLA.lt(c.name)),datasets:[{label:'Others C1',data:agg1.others.map(x=>x||0),fill:false},{label:'Others C2',data:agg2.others.map(x=>x||0),fill:false}]},options:{scales:{r:{min:1,max:5,ticks:{stepSize:1}}}}})}
+    document.getElementById('results').style.display='block';
+  }
+  async function load(){status.textContent='Kraunami C1 ir C2…';try{const [b1,b2,bk]=await Promise.all([C.exportCycle(auth.assessmentId,1,auth.manageToken),C.exportCycle(auth.assessmentId,2,auth.manageToken),GLA.loadBank()]);if(!b1.responses?.length||!b2.responses?.length){status.textContent='Palyginimui reikia bent po vieną C1 ir C2 atsakymą.';return}bank=bk;agg1=GLA.aggregate(bank,packs(b1),w());agg2=GLA.aggregate(bank,packs(b2),w());agg1.cycle=1;agg2.cycle=2;delta=GLA.compareAggregates(agg1,agg2);delta.assessment_id=auth.assessmentId;delta.schema='leadership360-compare@2';render();status.textContent=`C1: ${b1.responses.length} ats. · C2: ${b2.responses.length} ats.`}catch(e){status.textContent='Palyginimo klaida: '+e.message}}
+  document.getElementById('loadBtn').onclick=load;['wBoss','wPeers','wReports','wOthers'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{if(delta)load()}));
+  document.getElementById('saveDelta').onclick=()=>{if(delta)GLA.download(`leadership360_delta_${auth.assessmentId}_C1-C2.json`,delta)};
+  document.getElementById('goPlan').onclick=()=>{if(!delta)return;sessionStorage.setItem('gla360_delta',JSON.stringify(delta));location.href='plan.html'};
+  load();
+})();
+</script>
+</body>
+</html>
