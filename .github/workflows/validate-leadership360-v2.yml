@@ -1,0 +1,57 @@
+name: Validate Leadership 360 V2
+
+on:
+  push:
+    paths:
+      - 'bank/questions.json'
+      - 'bank/questions.en.json'
+      - 'tools/validate-bilingual-bank.mjs'
+      - 'tools/validate-v2-contracts.mjs'
+      - 'collector-worker/**'
+      - 'collector-client.js'
+      - 'v2-i18n.js'
+      - 'setup-v2.html'
+      - 'setup-v2.js'
+      - 'survey-v2.html'
+      - 'guardian.html'
+      - 'report-v2.html'
+      - 'compare-v2.html'
+      - 'PRIVACY-v2.html'
+      - 'plan.html'
+      - 'plan-en.html'
+      - 'bot-sync.js'
+      - '.github/workflows/validate-leadership360-v2.yml'
+  pull_request:
+    paths:
+      - 'bank/questions.json'
+      - 'bank/questions.en.json'
+      - 'tools/**'
+      - 'collector-worker/**'
+      - 'collector-client.js'
+      - 'v2-i18n.js'
+      - 'setup-v2.html'
+      - 'setup-v2.js'
+      - 'survey-v2.html'
+      - 'guardian.html'
+      - 'report-v2.html'
+      - 'compare-v2.html'
+      - 'PRIVACY-v2.html'
+      - 'plan.html'
+      - 'plan-en.html'
+      - 'bot-sync.js'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate LT EN question bank parity
+        run: node tools/validate-bilingual-bank.mjs
+      - name: Validate V2 frontend and privacy contracts
+        run: node tools/validate-v2-contracts.mjs
