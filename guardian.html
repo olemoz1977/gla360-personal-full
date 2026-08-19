@@ -1,92 +1,38 @@
 <!doctype html>
 <html lang="lt">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Leadership 360° – Ciklo valdymas</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .group-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}.group-card{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);text-align:center}.group-card .n{font-size:1.7rem;font-weight:700}.group-card .lbl{font-size:.76rem;color:var(--muted);margin-top:4px}.secure-note{font-size:.8rem;color:var(--muted)}
-    @media(max-width:720px){.group-grid{grid-template-columns:repeat(2,1fr)}}
-  </style>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leadership 360° – Cycle management</title><link rel="stylesheet" href="styles.css">
+  <style>.topbar{max-width:900px;margin:0 auto;padding:10px 20px;display:flex;justify-content:flex-end}.lang-btn{min-width:48px;padding:7px 12px}.group-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}.group-card{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);text-align:center}.group-card .n{font-size:1.7rem;font-weight:700}.group-card .lbl{font-size:.76rem;color:var(--muted);margin-top:4px}.secure-note{font-size:.8rem;color:var(--muted)}.danger-zone{border-color:rgba(192,57,43,.3)}@media(max-width:720px){.group-grid{grid-template-columns:repeat(2,1fr)}}</style>
 </head>
 <body>
-<header class="head"><h1>Leadership 360°</h1><p>Anonimiškumo sergėtojo ciklo valdymas</p></header>
+<div class="topbar"><button id="langToggle" type="button" class="secondary lang-btn">EN</button></div>
+<header class="head"><h1>Leadership 360°</h1><p id="headSub"></p></header>
 <main class="wrap">
-  <section class="card">
-    <h2>Ciklas</h2>
-    <p><strong>Assessment ID:</strong> <code id="aid">—</code> · <strong id="cycleLabel">C1</strong></p>
-    <p class="secure-note">Valdymo raktas laikomas tik šios nuorodos fragmente. Neperduokite šios nuorodos vertintojams.</p>
-    <div id="statusText" class="muted" style="margin-top:8px;">Kraunama…</div>
-  </section>
-
-  <section class="card">
-    <h2>Užpildymo būsena</h2>
-    <div id="groups" class="group-grid"></div>
-    <div id="thresholds" class="muted" style="font-size:.84rem;margin-top:12px;"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
-      <button id="refreshBtn" type="button" class="secondary">↻ Atnaujinti</button>
-      <button id="sendBtn" type="button">✉ Siųsti / pakartoti kvietimus</button>
-    </div>
-    <div id="actionStatus" class="muted" style="margin-top:10px;"></div>
-  </section>
-
-  <section class="card">
-    <h2>Duomenys ir ataskaita</h2>
-    <p class="muted">Ataskaita skaito pseudoniminį ciklo paketą. Vertintojų el. paštai į paketą nepatenka.</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-      <a id="reportLink" class="btn" href="#">📊 Atidaryti ciklo ataskaitą</a>
-      <button id="exportBtn" type="button" class="secondary">⬇ Atsisiųsti anonimizuotą bundle</button>
-    </div>
-  </section>
-
-  <section class="card" id="nextCycleCard">
-    <h2>Pakartotinis ciklas</h2>
-    <p class="muted">C2 priklauso tam pačiam Assessment ID. Dabartinis rosteris nukopijuojamas į naują ciklą, o kvietimams sugeneruojami nauji tokenai.</p>
-    <button id="nextCycleBtn" type="button" class="secondary">Sukurti kitą ciklą →</button>
-  </section>
+  <section class="card"><h2 id="cycleTitle"></h2><p><strong>Assessment ID:</strong> <code id="aid">—</code> · <strong id="cycleLabel">C1</strong></p><p id="secureNote" class="secure-note"></p><div id="statusText" class="muted" style="margin-top:8px"></div></section>
+  <section class="card"><h2 id="completionTitle"></h2><div id="groups" class="group-grid"></div><div id="thresholds" class="muted" style="font-size:.84rem;margin-top:12px"></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button id="refreshBtn" type="button" class="secondary"></button><button id="sendBtn" type="button"></button></div><div id="actionStatus" class="muted" style="margin-top:10px"></div></section>
+  <section class="card"><h2 id="dataTitle"></h2><p id="dataNote" class="muted"></p><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><a id="reportLink" class="btn" href="#"></a><button id="exportBtn" type="button" class="secondary"></button><a id="privacyLink" class="btn secondary" target="_blank" rel="noopener"></a></div></section>
+  <section class="card" id="nextCycleCard"><h2 id="repeatTitle"></h2><p id="repeatNote" class="muted"></p><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="nextCycleBtn" type="button" class="secondary"></button><a id="compareLink" class="btn secondary" href="#"></a></div></section>
+  <section class="card danger-zone"><h2 id="deleteTitle"></h2><p id="deleteNote" class="muted"></p><button id="deleteBtn" type="button" style="background:var(--danger)"></button></section>
 </main>
-<script src="app.js"></script>
-<script src="collector-client.js"></script>
+<script src="app.js"></script><script src="v2-i18n.js"></script><script src="collector-client.js"></script>
 <script>
 (function(){
-  const C=window.Leadership360Collector;
-  let auth=C.parseManageHash();
-  if(!auth.assessmentId || !auth.manageToken){
-    try{const saved=JSON.parse(sessionStorage.getItem('leadership360_last_manage')||'null');if(saved)auth=saved}catch(e){}
-  }
-  const roleLabel={self:'SELF',boss:'Vadovas',peer:'Kolegos',report:'Pavaldiniai',other:'Kiti'};
-  document.getElementById('aid').textContent=auth.assessmentId||'—';
-  document.getElementById('cycleLabel').textContent='C'+(auth.cycle||1);
-  document.getElementById('reportLink').href=C.reportUrl(auth);
-
-  function download(name,obj){GLA.download(name,obj)}
-  function msg(text){document.getElementById('actionStatus').textContent=text}
-
-  async function refresh(){
-    if(!auth.assessmentId||!auth.manageToken){document.getElementById('statusText').textContent='Trūksta saugaus valdymo rakto. Atidarykite originalią sergėtojo nuorodą.';return}
-    document.getElementById('statusText').textContent='Atnaujinama…';
-    try{
-      const data=await C.cycleStatus(auth.assessmentId,auth.cycle,auth.manageToken);
-      const map=Object.fromEntries((data.groups||[]).map(g=>[g.role,g]));
-      document.getElementById('groups').innerHTML=['self','boss','peer','report','other'].map(r=>{const g=map[r]||{total:0,completed:0,opened:0,sent:0};return `<div class="group-card"><div class="n">${g.completed}/${g.total}</div><div class="lbl">${roleLabel[r]}</div><div class="muted" style="font-size:.68rem;margin-top:4px">atidaryta ${g.opened||0}</div></div>`}).join('');
-      const warnings=[]; if((map.peer?.completed||0)>0&&(map.peer?.completed||0)<3)warnings.push('Kolegų atsakymų <3 – rolės lygmens anonimiškumas nepakankamas.'); if((map.report?.completed||0)>0&&(map.report?.completed||0)<3)warnings.push('Pavaldinių atsakymų <3 – rolės lygmens anonimiškumas nepakankamas.'); if((map.other?.completed||0)===1)warnings.push('„Kiti“ turi tik 1 atsakymą.');
-      document.getElementById('thresholds').textContent=warnings.length?'⚠️ '+warnings.join(' '):'Anonimiškumo ribos bus taikomos ataskaitos pateikime.';
-      document.getElementById('statusText').textContent='Būsena atnaujinta '+new Date().toLocaleTimeString('lt-LT',{hour:'2-digit',minute:'2-digit'});
-    }catch(e){document.getElementById('statusText').textContent='Nepavyko nuskaityti ciklo: '+e.message}
-  }
-
-  document.getElementById('refreshBtn').onclick=refresh;
-  document.getElementById('sendBtn').onclick=async()=>{
-    if(!confirm('Siųsti kvietimus visiems dar neužbaigusiems šio ciklo vertintojams?'))return;
-    msg('Siunčiama…'); try{const r=await C.sendInvitations(auth.assessmentId,auth.cycle,auth.manageToken);msg(`Išsiųsta: ${r.sent}. Nepavyko: ${r.failedCount||0}.`);await refresh()}catch(e){msg(e.message==='email_not_configured'?'Automatinis el. pašto siuntimas dar neaktyvuotas Cloudflare pusėje.':'Siuntimo klaida: '+e.message)}
-  };
-  document.getElementById('exportBtn').onclick=async()=>{msg('Ruošiamas bundle…');try{const b=await C.exportCycle(auth.assessmentId,auth.cycle,auth.manageToken);download(`leadership360_${auth.assessmentId}_C${auth.cycle}_bundle.json`,b);msg('Anonimizuotas bundle atsisiųstas.')}catch(e){msg('Eksporto klaida: '+e.message)}};
-  document.getElementById('nextCycleBtn').onclick=async()=>{
-    if(!confirm(`Sukurti C${auth.cycle+1} iš C${auth.cycle} rosterio?`))return;msg('Kuriamas naujas ciklas…');
-    try{const r=await C.createNextCycle(auth.assessmentId,auth.manageToken,{fromCycle:auth.cycle});auth.cycle=r.cycle;location.hash=C.manageHash(auth);sessionStorage.setItem('leadership360_last_manage',JSON.stringify(auth));document.getElementById('cycleLabel').textContent='C'+auth.cycle;document.getElementById('reportLink').href=C.reportUrl(auth);msg(`C${auth.cycle} sukurtas. Kvietimai dar neišsiųsti.`);await refresh()}catch(e){msg('Ciklo kūrimo klaida: '+e.message}
-  };
-  refresh();
+ const I=window.Leadership360I18n,C=window.Leadership360Collector;let auth=C.parseManageHash();if(!auth.assessmentId||!auth.manageToken){try{const s=JSON.parse(sessionStorage.getItem('leadership360_last_manage')||'null');if(s)auth=s}catch(e){}}
+ let lang=I.set(auth.lang||I.current(),{syncHash:true});auth.lang=lang;
+ const COPY={lt:{head:'Anonimiškumo sergėtojo ciklo valdymas',cycle:'Ciklas',secure:'Valdymo raktas laikomas tik šios nuorodos fragmente. Neperduokite šios nuorodos vertintojams.',loading:'Kraunama…',missing:'Trūksta saugaus valdymo rakto. Atidarykite originalią sergėtojo nuorodą.',completion:'Užpildymo būsena',roles:{self:'SELF',boss:'Vadovas',peer:'Kolegos',report:'Pavaldiniai',other:'Kiti'},opened:'atidaryta',refresh:'↻ Atnaujinti',send:'✉ Siųsti / pakartoti kvietimus',updated:'Būsena atnaujinta',loadError:'Nepavyko nuskaityti ciklo: ',peerWarn:'Kolegų atsakymų < 3 – rolės lygmens anonimiškumas nepakankamas.',reportWarn:'Pavaldinių atsakymų < 3 – rolės lygmens anonimiškumas nepakankamas.',otherWarn:'„Kiti“ turi tik 1 atsakymą.',thresholdOk:'Anonimiškumo ribos bus taikomos ataskaitos pateikime.',sendConfirm:'Siųsti kvietimus visiems dar neužbaigusiems šio ciklo vertintojams?',sending:'Siunčiama…',sent:(s,f)=>`Išsiųsta: ${s}. Nepavyko: ${f}.`,emailOff:'Automatinis el. pašto siuntimas dar neaktyvuotas Cloudflare pusėje.',sendError:'Siuntimo klaida: ',data:'Duomenys ir ataskaita',dataNote:'Ataskaita skaito pseudoniminį ciklo paketą. Vertintojų el. paštai į paketą nepatenka.',report:'📊 Atidaryti ciklo ataskaitą',export:'⬇ Atsisiųsti pseudoniminį bundle',privacy:'🔒 Privatumas',bundle:'Ruošiamas bundle…',bundleDone:'Pseudoniminis bundle atsisiųstas.',exportError:'Eksporto klaida: ',repeat:'Pakartotinis ciklas',repeatNote:'C2 priklauso tam pačiam Assessment ID. Dabartinis rosteris nukopijuojamas, o kvietimams sugeneruojami nauji tokenai.',next:'Sukurti kitą ciklą →',compare:'📈 Palyginti C1 / C2',nextConfirm:(a,b)=>`Sukurti C${b} iš C${a} rosterio?`,creating:'Kuriamas naujas ciklas…',created:c=>`C${c} sukurtas. Kvietimai dar neišsiųsti.`,cycleError:'Ciklo kūrimo klaida: ',deleteTitle:'Ištrynimas',deleteNote:'Šis veiksmas ištrina visą Assessment iš Identity DB ir Response DB. Veiksmo atšaukti negalima.',delete:'Ištrinti visą Assessment',deleteConfirm:'Tikrai ištrinti visą šį Leadership 360° Assessment, visus ciklus, kvietimus ir atsakymus? Šio veiksmo atšaukti negalima.',deleting:'Trinama…',deleted:'Assessment ištrintas.',deleteError:'Ištrynimo klaida: '},
+ en:{head:'Assessment guardian cycle management',cycle:'Cycle',secure:'The management key exists only in this link fragment. Do not share this link with evaluators.',loading:'Loading…',missing:'Secure management key is missing. Open the original guardian link.',completion:'Completion status',roles:{self:'SELF',boss:'Manager',peer:'Peers',report:'Direct reports',other:'Others'},opened:'opened',refresh:'↻ Refresh',send:'✉ Send / resend invitations',updated:'Status updated',loadError:'Could not load cycle: ',peerWarn:'Peer responses < 3 – role-level anonymity is insufficient.',reportWarn:'Direct-report responses < 3 – role-level anonymity is insufficient.',otherWarn:'The Other group has only 1 response.',thresholdOk:'Anonymity thresholds will be applied in report presentation.',sendConfirm:'Send invitations to all evaluators who have not completed this cycle?',sending:'Sending…',sent:(s,f)=>`Sent: ${s}. Failed: ${f}.`,emailOff:'Automatic email sending is not active in Cloudflare yet.',sendError:'Sending error: ',data:'Data and report',dataNote:'The report reads a pseudonymous cycle bundle. Evaluator emails are not included in the bundle.',report:'📊 Open cycle report',export:'⬇ Download pseudonymous bundle',privacy:'🔒 Privacy',bundle:'Preparing bundle…',bundleDone:'Pseudonymous bundle downloaded.',exportError:'Export error: ',repeat:'Repeat cycle',repeatNote:'C2 belongs to the same Assessment ID. The current roster is cloned and new invitation tokens are generated.',next:'Create next cycle →',compare:'📈 Compare C1 / C2',nextConfirm:(a,b)=>`Create C${b} from the C${a} roster?`,creating:'Creating new cycle…',created:c=>`C${c} created. Invitations have not been sent yet.`,cycleError:'Cycle creation error: ',deleteTitle:'Deletion',deleteNote:'This action deletes the entire Assessment from both Identity DB and Response DB. It cannot be undone.',delete:'Delete entire Assessment',deleteConfirm:'Delete this entire Leadership 360° Assessment, all cycles, invitations and responses? This cannot be undone.',deleting:'Deleting…',deleted:'Assessment deleted.',deleteError:'Deletion error: '}};
+ function t(){return COPY[lang]}
+ function renderStatic(){const x=t();document.documentElement.lang=lang;document.title='Leadership 360° – '+(lang==='lt'?'Ciklo valdymas':'Cycle management');document.getElementById('headSub').textContent=x.head;document.getElementById('cycleTitle').textContent=x.cycle;document.getElementById('secureNote').textContent=x.secure;document.getElementById('completionTitle').textContent=x.completion;document.getElementById('refreshBtn').textContent=x.refresh;document.getElementById('sendBtn').textContent=x.send;document.getElementById('dataTitle').textContent=x.data;document.getElementById('dataNote').textContent=x.dataNote;document.getElementById('reportLink').textContent=x.report;document.getElementById('exportBtn').textContent=x.export;document.getElementById('privacyLink').textContent=x.privacy;document.getElementById('repeatTitle').textContent=x.repeat;document.getElementById('repeatNote').textContent=x.repeatNote;document.getElementById('nextCycleBtn').textContent=x.next;document.getElementById('compareLink').textContent=x.compare;document.getElementById('deleteTitle').textContent=x.deleteTitle;document.getElementById('deleteNote').textContent=x.deleteNote;document.getElementById('deleteBtn').textContent=x.delete;document.getElementById('reportLink').href=C.reportUrl(auth);document.getElementById('compareLink').href=C.compareUrl(auth);document.getElementById('privacyLink').href=C.privacyUrl(lang)}
+ I.bindToggle(document.getElementById('langToggle'),next=>{lang=next;auth.lang=next;I.set(next,{syncHash:true});renderStatic();refresh()},{syncHash:true});
+ document.getElementById('aid').textContent=auth.assessmentId||'—';document.getElementById('cycleLabel').textContent='C'+(auth.cycle||1);renderStatic();
+ const msg=x=>document.getElementById('actionStatus').textContent=x;
+ async function refresh(){const x=t();if(!auth.assessmentId||!auth.manageToken){document.getElementById('statusText').textContent=x.missing;return}document.getElementById('statusText').textContent=x.loading;try{const data=await C.cycleStatus(auth.assessmentId,auth.cycle,auth.manageToken),map=Object.fromEntries((data.groups||[]).map(g=>[g.role,g]));document.getElementById('groups').innerHTML=['self','boss','peer','report','other'].map(r=>{const g=map[r]||{total:0,completed:0,opened:0,sent:0};return `<div class="group-card"><div class="n">${g.completed}/${g.total}</div><div class="lbl">${x.roles[r]}</div><div class="muted" style="font-size:.68rem;margin-top:4px">${x.opened} ${g.opened||0}</div></div>`}).join('');const w=[];if((map.peer?.completed||0)>0&&(map.peer?.completed||0)<3)w.push(x.peerWarn);if((map.report?.completed||0)>0&&(map.report?.completed||0)<3)w.push(x.reportWarn);if((map.other?.completed||0)===1)w.push(x.otherWarn);document.getElementById('thresholds').textContent=w.length?'⚠️ '+w.join(' '):x.thresholdOk;document.getElementById('statusText').textContent=x.updated+' '+new Date().toLocaleTimeString(lang==='lt'?'lt-LT':'en-GB',{hour:'2-digit',minute:'2-digit'})}catch(e){document.getElementById('statusText').textContent=x.loadError+e.message}}
+ document.getElementById('refreshBtn').onclick=refresh;
+ document.getElementById('sendBtn').onclick=async()=>{const x=t();if(!confirm(x.sendConfirm))return;msg(x.sending);try{const r=await C.sendInvitations(auth.assessmentId,auth.cycle,auth.manageToken);msg(x.sent(r.sent,r.failedCount||0));await refresh()}catch(e){msg(e.message==='email_not_configured'?x.emailOff:x.sendError+e.message)}};
+ document.getElementById('exportBtn').onclick=async()=>{const x=t();msg(x.bundle);try{const b=await C.exportCycle(auth.assessmentId,auth.cycle,auth.manageToken);GLA.download(`leadership360_${auth.assessmentId}_C${auth.cycle}_bundle.json`,b);msg(x.bundleDone)}catch(e){msg(x.exportError+e.message)}};
+ document.getElementById('nextCycleBtn').onclick=async()=>{const x=t();if(!confirm(x.nextConfirm(auth.cycle,auth.cycle+1)))return;msg(x.creating);try{const r=await C.createNextCycle(auth.assessmentId,auth.manageToken,{fromCycle:auth.cycle});auth.cycle=r.cycle;location.hash=C.manageHash(auth);sessionStorage.setItem('leadership360_last_manage',JSON.stringify(auth));document.getElementById('cycleLabel').textContent='C'+auth.cycle;renderStatic();msg(x.created(auth.cycle));await refresh()}catch(e){msg(x.cycleError+e.message)}};
+ document.getElementById('deleteBtn').onclick=async()=>{const x=t();if(!auth.assessmentId||!auth.manageToken||!confirm(x.deleteConfirm))return;msg(x.deleting);try{await C.deleteAssessment(auth.assessmentId,auth.manageToken);sessionStorage.removeItem('leadership360_last_manage');document.querySelectorAll('button,a.btn').forEach(el=>{if(el.id!=='langToggle')el.style.display='none'});document.getElementById('groups').innerHTML='';document.getElementById('thresholds').textContent='';document.getElementById('statusText').textContent=x.deleted;msg('')}catch(e){msg(x.deleteError+e.message)}};
+ refresh();
 })();
 </script>
 </body>
