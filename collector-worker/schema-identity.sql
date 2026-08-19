@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS invitations (
   token_hash TEXT NOT NULL UNIQUE,
   token_cipher TEXT NOT NULL,
   token_iv TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','sent','opened','completed','revoked')),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','sent','opened','submitting','completed','revoked')),
   sent_at TEXT,
   opened_at TEXT,
   completed_at TEXT,
