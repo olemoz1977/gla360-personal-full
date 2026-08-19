@@ -4,7 +4,7 @@ compatibility_date = "2026-08-19"
 workers_dev = true
 
 [vars]
-PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey.html"
+PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey-v2.html"
 
 [[d1_databases]]
 binding = "IDENTITY_DB"
@@ -16,11 +16,12 @@ binding = "RESPONSE_DB"
 database_name = "leadership-360-responses"
 database_id = "REPLACE_WITH_RESPONSE_D1_ID"
 
-# Enable after Cloudflare Email Service is onboarded for the sending domain:
+# Enable after Cloudflare Email Service is onboarded for the sending domain.
+# Add this binding and add MAIL_FROM to the existing [vars] table above:
+#
 # [[send_email]]
 # name = "EMAIL"
 # remote = true
 #
-# [vars]
-# MAIL_FROM = "Leadership 360 <noreply@your-domain>"
-# PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey.html"
+# MAIL_FROM example:
+# MAIL_FROM = "Leadership 360 <noreply@omesg360.eu>"
