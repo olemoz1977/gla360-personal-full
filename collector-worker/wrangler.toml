@@ -1,5 +1,5 @@
 name = "leadership-360-collector"
-main = "src/index.js"
+main = "src/entry.js"
 compatibility_date = "2026-08-19"
 workers_dev = true
 
@@ -16,12 +16,10 @@ binding = "RESPONSE_DB"
 database_name = "leadership-360-responses"
 database_id = "REPLACE_WITH_RESPONSE_D1_ID"
 
-# Enable after Cloudflare Email Service is onboarded for the sending domain.
-# Add this binding and add MAIL_FROM to the existing [vars] table above:
-#
+# Enable after Cloudflare Email Service is onboarded for the sending domain:
 # [[send_email]]
 # name = "EMAIL"
 # remote = true
 #
-# MAIL_FROM example:
-# MAIL_FROM = "Leadership 360 <noreply@omesg360.eu>"
+# MAIL_FROM must then be configured as a Worker variable, for example:
+# Leadership 360 <noreply@your-domain>
