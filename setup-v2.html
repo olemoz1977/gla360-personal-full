@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Leadership 360° – Naujas vertinimas</title>
+  <title>Leadership 360° – Setup</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+    .topbar{max-width:900px;margin:0 auto;padding:10px 20px;display:flex;justify-content:flex-end}.lang-btn{min-width:48px;padding:7px 12px}
     .roster-row{display:grid;grid-template-columns:minmax(180px,1fr) 150px 95px 44px;gap:8px;align-items:end;margin:8px 0}
     .roster-row label{margin:0}.roster-row button{height:42px;padding:0;background:transparent;color:var(--danger);border:1px solid var(--border)}
     .summary-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.pill{padding:4px 9px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);font-size:.8rem}
@@ -16,174 +17,77 @@
   </style>
 </head>
 <body>
-<header class="head">
-  <h1>Leadership 360°</h1>
-  <p>Naujas pseudoniminis vertinimo ciklas</p>
-</header>
+<div class="topbar"><button id="langToggle" type="button" class="secondary lang-btn">EN</button></div>
+<header class="head"><h1>Leadership 360°</h1><p id="headSub"></p></header>
 <main class="wrap">
+  <section class="card"><div id="collectorState" class="muted"><span class="status-dot"></span><span id="collectorText"></span></div></section>
+
   <section class="card">
-    <div id="collectorState" class="muted"><span class="status-dot"></span>Tikrinamas Collector ryšys…</div>
+    <h2 id="s1Title"></h2>
+    <div class="grid2 mt">
+      <label><span id="leaderLabel"></span><input id="leaderName" type="text" autocomplete="name"></label>
+      <label><span id="projectLabel"></span><input id="projectName" type="text"></label>
+    </div>
+    <div class="grid2 mt">
+      <label><span id="selfEmailLabel"></span><input id="selfEmail" type="email" autocomplete="email"></label>
+      <label><span id="selfLangLabel"></span><select id="selfLang"><option value="lt">LT</option><option value="en">EN</option></select></label>
+    </div>
+    <p id="selfNote" class="muted" style="font-size:.82rem;margin-top:6px"></p>
   </section>
 
   <section class="card">
-    <h2>1. Vertinimas</h2>
-    <div class="grid2 mt">
-      <label>Lyderio vardas
-        <input id="leaderName" type="text" placeholder="Vardas Pavardė" autocomplete="name">
-      </label>
-      <label>Projekto pavadinimas <span class="muted">(nebūtina)</span>
-        <input id="projectName" type="text" placeholder="pvz., 2026 C1">
-      </label>
-    </div>
-    <div class="grid2 mt">
-      <label>SELF el. paštas
-        <input id="selfEmail" type="email" placeholder="leaderis@imone.lt" autocomplete="email">
-      </label>
-      <label>SELF kalba
-        <select id="selfLang"><option value="lt">LT</option><option value="en">EN</option></select>
-      </label>
-    </div>
-    <p class="muted" style="font-size:.82rem;margin-top:6px;">SELF yra atskiras savivertinimo kvietimas. Atsakymų lentelėje el. paštas nesaugomas.</p>
-  </section>
-
-  <section class="card">
-    <h2>2. Vertintojai</h2>
-    <p class="muted">Įveskite konkretų el. paštą, rolę ir apklausos kalbą. Sistema pati suskaičiuos grupes.</p>
+    <h2 id="s2Title"></h2><p id="rosterNote" class="muted"></p>
     <div id="roster"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-      <button id="addRow" type="button" class="secondary">+ Pridėti vertintoją</button>
-    </div>
-    <div id="roleSummary" class="summary-pills"></div>
-    <div id="anonymityWarning" class="muted" style="font-size:.82rem;margin-top:10px;"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button id="addRow" type="button" class="secondary"></button></div>
+    <div id="roleSummary" class="summary-pills"></div><div id="anonymityWarning" class="muted" style="font-size:.82rem;margin-top:10px"></div>
   </section>
 
   <section class="card">
-    <h2>3. Anonimiškumo sergėtojas</h2>
+    <h2 id="s3Title"></h2>
     <div class="grid2 mt">
-      <label>Vardas, pavardė
-        <input id="guardianName" type="text" placeholder="Rasa Petrauskienė">
-      </label>
-      <label>El. paštas
-        <input id="guardianEmail" type="email" placeholder="rasa@imone.lt">
-      </label>
+      <label><span id="guardianNameLabel"></span><input id="guardianName" type="text"></label>
+      <label><span id="guardianEmailLabel"></span><input id="guardianEmail" type="email"></label>
     </div>
-    <p class="muted" style="font-size:.82rem;margin-top:8px;">Sergėtojas valdo kvietimų ciklą ir mato užpildymo skaičius. Vertintojų identitetai ir jų atsakymai saugomi atskirai.</p>
+    <p id="guardianNote" class="muted" style="font-size:.82rem;margin-top:8px"></p>
   </section>
 
   <section class="card">
-    <h2>4. Sukurti C1</h2>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:400;">
-      <input id="privacyAck" type="checkbox" style="width:auto;margin-top:4px;">
-      <span>Suprantu, kad tai pseudoniminis, o ne absoliučiai anoniminis procesas. Mažose grupėse ir iš laisvo teksto autoriaus tapatybė gali būti numanoma.</span>
-    </label>
-    <div class="mt"><button id="createBtn" type="button">Sukurti vertinimo ciklą</button></div>
-    <div id="createStatus" class="muted" style="margin-top:10px;"></div>
+    <h2 id="s4Title"></h2>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:400"><input id="privacyAck" type="checkbox" style="width:auto;margin-top:4px"><span id="privacyAckText"></span></label>
+    <p style="margin-top:8px;font-size:.84rem"><a id="privacyLink" href="PRIVACY-v2.html" target="_blank" rel="noopener"></a></p>
+    <div class="mt"><button id="createBtn" type="button"></button></div><div id="createStatus" class="muted" style="margin-top:10px"></div>
   </section>
 
-  <section class="card" id="createdCard" style="display:none;">
-    <h2>Vertinimas sukurtas</h2>
-    <p><strong>Assessment ID:</strong> <code id="assessmentId"></code></p>
-    <p class="muted">Žemiau esanti valdymo nuoroda turi slaptą raktą URL fragmente. Jos nesiųskite vertintojams.</p>
+  <section class="card" id="createdCard" style="display:none">
+    <h2 id="createdTitle"></h2><p><strong>Assessment ID:</strong> <code id="assessmentId"></code></p><p id="manageNote" class="muted"></p>
     <div id="guardianLink" class="secure-box"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-      <button id="copyGuardian" type="button" class="secondary">📋 Kopijuoti sergėtojo nuorodą</button>
-      <a id="openGuardian" class="btn" href="#">Atidaryti ciklo valdymą →</a>
-    </div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:20px 0;">
-    <h3>Kvietimų nuorodos – atsarginis rankinis kelias</h3>
-    <p class="muted" style="font-size:.85rem;">Kai el. pašto siuntimas bus aktyvuotas, normaliai jų kopijuoti nereikės.</p>
-    <div id="inviteList"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button id="copyGuardian" type="button" class="secondary"></button><a id="openGuardian" class="btn" href="#"></a></div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:20px 0"><h3 id="fallbackTitle"></h3><p id="fallbackNote" class="muted" style="font-size:.85rem"></p><div id="inviteList"></div>
   </section>
 </main>
-<script src="collector-client.js"></script>
+<script src="v2-i18n.js"></script><script src="collector-client.js"></script>
 <script>
 (function(){
-  const C = window.Leadership360Collector;
-  const roster = document.getElementById('roster');
-  const roleLabels = {boss:'Vadovas',peer:'Kolega',report:'Pavaldinys',other:'Kitas'};
-
-  function rowTemplate(role='peer', lang='lt'){
-    const div = document.createElement('div');
-    div.className='roster-row';
-    div.innerHTML = `
-      <label class="email">El. paštas<input class="r-email" type="email" placeholder="vardas@imone.lt"></label>
-      <label>Rolė<select class="r-role">${Object.entries(roleLabels).map(([v,l])=>`<option value="${v}" ${v===role?'selected':''}>${l}</option>`).join('')}</select></label>
-      <label>Kalba<select class="r-lang"><option value="lt" ${lang==='lt'?'selected':''}>LT</option><option value="en" ${lang==='en'?'selected':''}>EN</option></select></label>
-      <button type="button" class="remove" aria-label="Pašalinti">×</button>`;
-    div.querySelector('.remove').onclick=()=>{div.remove(); updateSummary();};
-    div.querySelectorAll('select,input').forEach(el=>el.addEventListener('change',updateSummary));
-    roster.appendChild(div);
-    updateSummary();
-  }
-
-  function rows(){
-    return [...roster.querySelectorAll('.roster-row')].map(el=>({
-      email:el.querySelector('.r-email').value.trim().toLowerCase(),
-      role:el.querySelector('.r-role').value,
-      language:el.querySelector('.r-lang').value
-    }));
-  }
-
-  function updateSummary(){
-    const counts={boss:0,peer:0,report:0,other:0};
-    rows().forEach(r=>counts[r.role]++);
-    document.getElementById('roleSummary').innerHTML=Object.entries(counts).map(([r,n])=>`<span class="pill">${roleLabels[r]}: <strong>${n}</strong></span>`).join('');
-    const warnings=[];
-    if(counts.peer>0 && counts.peer<3) warnings.push('Kolegų grupė < 3 – rolės lygmens anonimiškumas silpnas.');
-    if(counts.report>0 && counts.report<3) warnings.push('Pavaldinių grupė < 3 – rolės lygmens anonimiškumas silpnas.');
-    if(counts.other===1) warnings.push('„Kiti“ grupėje tik 1 žmogus – rekomenduojama bent 2.');
-    document.getElementById('anonymityWarning').textContent=warnings.length?'⚠️ '+warnings.join(' '):'✓ Grupės bus agreguojamos pagal nustatytas anonimiškumo ribas.';
-  }
-
-  function validateEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
-
-  document.getElementById('addRow').onclick=()=>rowTemplate('peer','lt');
-  rowTemplate('boss'); rowTemplate('peer'); rowTemplate('peer'); rowTemplate('peer'); rowTemplate('report'); rowTemplate('report'); rowTemplate('report');
-
-  (async()=>{
-    const el=document.getElementById('collectorState');
-    try{await C.health(); el.innerHTML='<span class="status-dot ok"></span>Collector pasiekiamas';}
-    catch(e){el.innerHTML='<span class="status-dot bad"></span>Collector dar neaktyvuotas. Šis V2 ekranas paruoštas, bet C1 kūrimas veiks tik po Cloudflare aktyvavimo.';}
-  })();
-
-  document.getElementById('createBtn').onclick=async()=>{
-    const leaderName=document.getElementById('leaderName').value.trim();
-    const projectName=document.getElementById('projectName').value.trim();
-    const selfEmail=document.getElementById('selfEmail').value.trim().toLowerCase();
-    const guardianName=document.getElementById('guardianName').value.trim();
-    const guardianEmail=document.getElementById('guardianEmail').value.trim().toLowerCase();
-    const status=document.getElementById('createStatus');
-    const r=rows();
-
-    if(!leaderName){status.textContent='Įveskite lyderio vardą.';return;}
-    if(!validateEmail(selfEmail)){status.textContent='Įveskite SELF el. paštą.';return;}
-    if(!guardianName || !validateEmail(guardianEmail)){status.textContent='Įveskite sergėtojo vardą ir galiojantį el. paštą.';return;}
-    if(!r.length){status.textContent='Pridėkite bent vieną vertintoją.';return;}
-    if(r.some(x=>!validateEmail(x.email))){status.textContent='Patikrinkite visų vertintojų el. paštus.';return;}
-    const emails=[selfEmail,...r.map(x=>x.email)];
-    if(new Set(emails).size!==emails.length){status.textContent='Tas pats el. paštas negali būti įrašytas du kartus tame pačiame cikle.';return;}
-    if(!document.getElementById('privacyAck').checked){status.textContent='Patvirtinkite pseudonimiškumo pastabą.';return;}
-
-    const btn=document.getElementById('createBtn'); btn.disabled=true; btn.textContent='Kuriama…'; status.textContent='';
-    try{
-      const data=await C.createAssessment({
-        leaderName, projectName, guardianName, guardianEmail,
-        roster:[{email:selfEmail,role:'self',language:document.getElementById('selfLang').value},...r]
-      });
-      const gUrl=C.guardianUrl({assessmentId:data.assessmentId,manageToken:data.manageToken,cycle:1});
-      sessionStorage.setItem('leadership360_last_manage', JSON.stringify({assessmentId:data.assessmentId,manageToken:data.manageToken,cycle:1}));
-      document.getElementById('assessmentId').textContent=data.assessmentId;
-      document.getElementById('guardianLink').textContent=gUrl;
-      document.getElementById('openGuardian').href=gUrl;
-      document.getElementById('copyGuardian').onclick=()=>navigator.clipboard.writeText(gUrl).then(()=>alert('Sergėtojo nuoroda nukopijuota.'));
-      document.getElementById('inviteList').innerHTML=(data.invites||[]).map((inv,i)=>`<div class="invite-item"><strong>${i+1}. ${inv.role.toUpperCase()} · ${inv.language.toUpperCase()}</strong><div style="font-size:.8rem;word-break:break-all;margin-top:4px;">${inv.url}</div></div>`).join('');
-      document.getElementById('createdCard').style.display='block';
-      document.getElementById('createdCard').scrollIntoView({behavior:'smooth'});
-    }catch(e){
-      const map={collector_unreachable:'Collector dar neaktyvuotas arba nepasiekiamas.',guardian_email_required:'Reikalingas sergėtojo el. paštas.',assessment_create_failed:'Nepavyko sukurti vertinimo duomenų bazėje.'};
-      status.textContent='Klaida: '+(map[e.message]||e.message);
-    }finally{btn.disabled=false;btn.textContent='Sukurti vertinimo ciklą';}
+  const I=window.Leadership360I18n,C=window.Leadership360Collector,roster=document.getElementById('roster');
+  const COPY={
+    lt:{head:'Naujas pseudoniminis vertinimo ciklas',checking:'Tikrinamas Collector ryšys…',online:'Collector pasiekiamas',offline:'Collector dar neaktyvuotas. V2 ekranas paruoštas, bet C1 kūrimas veiks tik po Collector paleidimo.',s1:'1. Vertinimas',leader:'Lyderio vardas',project:'Projekto pavadinimas (nebūtina)',selfEmail:'SELF el. paštas',selfLang:'SELF kalba',selfNote:'SELF yra atskiras savivertinimo kvietimas. El. paštas atsakymų lentelėje nesaugomas.',s2:'2. Vertintojai',rosterNote:'Įveskite konkretų el. paštą, rolę ir apklausos kalbą. Grupės suskaičiuojamos automatiškai.',add:'+ Pridėti vertintoją',roles:{boss:'Vadovas',peer:'Kolega',report:'Pavaldinys',other:'Kitas'},email:'El. paštas',role:'Rolė',lang:'Kalba',remove:'Pašalinti',peerWarn:'Kolegų grupė < 3 – rolės lygmens anonimiškumas silpnas.',reportWarn:'Pavaldinių grupė < 3 – rolės lygmens anonimiškumas silpnas.',otherWarn:'„Kiti“ grupėje tik 1 žmogus – rekomenduojama bent 2.',thresholdOk:'✓ Grupės bus agreguojamos pagal anonimiškumo ribas.',s3:'3. Anonimiškumo sergėtojas',gName:'Vardas, pavardė',gEmail:'El. paštas',gNote:'Sergėtojas valdo kvietimų ciklą ir mato užpildymo skaičius. Vertintojų identitetai ir atsakymai saugomi atskirai.',s4:'4. Sukurti C1',ack:'Suprantu, kad tai pseudoniminis, o ne absoliučiai anoniminis procesas. Mažose grupėse ir iš laisvo teksto autoriaus tapatybė gali būti numanoma.',privacy:'Privatumo ir pseudonimiškumo paaiškinimas →',create:'Sukurti vertinimo ciklą',creating:'Kuriama…',needLeader:'Įveskite lyderio vardą.',needSelf:'Įveskite SELF el. paštą.',needGuardian:'Įveskite sergėtojo vardą ir galiojantį el. paštą.',needRater:'Pridėkite bent vieną vertintoją.',badEmails:'Patikrinkite visų vertintojų el. paštus.',duplicate:'Tas pats el. paštas negali būti įrašytas du kartus tame pačiame cikle.',needAck:'Patvirtinkite pseudonimiškumo pastabą.',created:'Vertinimas sukurtas',manageNote:'Valdymo nuorodoje yra slaptas raktas URL fragmente. Jos nesiųskite vertintojams.',copy:'📋 Kopijuoti sergėtojo nuorodą',open:'Atidaryti ciklo valdymą →',copied:'Sergėtojo nuoroda nukopijuota.',fallback:'Kvietimų nuorodos – atsarginis rankinis kelias',fallbackNote:'Kai automatinis el. pašto siuntimas bus aktyvuotas, normaliai jų kopijuoti nereikės.',errors:{collector_unreachable:'Collector dar neaktyvuotas arba nepasiekiamas.',guardian_email_required:'Reikalingas sergėtojo el. paštas.',assessment_create_failed:'Nepavyko sukurti vertinimo duomenų bazėje.'}},
+    en:{head:'New pseudonymous assessment cycle',checking:'Checking Collector connection…',online:'Collector is reachable',offline:'Collector is not active yet. The V2 screen is ready, but C1 creation will work only after the Collector is deployed.',s1:'1. Assessment',leader:'Leader name',project:'Project name (optional)',selfEmail:'SELF email',selfLang:'SELF language',selfNote:'SELF is a separate self-assessment invitation. The email address is not stored with response data.',s2:'2. Evaluators',rosterNote:'Enter each evaluator email, role and survey language. Group counts are calculated automatically.',add:'+ Add evaluator',roles:{boss:'Manager',peer:'Peer',report:'Direct report',other:'Other'},email:'Email',role:'Role',lang:'Language',remove:'Remove',peerWarn:'Peer group < 3 – role-level anonymity is weak.',reportWarn:'Direct-report group < 3 – role-level anonymity is weak.',otherWarn:'The “Other” group has only 1 person – at least 2 is recommended.',thresholdOk:'✓ Groups will be aggregated using the anonymity thresholds.',s3:'3. Assessment guardian',gName:'Name',gEmail:'Email',gNote:'The guardian manages invitations and sees completion counts. Evaluator identities and responses are stored separately.',s4:'4. Create C1',ack:'I understand this is a pseudonymous, not absolutely anonymous, process. In small groups or free-text comments the author may sometimes be inferred.',privacy:'Privacy and pseudonymity explanation →',create:'Create assessment cycle',creating:'Creating…',needLeader:'Enter the leader name.',needSelf:'Enter the SELF email.',needGuardian:'Enter the guardian name and a valid email.',needRater:'Add at least one evaluator.',badEmails:'Check all evaluator email addresses.',duplicate:'The same email cannot be entered twice in one cycle.',needAck:'Confirm the pseudonymity notice.',created:'Assessment created',manageNote:'The management link contains a secret key in the URL fragment. Do not send it to evaluators.',copy:'📋 Copy guardian link',open:'Open cycle management →',copied:'Guardian link copied.',fallback:'Invitation links – manual fallback',fallbackNote:'Once automatic email sending is active, these links normally do not need to be copied.',errors:{collector_unreachable:'Collector is not active or cannot be reached.',guardian_email_required:'Guardian email is required.',assessment_create_failed:'Could not create the assessment in the database.'}}
   };
+  let lang=I.set(I.current());
+  function tx(){return COPY[lang]}
+  function rowTemplate(role='peer', rowLang=lang){
+    const t=tx(),div=document.createElement('div');div.className='roster-row';
+    div.innerHTML=`<label class="email">${t.email}<input class="r-email" type="email" placeholder="name@company.com"></label><label>${t.role}<select class="r-role">${Object.entries(t.roles).map(([v,l])=>`<option value="${v}" ${v===role?'selected':''}>${l}</option>`).join('')}</select></label><label>${t.lang}<select class="r-lang"><option value="lt" ${rowLang==='lt'?'selected':''}>LT</option><option value="en" ${rowLang==='en'?'selected':''}>EN</option></select></label><button type="button" class="remove" aria-label="${t.remove}">×</button>`;
+    div.querySelector('.remove').onclick=()=>{div.remove();updateSummary()};div.querySelectorAll('select,input').forEach(el=>el.addEventListener('change',updateSummary));roster.appendChild(div);updateSummary();
+  }
+  function rows(){return[...roster.querySelectorAll('.roster-row')].map(el=>({email:el.querySelector('.r-email').value.trim().toLowerCase(),role:el.querySelector('.r-role').value,language:el.querySelector('.r-lang').value}))}
+  function updateSummary(){const t=tx(),counts={boss:0,peer:0,report:0,other:0};rows().forEach(r=>counts[r.role]++);document.getElementById('roleSummary').innerHTML=Object.entries(counts).map(([r,n])=>`<span class="pill">${t.roles[r]}: <strong>${n}</strong></span>`).join('');const w=[];if(counts.peer>0&&counts.peer<3)w.push(t.peerWarn);if(counts.report>0&&counts.report<3)w.push(t.reportWarn);if(counts.other===1)w.push(t.otherWarn);document.getElementById('anonymityWarning').textContent=w.length?'⚠️ '+w.join(' '):t.thresholdOk}
+  function render(){const t=tx();document.documentElement.lang=lang;document.title='Leadership 360° – '+(lang==='lt'?'Naujas vertinimas':'New assessment');document.getElementById('headSub').textContent=t.head;document.getElementById('collectorText').textContent=t.checking;document.getElementById('s1Title').textContent=t.s1;document.getElementById('leaderLabel').textContent=t.leader;document.getElementById('projectLabel').textContent=t.project;document.getElementById('selfEmailLabel').textContent=t.selfEmail;document.getElementById('selfLangLabel').textContent=t.selfLang;document.getElementById('selfNote').textContent=t.selfNote;document.getElementById('s2Title').textContent=t.s2;document.getElementById('rosterNote').textContent=t.rosterNote;document.getElementById('addRow').textContent=t.add;document.getElementById('s3Title').textContent=t.s3;document.getElementById('guardianNameLabel').textContent=t.gName;document.getElementById('guardianEmailLabel').textContent=t.gEmail;document.getElementById('guardianNote').textContent=t.gNote;document.getElementById('s4Title').textContent=t.s4;document.getElementById('privacyAckText').textContent=t.ack;document.getElementById('privacyLink').textContent=t.privacy;document.getElementById('privacyLink').href=C.privacyUrl(lang);document.getElementById('createBtn').textContent=t.create;document.getElementById('createdTitle').textContent=t.created;document.getElementById('manageNote').textContent=t.manageNote;document.getElementById('copyGuardian').textContent=t.copy;document.getElementById('openGuardian').textContent=t.open;document.getElementById('fallbackTitle').textContent=t.fallback;document.getElementById('fallbackNote').textContent=t.fallbackNote;[...roster.children].forEach((old,i)=>{const email=old.querySelector('.r-email').value,role=old.querySelector('.r-role').value,rl=old.querySelector('.r-lang').value;const replacement=document.createElement('div');old.remove();rowTemplate(role,rl);const fresh=roster.lastElementChild;fresh.querySelector('.r-email').value=email});updateSummary()}
+  I.bindToggle(document.getElementById('langToggle'),next=>{lang=next;render()});
+  document.getElementById('addRow').onclick=()=>rowTemplate('peer',lang);rowTemplate('boss',lang);rowTemplate('peer',lang);rowTemplate('peer',lang);rowTemplate('peer',lang);rowTemplate('report',lang);rowTemplate('report',lang);rowTemplate('report',lang);render();
+  (async()=>{const el=document.getElementById('collectorState');try{await C.health();el.innerHTML='<span class="status-dot ok"></span>'+tx().online}catch(e){el.innerHTML='<span class="status-dot bad"></span>'+tx().offline}})();
+  const valid=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  document.getElementById('createBtn').onclick=async()=>{const t=tx(),leaderName=document.getElementById('leaderName').value.trim(),projectName=document.getElementById('projectName').value.trim(),selfEmail=document.getElementById('selfEmail').value.trim().toLowerCase(),guardianName=document.getElementById('guardianName').value.trim(),guardianEmail=document.getElementById('guardianEmail').value.trim().toLowerCase(),status=document.getElementById('createStatus'),r=rows();if(!leaderName){status.textContent=t.needLeader;return}if(!valid(selfEmail)){status.textContent=t.needSelf;return}if(!guardianName||!valid(guardianEmail)){status.textContent=t.needGuardian;return}if(!r.length){status.textContent=t.needRater;return}if(r.some(x=>!valid(x.email))){status.textContent=t.badEmails;return}const emails=[selfEmail,...r.map(x=>x.email)];if(new Set(emails).size!==emails.length){status.textContent=t.duplicate;return}if(!document.getElementById('privacyAck').checked){status.textContent=t.needAck;return}const btn=document.getElementById('createBtn');btn.disabled=true;btn.textContent=t.creating;status.textContent='';try{const data=await C.createAssessment({leaderName,projectName,guardianName,guardianEmail,roster:[{email:selfEmail,role:'self',language:document.getElementById('selfLang').value},...r]});const auth={assessmentId:data.assessmentId,manageToken:data.manageToken,cycle:1,lang},gUrl=C.guardianUrl(auth);sessionStorage.setItem('leadership360_last_manage',JSON.stringify(auth));document.getElementById('assessmentId').textContent=data.assessmentId;document.getElementById('guardianLink').textContent=gUrl;document.getElementById('openGuardian').href=gUrl;document.getElementById('copyGuardian').onclick=()=>navigator.clipboard.writeText(gUrl).then(()=>alert(tx().copied));document.getElementById('inviteList').innerHTML=(data.invites||[]).map((inv,i)=>`<div class="invite-item"><strong>${i+1}. ${inv.role.toUpperCase()} · ${inv.language.toUpperCase()}</strong><div style="font-size:.8rem;word-break:break-all;margin-top:4px">${inv.url}</div></div>`).join('');document.getElementById('createdCard').style.display='block';document.getElementById('createdCard').scrollIntoView({behavior:'smooth'})}catch(e){status.textContent=(lang==='lt'?'Klaida: ':'Error: ')+(t.errors[e.message]||e.message)}finally{btn.disabled=false;btn.textContent=tx().create}};
 })();
 </script>
 </body>
