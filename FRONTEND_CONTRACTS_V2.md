@@ -13,6 +13,7 @@ Date: 2026-08-19
 6. Evaluator invitation URLs contain only an opaque invite token.
 7. `role` and scoring keys are language-neutral. UI and question text may be LT or EN.
 8. Manual JSON remains fallback/recovery only; normal V2 flow is Collector-first.
+9. Reflection is based only on derived C1/C2 delta and stays in browser session state; it does not call Collector or Telegram.
 
 ## UI language contract
 
@@ -211,6 +212,41 @@ Expected response:
 {"ok":true,"deleted":"L360-..."}
 ```
 
+## Reflection session contract
+
+`reflect-v2.html` reads only the derived `gla360_delta` object already present in `sessionStorage` after C1/C2 comparison.
+
+It must never fetch or submit raw Collector responses.
+
+For each regressed competency it saves:
+
+```json
+{
+  "schema":"gla360-reflect@1",
+  "completedAt":"2026-08-19",
+  "items":[
+    {
+      "name":"Demonstrating Integrity",
+      "cluster":"Communication",
+      "delta":-0.4,
+      "c1":3.8,
+      "c2":3.4,
+      "reflections":["...","...","...","..."],
+      "cause":"plan_not_executed",
+      "causeText":""
+    }
+  ]
+}
+```
+
+Allowed cause codes remain compatible with the existing LT adaptive-plan logic:
+- `circumstances`
+- `plan_wrong`
+- `plan_not_executed`
+- `other`
+
+The result is stored only in `sessionStorage.gla360_reflect`. Reflection is optional and is relevant when C1/C2 contains regressions.
+
 ## Anonymity presentation contract
 
 - `boss`: normally identifiable by context.
@@ -232,6 +268,12 @@ Only user-facing text changes by language.
 
 ## E2E acceptance path
 
-`setup-v2 → C1 invitations → survey-v2 submit → guardian counts → report-v2 → 90d plan → OMESG360Bot → create C2 → survey-v2 → compare-v2`
+Normal path:
+
+`setup-v2 → C1 invitations → survey-v2 submit → guardian counts → report-v2 → 90d plan → OMESG360Bot → create C2 → survey-v2 → compare-v2 → adapted plan`
+
+Optional regression path after `compare-v2`:
+
+`compare-v2 → reflect-v2 → adapted plan`
 
 The old `index.html / survey.html / report.html` path remains the compatibility baseline until Collector infrastructure is deployed and this E2E passes.
