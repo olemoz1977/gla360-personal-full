@@ -64,7 +64,7 @@ const privacy = read('PRIVACY-v2.html');
 includesAll(privacy, ['Identity DB','Response DB','pseudon','AES-GCM','URL fragment','Automatic expiry is not yet enabled','automatinis duomenų galiojimo terminas dar neįjungtas'], 'PRIVACY-v2.html');
 
 const client = read('collector-client.js');
-includesAll(client, ['qs.set(\'key\', manageToken)','qs.set(\'lang\'','privacyUrl','Authorization'], 'collector-client.js');
+includesAll(client, ['qs.set(\'key\', manageToken)','qs.set(\'lang\'','privacyUrl','authorization'], 'collector-client.js');
 if(client.includes('searchParams.set(\'key\'')) fail('collector-client places management key in query parameters');
 
 if(failed){ process.exitCode = 1; }
