@@ -47,6 +47,12 @@ includesAll(report, ['exportCycle','langToggle','privacyUrl','Others','roleCount
 const compare = read('compare-v2.html');
 includesAll(compare, ['exportCycle(auth.assessmentId,1','exportCycle(auth.assessmentId,2','gla360_delta','plan.html?lang=','langToggle'], 'compare-v2.html');
 
+const reflect = read('reflect-v2.html');
+includesAll(reflect, ['gla360_delta','gla360-reflect@1','gla360_reflect','circumstances','plan_wrong','plan_not_executed','plan.html?lang=','langToggle'], 'reflect-v2.html');
+for(const forbidden of ['Leadership360Collector','fetch(','submitInvite','email']){
+  if(reflect.includes(forbidden)) fail(`reflect-v2.html must stay browser-session-only; found ${forbidden}`);
+}
+
 const planRouter = read('plan.html');
 includesAll(planRouter, ['leadership360_ui_lang','plan-en.html','bot-sync.js'], 'plan.html');
 
