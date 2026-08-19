@@ -1,0 +1,24 @@
+name: Leadership 360 bank parity
+
+on:
+  push:
+    paths:
+      - 'bank/questions.json'
+      - 'bank/questions.en.json'
+      - 'tools/validate-bilingual-bank.mjs'
+      - '.github/workflows/leadership360-bank-parity.yml'
+  pull_request:
+    paths:
+      - 'bank/questions.json'
+      - 'bank/questions.en.json'
+      - 'tools/validate-bilingual-bank.mjs'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tools/validate-bilingual-bank.mjs
