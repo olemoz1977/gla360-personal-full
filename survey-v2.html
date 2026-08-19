@@ -1,108 +1,32 @@
 <!doctype html>
 <html lang="lt">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Leadership 360° – Apklausa</title>
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    .q-scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.q-opt{display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid var(--border);border-radius:10px;padding:8px 4px;background:var(--surface2);min-height:56px;text-align:center}.q-opt input{display:none}.q-opt.selected{border-color:var(--brand);background:rgba(26,86,219,.08)}.q-val{font-size:1.1rem;font-weight:700}.q-label{font-size:.62rem;color:var(--muted);margin-top:2px;line-height:1.2}.role-badge{display:inline-block;font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(26,86,219,.1);color:var(--brand)}
-    .submit-state{padding:14px;border-radius:10px;margin-top:12px;display:none}.submit-state.ok{display:block;background:rgba(5,122,85,.08);border:1px solid rgba(5,122,85,.25)}.submit-state.bad{display:block;background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.22)}
-  </style>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Leadership 360° – Survey</title><link rel="stylesheet" href="styles.css">
+  <style>.q-scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.q-opt{display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid var(--border);border-radius:10px;padding:8px 4px;background:var(--surface2);min-height:56px;text-align:center}.q-opt input{display:none}.q-opt.selected{border-color:var(--brand);background:rgba(26,86,219,.08)}.q-val{font-size:1.1rem;font-weight:700}.q-label{font-size:.62rem;color:var(--muted);margin-top:2px;line-height:1.2}.role-badge{display:inline-block;font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(26,86,219,.1);color:var(--brand)}.submit-state{padding:14px;border-radius:10px;margin-top:12px;display:none}.submit-state.ok{display:block;background:rgba(5,122,85,.08);border:1px solid rgba(5,122,85,.25)}.submit-state.bad{display:block;background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.22)}</style>
 </head>
 <body>
-<header class="head"><h1>Leadership 360°</h1><p id="headSub">Konfidencialus lyderystės vertinimas</p></header>
+<header class="head"><h1>Leadership 360°</h1><p id="headSub"></p></header>
 <main class="wrap">
-  <section class="card" id="contextCard"><p class="muted">Tikrinama kvietimo nuoroda…</p></section>
-  <div id="errorBox"></div>
-  <section class="card" id="progressCard" style="display:none;padding:14px 20px;">
-    <div style="display:flex;justify-content:space-between"><span id="progressLabel" class="muted">Pažanga</span><span class="muted"><span id="answeredCount">0</span> / <span id="totalCount">75</span></span></div>
-    <div class="progress-bar-wrap" style="margin-top:7px"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
-  </section>
+  <section class="card" id="contextCard"><p class="muted">Loading…</p></section><div id="errorBox"></div>
+  <section class="card" id="progressCard" style="display:none;padding:14px 20px"><div style="display:flex;justify-content:space-between"><span id="progressLabel" class="muted"></span><span class="muted"><span id="answeredCount">0</span> / <span id="totalCount">75</span></span></div><div class="progress-bar-wrap" style="margin-top:7px"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div></section>
   <div id="questions"></div>
-  <section class="card no-print" id="actions" style="display:none;">
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button id="submitBtn" type="button">Pateikti atsakymus</button>
-      <button id="backupBtn" type="button" class="secondary">⬇ Atsarginė JSON kopija</button>
-    </div>
-    <p id="privacyNote" class="muted" style="font-size:.82rem;margin-top:10px;">Atsakymas pateikiamas į pseudoniminį Leadership 360° surinkimą. Vertintojo el. paštas nėra įrašomas į atsakymo duomenis.</p>
-    <div id="submitState" class="submit-state"></div>
-  </section>
+  <section class="card no-print" id="actions" style="display:none"><div style="display:flex;gap:10px;flex-wrap:wrap"><button id="submitBtn" type="button"></button><button id="backupBtn" type="button" class="secondary"></button><a id="privacyLink" class="btn secondary" target="_blank" rel="noopener"></a></div><p id="privacyNote" class="muted" style="font-size:.82rem;margin-top:10px"></p><div id="submitState" class="submit-state"></div></section>
 </main>
-<script src="app.js"></script>
-<script src="collector-client.js"></script>
+<script src="app.js"></script><script src="collector-client.js"></script>
 <script>
 (function(){
-  const C=window.Leadership360Collector;
-  const token=new URLSearchParams(location.search).get('invite')||'';
-  let ctx=null, bank=null;
-  const copy={
-    lt:{sub:'Konfidencialus lyderystės vertinimas',progress:'Pažanga',submit:'Pateikti atsakymus',backup:'⬇ Atsarginė JSON kopija',privacy:'Atsakymas pateikiamas į pseudoniminį Leadership 360° surinkimą. Vertintojo el. paštas nėra įrašomas į atsakymo duomenis.',scale:['Beveik niekada','Retai','Kartais','Dažnai','Beveik visada'],openTitle:'Atviri klausimai',optional:'Neprivaloma',str:'Stiprybės – kuo šis žmogus išsiskiria?',strPh:'Konkretūs pavyzdžiai…',dev:'Ką rekomenduotumėte tobulinti per artimiausius 90 dienų?',devPh:'Konkretūs elgesiai ir situacijos…',real:'Vertinkite realų elgesį – ne kaip turėtų būti, o kaip iš tikrųjų yra.',submitted:'Ačiū. Atsakymas sėkmingai pateiktas.',already:'Šis kvietimas jau panaudotas. Pakartotinai pateikti atsakymo negalima.',missing:n=>`Neužpildyti ${n} teiginiai.`,sending:'Pateikiama…'},
-    en:{sub:'Confidential leadership assessment',progress:'Progress',submit:'Submit responses',backup:'⬇ Backup JSON copy',privacy:'Your response is submitted to the pseudonymous Leadership 360° collector. Your evaluator email address is not stored with the response.',scale:['Almost never','Rarely','Sometimes','Often','Almost always'],openTitle:'Open questions',optional:'Optional',str:'What strengths does this person demonstrate?',strPh:'Specific examples…',dev:'What would you recommend improving over the next 90 days?',devPh:'Specific behaviours and situations…',real:'Rate observed behaviour – what actually happens, not what ideally should happen.',submitted:'Thank you. Your response was submitted successfully.',already:'This invitation has already been used. A second response cannot be submitted.',missing:n=>`${n} statements are unanswered.`,sending:'Submitting…'}
-  };
-  function t(){return copy[ctx?.language==='en'?'en':'lt']}
-
-  const roles={
-    lt:{self:['Savivertinimas','Jūs vertinate save.'],boss:['Pavaldinio vertinimas','Jūs vertinate savo pavaldinį.'],peer:['Kolegos vertinimas','Jūs vertinate savo kolegą.'],report:['Vadovo vertinimas','Jūs vertinate savo tiesioginį vadovą.'],other:['Darbo partnerio vertinimas','Jūs vertinate darbo partnerį.']},
-    en:{self:['Self assessment','You are rating yourself.'],boss:['Direct report assessment','You are rating your direct report.'],peer:['Peer assessment','You are rating a colleague.'],report:['Manager assessment','You are rating your direct manager.'],other:['Work partner assessment','You are rating a work partner.']}
-  };
-
-  function storageKey(){return 'leadership360_survey_'+token.slice(-24)}
-  function saveProgress(){
-    const out={}; document.querySelectorAll('#questions input[type=radio]:checked').forEach(x=>out[x.name]=x.value);
-    try{localStorage.setItem(storageKey(),JSON.stringify(out))}catch(e){}
-  }
-  function restore(){
-    let data={}; try{data=JSON.parse(localStorage.getItem(storageKey())||'{}')}catch(e){}
-    Object.entries(data).forEach(([k,v])=>{const el=document.querySelector(`input[name="${CSS.escape(k)}"][value="${v}"]`);if(el){el.checked=true;el.closest('.q-opt')?.classList.add('selected')}});
-  }
-  function updateProgress(){
-    const total=bank?bank.competencies.reduce((n,c)=>n+c.items.length,0):0;
-    const answered=document.querySelectorAll('#questions input[type=radio]:checked').length;
-    document.getElementById('answeredCount').textContent=answered; document.getElementById('totalCount').textContent=total;
-    document.getElementById('progressBar').style.width=(total?answered/total*100:0)+'%';
-  }
-  function collectAnswers(){const out={};bank.competencies.forEach(c=>c.items.forEach(i=>{const x=document.querySelector(`input[name="${CSS.escape(i.key)}"]:checked`);out[i.key]=x?Number(x.value):null}));return out}
-  function collectOpen(){return{strengths:(document.getElementById('open_str')?.value||'').trim(),develop:(document.getElementById('open_dev')?.value||'').trim()}}
-  function render(){
-    const lang=ctx.language==='en'?'en':'lt', tx=t(); document.documentElement.lang=lang; document.getElementById('headSub').textContent=tx.sub; document.getElementById('progressLabel').textContent=tx.progress; document.getElementById('submitBtn').textContent=tx.submit; document.getElementById('backupBtn').textContent=tx.backup; document.getElementById('privacyNote').textContent=tx.privacy;
-    const ri=roles[lang][ctx.role]||roles[lang].peer;
-    document.getElementById('contextCard').innerHTML=`<span class="role-badge">${ri[0]}</span><h2 style="margin-top:10px">${ctx.leaderName||'Leadership 360°'}</h2>${ctx.projectName?`<p class="muted">${ctx.projectName} · C${ctx.cycle}</p>`:''}<p style="margin-top:8px">${ri[1]} ${tx.real}</p><p class="muted" style="font-size:.82rem;margin-top:8px">Guardian / Sergėtojas: ${ctx.guardian?.name||'—'}${ctx.guardian?.email?' · '+ctx.guardian.email:''}</p>`;
-    let html='',q=0;
-    bank.competencies.forEach(comp=>{
-      html+=`<div class="comp-block"><div class="comp-header"><span class="comp-cluster">${lang==='lt'?GLA.lt(comp.cluster):comp.cluster}</span><span class="comp-name">${lang==='lt'?GLA.lt(comp.name):comp.name}</span></div>`;
-      comp.items.forEach(item=>{q++;html+=`<div class="q" data-key="${item.key}"><div class="q-stem"><span class="q-num">${q}.</span> ${item.stem}</div><div class="q-scale">${[1,2,3,4,5].map((n,i)=>`<label class="q-opt"><input type="radio" name="${item.key}" value="${n}"><span class="q-val">${n}</span><span class="q-label">${tx.scale[i]}</span></label>`).join('')}</div></div>`});
-      html+='</div>';
-    });
-    html+=`<div class="comp-block open-block"><div class="comp-header"><span class="comp-cluster">${tx.openTitle}</span><span class="comp-name">${tx.optional}</span></div><div class="open-q"><label>${tx.str}<textarea id="open_str" rows="3" placeholder="${tx.strPh}"></textarea></label></div><div class="open-q"><label>${tx.dev}<textarea id="open_dev" rows="3" placeholder="${tx.devPh}"></textarea></label></div></div>`;
-    document.getElementById('questions').innerHTML=html; document.getElementById('progressCard').style.display='block'; document.getElementById('actions').style.display='block';
-    document.querySelectorAll('.q-opt input').forEach(el=>el.addEventListener('change',()=>{el.closest('.q-scale').querySelectorAll('.q-opt').forEach(x=>x.classList.remove('selected'));el.closest('.q-opt').classList.add('selected');saveProgress();updateProgress()}));
-    restore();updateProgress();
-  }
-
-  async function loadBankForLanguage(lang){
-    const path=lang==='en'?'bank/questions.en.json':'bank/questions.json';
-    const r=await fetch(path+'?v='+Date.now(),{cache:'no-store'}); if(!r.ok) throw new Error(lang==='en'?'english_bank_not_ready':'bank_load_failed'); return r.json();
-  }
-
-  function state(kind,text){const el=document.getElementById('submitState');el.className='submit-state '+kind;el.textContent=text}
-
-  document.getElementById('submitBtn').onclick=async()=>{
-    const ans=collectAnswers(),missing=Object.entries(ans).filter(([,v])=>v===null).map(([k])=>k);if(missing.length){state('bad',t().missing(missing.length));document.querySelector(`[data-key="${CSS.escape(missing[0])}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});return}
-    const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent=t().sending;
-    try{const result=await C.submitInvite(token,{answers:ans,open:collectOpen(),bankVersion:bank.version||''});localStorage.removeItem(storageKey());state('ok',t().submitted+' Receipt: '+result.receipt);document.querySelectorAll('#questions input, #questions textarea').forEach(x=>x.disabled=true);document.getElementById('backupBtn').style.display='none';btn.style.display='none'}
-    catch(e){state('bad',e.message==='already_submitted'?t().already:'Klaida / Error: '+e.message);btn.disabled=false;btn.textContent=t().submit}
-  };
-
-  document.getElementById('backupBtn').onclick=()=>{
-    if(!bank)return; const backup={schema:'leadership360-response-backup@1',cycle:ctx.cycle,role:ctx.role,language:ctx.language,bank_version:bank.version||'',answers:collectAnswers(),open:collectOpen(),created_at:new Date().toISOString()};GLA.download('leadership360_backup_'+Date.now()+'.json',backup);
-  };
-
-  (async()=>{
-    if(!token){document.getElementById('contextCard').innerHTML='<div class="alert">Kvietimo nuoroda negalioja / Invitation token missing.</div>';return}
-    try{ctx=await C.inviteContext(token);if(ctx.completed){document.getElementById('contextCard').innerHTML='<div class="alert info">'+t().already+'</div>';return}bank=await loadBankForLanguage(ctx.language);render()}
-    catch(e){const msg=e.message==='english_bank_not_ready'?'English question bank is not active yet. Please contact the assessment guardian.':e.message==='collector_unreachable'?'Collector nepasiekiamas / Collector unreachable.':'Kvietimo klaida / Invitation error: '+e.message;document.getElementById('contextCard').innerHTML='<div class="alert">'+msg+'</div>'}
-  })();
+ const C=window.Leadership360Collector,token=new URLSearchParams(location.search).get('invite')||'';let ctx=null,bank=null;
+ const copy={lt:{sub:'Konfidencialus lyderystės vertinimas',title:'Leadership 360° – Apklausa',progress:'Pažanga',submit:'Pateikti atsakymus',backup:'⬇ Atsarginė JSON kopija',privacyLink:'🔒 Privatumas',privacy:'Atsakymas pateikiamas į pseudoniminį Leadership 360° surinkimą. Vertintojo el. paštas nėra įrašomas į atsakymo duomenis.',scale:['Beveik niekada','Retai','Kartais','Dažnai','Beveik visada'],openTitle:'Atviri klausimai',optional:'Neprivaloma',str:'Stiprybės – kuo šis žmogus išsiskiria?',strPh:'Konkretūs pavyzdžiai…',dev:'Ką rekomenduotumėte tobulinti per artimiausius 90 dienų?',devPh:'Konkretūs elgesiai ir situacijos…',real:'Vertinkite realų elgesį – ne kaip turėtų būti, o kaip iš tikrųjų yra.',submitted:'Ačiū. Atsakymas sėkmingai pateiktas.',already:'Šis kvietimas jau panaudotas. Pakartotinai pateikti atsakymo negalima.',missing:n=>`Neužpildyti ${n} teiginiai.`,sending:'Pateikiama…',noToken:'Kvietimo nuoroda negalioja.',bankError:'Nepavyko įkelti klausimų banko.',collectorError:'Collector nepasiekiamas.',inviteError:'Kvietimo klaida: '},en:{sub:'Confidential leadership assessment',title:'Leadership 360° – Survey',progress:'Progress',submit:'Submit responses',backup:'⬇ Backup JSON copy',privacyLink:'🔒 Privacy',privacy:'Your response is submitted to the pseudonymous Leadership 360° collector. Your evaluator email address is not stored with the response.',scale:['Almost never','Rarely','Sometimes','Often','Almost always'],openTitle:'Open questions',optional:'Optional',str:'What strengths does this person demonstrate?',strPh:'Specific examples…',dev:'What would you recommend improving over the next 90 days?',devPh:'Specific behaviours and situations…',real:'Rate observed behaviour – what actually happens, not what ideally should happen.',submitted:'Thank you. Your response was submitted successfully.',already:'This invitation has already been used. A second response cannot be submitted.',missing:n=>`${n} statements are unanswered.`,sending:'Submitting…',noToken:'Invitation token is missing.',bankError:'Could not load the question bank.',collectorError:'Collector is unreachable.',inviteError:'Invitation error: '}};
+ function t(){return copy[ctx?.language==='en'?'en':'lt']}
+ const roles={lt:{self:['Savivertinimas','Jūs vertinate save.'],boss:['Pavaldinio vertinimas','Jūs vertinate savo pavaldinį.'],peer:['Kolegos vertinimas','Jūs vertinate savo kolegą.'],report:['Vadovo vertinimas','Jūs vertinate savo tiesioginį vadovą.'],other:['Darbo partnerio vertinimas','Jūs vertinate darbo partnerį.']},en:{self:['Self assessment','You are rating yourself.'],boss:['Direct report assessment','You are rating your direct report.'],peer:['Peer assessment','You are rating a colleague.'],report:['Manager assessment','You are rating your direct manager.'],other:['Work partner assessment','You are rating a work partner.']}};
+ function storageKey(){return'leadership360_survey_'+token.slice(-24)}function saveProgress(){const out={};document.querySelectorAll('#questions input[type=radio]:checked').forEach(x=>out[x.name]=x.value);try{localStorage.setItem(storageKey(),JSON.stringify(out))}catch(e){}}function restore(){let data={};try{data=JSON.parse(localStorage.getItem(storageKey())||'{}')}catch(e){}Object.entries(data).forEach(([k,v])=>{const el=document.querySelector(`input[name="${CSS.escape(k)}"][value="${v}"]`);if(el){el.checked=true;el.closest('.q-opt')?.classList.add('selected')}})}
+ function updateProgress(){const total=bank?bank.competencies.reduce((n,c)=>n+c.items.length,0):0,answered=document.querySelectorAll('#questions input[type=radio]:checked').length;document.getElementById('answeredCount').textContent=answered;document.getElementById('totalCount').textContent=total;document.getElementById('progressBar').style.width=(total?answered/total*100:0)+'%'}
+ function collectAnswers(){const out={};bank.competencies.forEach(c=>c.items.forEach(i=>{const x=document.querySelector(`input[name="${CSS.escape(i.key)}"]:checked`);out[i.key]=x?Number(x.value):null}));return out}function collectOpen(){return{strengths:(document.getElementById('open_str')?.value||'').trim(),develop:(document.getElementById('open_dev')?.value||'').trim()}}
+ function render(){const lang=ctx.language==='en'?'en':'lt',tx=t(),ri=roles[lang][ctx.role]||roles[lang].peer;document.documentElement.lang=lang;document.title=tx.title;document.getElementById('headSub').textContent=tx.sub;document.getElementById('progressLabel').textContent=tx.progress;document.getElementById('submitBtn').textContent=tx.submit;document.getElementById('backupBtn').textContent=tx.backup;document.getElementById('privacyLink').textContent=tx.privacyLink;document.getElementById('privacyLink').href=C.privacyUrl(lang);document.getElementById('privacyNote').textContent=tx.privacy;document.getElementById('contextCard').innerHTML=`<span class="role-badge">${ri[0]}</span><h2 style="margin-top:10px">${ctx.leaderName||'Leadership 360°'}</h2>${ctx.projectName?`<p class="muted">${ctx.projectName} · C${ctx.cycle}</p>`:''}<p style="margin-top:8px">${ri[1]} ${tx.real}</p><p class="muted" style="font-size:.82rem;margin-top:8px">${lang==='lt'?'Sergėtojas':'Guardian'}: ${ctx.guardian?.name||'—'}${ctx.guardian?.email?' · '+ctx.guardian.email:''}</p>`;let html='',q=0;bank.competencies.forEach(comp=>{html+=`<div class="comp-block"><div class="comp-header"><span class="comp-cluster">${lang==='lt'?GLA.lt(comp.cluster):comp.cluster}</span><span class="comp-name">${lang==='lt'?GLA.lt(comp.name):comp.name}</span></div>`;comp.items.forEach(item=>{q++;html+=`<div class="q" data-key="${item.key}"><div class="q-stem"><span class="q-num">${q}.</span> ${item.stem}</div><div class="q-scale">${[1,2,3,4,5].map((n,i)=>`<label class="q-opt"><input type="radio" name="${item.key}" value="${n}"><span class="q-val">${n}</span><span class="q-label">${tx.scale[i]}</span></label>`).join('')}</div></div>`});html+='</div>'});html+=`<div class="comp-block open-block"><div class="comp-header"><span class="comp-cluster">${tx.openTitle}</span><span class="comp-name">${tx.optional}</span></div><div class="open-q"><label>${tx.str}<textarea id="open_str" rows="3" placeholder="${tx.strPh}"></textarea></label></div><div class="open-q"><label>${tx.dev}<textarea id="open_dev" rows="3" placeholder="${tx.devPh}"></textarea></label></div></div>`;document.getElementById('questions').innerHTML=html;document.getElementById('progressCard').style.display='block';document.getElementById('actions').style.display='block';document.querySelectorAll('.q-opt input').forEach(el=>el.addEventListener('change',()=>{el.closest('.q-scale').querySelectorAll('.q-opt').forEach(x=>x.classList.remove('selected'));el.closest('.q-opt').classList.add('selected');saveProgress();updateProgress()}));restore();updateProgress()}
+ async function loadBankForLanguage(lang){const path=lang==='en'?'bank/questions.en.json':'bank/questions.json',r=await fetch(path+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('bank_load_failed');return r.json()}function state(kind,text){const el=document.getElementById('submitState');el.className='submit-state '+kind;el.textContent=text}
+ document.getElementById('submitBtn').onclick=async()=>{const ans=collectAnswers(),missing=Object.entries(ans).filter(([,v])=>v===null).map(([k])=>k);if(missing.length){state('bad',t().missing(missing.length));document.querySelector(`[data-key="${CSS.escape(missing[0])}"]`)?.scrollIntoView({behavior:'smooth',block:'center'});return}const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent=t().sending;try{const result=await C.submitInvite(token,{answers:ans,open:collectOpen(),bankVersion:bank.version||''});localStorage.removeItem(storageKey());state('ok',t().submitted+' Receipt: '+result.receipt);document.querySelectorAll('#questions input,#questions textarea').forEach(x=>x.disabled=true);document.getElementById('backupBtn').style.display='none';btn.style.display='none'}catch(e){state('bad',e.message==='already_submitted'?t().already:(ctx.language==='en'?'Error: ':'Klaida: ')+e.message);btn.disabled=false;btn.textContent=t().submit}};
+ document.getElementById('backupBtn').onclick=()=>{if(!bank)return;const backup={schema:'leadership360-response-backup@1',assessment_id:ctx.assessmentId||'',cycle:ctx.cycle,role:ctx.role,language:ctx.language,bank_version:bank.version||'',answers:collectAnswers(),open:collectOpen(),created_at:new Date().toISOString()};GLA.download('leadership360_backup_'+Date.now()+'.json',backup)};
+ (async()=>{if(!token){ctx={language:(navigator.language||'lt').startsWith('en')?'en':'lt'};document.getElementById('contextCard').innerHTML='<div class="alert">'+t().noToken+'</div>';return}try{ctx=await C.inviteContext(token);if(ctx.completed){document.documentElement.lang=ctx.language;document.getElementById('contextCard').innerHTML='<div class="alert info">'+t().already+'</div>';return}bank=await loadBankForLanguage(ctx.language);render()}catch(e){if(!ctx)ctx={language:(navigator.language||'lt').startsWith('en')?'en':'lt'};const msg=e.message==='bank_load_failed'?t().bankError:e.message==='collector_unreachable'?t().collectorError:t().inviteError+e.message;document.getElementById('contextCard').innerHTML='<div class="alert">'+msg+'</div>'}})();
 })();
 </script>
 </body>
