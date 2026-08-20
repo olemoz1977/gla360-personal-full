@@ -18,11 +18,10 @@
 
   async function probe(){
     try {
-      const data = await C.health();
+      await C.health();
       const lang = currentLang();
       el.innerHTML = '<span class="status-dot ok"></span>' +
-        (lang === 'lt' ? 'Collector pasiekiamas' : 'Collector is reachable') +
-        (data && data.version ? ' · v' + data.version : '');
+        (lang === 'lt' ? 'Collector pasiekiamas' : 'Collector is reachable');
     } catch(error){
       const lang = currentLang();
       const detail = detailFrom(error);
