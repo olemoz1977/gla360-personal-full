@@ -118,6 +118,7 @@
   }
   if(/\/report-v2\.html$/i.test(location.pathname)){
     loadHelper('report-coverage.js?v=20260820-3');
+    loadHelper('report-interpretation.js?v=20260820-1');
   }
   if(/\/guardian\.html$/i.test(location.pathname)){
     loadHelper('guardian-invites.js?v=20260820-1');
