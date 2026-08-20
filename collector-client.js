@@ -90,6 +90,7 @@
     submitInvite: (token, payload) => request('/api/invite/' + encodeURIComponent(token) + '/submit', { json: payload }),
     cycleStatus: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/status', { manageToken }),
     exportCycle: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/export', { manageToken }),
+    recoverInvites: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/invites', { manageToken }),
     sendInvitations: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/send', { method:'POST', manageToken, json:{} }),
     createNextCycle: (assessmentId, manageToken, payload = {}) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles', { manageToken, json: payload }),
     deleteAssessment: (assessmentId, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId), { method:'DELETE', manageToken }),
@@ -117,5 +118,8 @@
   }
   if(/\/report-v2\.html$/i.test(location.pathname)){
     loadHelper('report-coverage.js?v=20260820-1');
+  }
+  if(/\/guardian\.html$/i.test(location.pathname)){
+    loadHelper('guardian-invites.js?v=20260820-1');
   }
 })(window);
