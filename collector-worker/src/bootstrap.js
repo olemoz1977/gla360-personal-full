@@ -171,6 +171,23 @@ async function recoverInvites(request,env,assessmentId,cycle){
   return json(request,{ok:true,assessmentId,cycle,invites});
 }
 
+async function stripNotObservedAnswers(request){
+  let body;
+  try{body=await request.clone().json()}catch(_){return request}
+  if(!body?.answers || typeof body.answers!=='object' || Array.isArray(body.answers))return request;
+
+  // survey-v2 serializes the explicit "not observed" option as JSON null.
+  // Omit those item keys before the core validator so they never enter numeric averages.
+  const answers=Object.fromEntries(Object.entries(body.answers).filter(([,value])=>value!==null));
+  const headers=new Headers(request.headers);
+  headers.set('content-type','application/json');
+  return new Request(request.url,{
+    method:request.method,
+    headers,
+    body:JSON.stringify({...body,answers})
+  });
+}
+
 export default {
   async fetch(request, env, ctx){
     const url = new URL(request.url);
@@ -180,7 +197,7 @@ export default {
         ok:true,
         service:'Leadership 360 Collector',
         deployed:true,
-        bootstrap:5
+        bootstrap:6
       });
     }
 
@@ -191,7 +208,7 @@ export default {
         return json(request, {
           ok:true,
           service:'Leadership 360 Collector',
-          version:5,
+          version:6,
           schemaReady:true,
           secretReady:true
         });
@@ -211,6 +228,10 @@ export default {
       }catch(error){
         return json(request,{ok:false,error:'invite_recovery_failed',detail:error instanceof Error?error.message:String(error)},500);
       }
+    }
+
+    if(/^\/api\/invite\/[^/]+\/submit$/.test(url.pathname) && request.method === 'POST'){
+      request=await stripNotObservedAnswers(request);
     }
 
     return app.fetch(request, env, ctx);
