@@ -15,7 +15,9 @@
       self:'Savivertinimas',
       others:'Kiti',
       radar:'Radaras: savivertinimas ir kitų vertinimas',
-      radarMobile:'Mobiliajame ekrane ašių pavadinimai paslėpti, kad diagrama būtų įskaitoma. Visos sritys pateiktos žemiau.',
+      radarMobile:'Mobiliajame ekrane ašių pavadinimai paslėpti, kad diagrama būtų įskaitoma. Visos gebėjimų sritys pateiktos žemiau.',
+      clusters:'5 lyderystės sričių vidurkiai',
+      areas:'15 gebėjimų sričių',
       strengths:'💪 Kiti vertina aukščiau',
       gaps:'🎯 Kiti vertina žemiau',
       noPositive:'Nėra sričių, kuriose kitų vertinimas būtų aukštesnis už savivertinimą.',
@@ -38,7 +40,9 @@
       self:'Self-assessment',
       others:'Others',
       radar:'Radar: self-assessment vs others',
-      radarMobile:'Axis labels are hidden on mobile to keep the chart readable. All competency names are listed below.',
+      radarMobile:'Axis labels are hidden on mobile to keep the chart readable. All competency areas are listed below.',
+      clusters:'5 leadership cluster averages',
+      areas:'15 competency areas',
       strengths:'💪 Others rate higher',
       gaps:'🎯 Others rate lower',
       noPositive:'There are no areas where others rate higher than the self-assessment.',
@@ -62,8 +66,9 @@
   let busy=false;
   const lang=()=>document.documentElement.lang==='en'?'en':'lt';
   const tx=()=>COPY[lang()];
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const name=key=>lang()==='lt'&&window.GLA?.lt?GLA.lt(key):key;
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+  const core=()=>typeof GLA!=='undefined'?GLA:null;
+  const name=key=>lang()==='lt'&&core()?.lt?core().lt(key):key;
 
   function currentWeights(){
     return {
@@ -81,7 +86,8 @@
   }
 
   function aggregate(bundle,bank){
-    if(!window.GLA?.aggregate)return null;
+    const G=core();
+    if(!G?.aggregate)return null;
     const packs=(bundle.responses||[]).map(r=>({
       schema:'leadership360-response@3',
       aid:bundle.assessment_id,
@@ -89,7 +95,7 @@
       answers:r.answers||{},
       open:r.open||{}
     }));
-    return GLA.aggregate(bank,packs,currentWeights());
+    return G.aggregate(bank,packs,currentWeights());
   }
 
   function coverage(bundle,bank){
@@ -145,6 +151,8 @@
     const host=document.getElementById('clusters');
     if(!host||!agg)return;
     const t=tx();
+    const title=document.getElementById('clustersTitle');
+    if(title)title.textContent=t.clusters;
     host.innerHTML=(agg.clusterNames||[]).map((cluster,i)=>{
       const s=agg.clusterMeans?.self?.[i],o=agg.clusterMeans?.others?.[i];
       return `<div class="bar-row"><div class="bar-label"><strong>${esc(name(cluster))}</strong><span>${esc(t.self)} ${s!==null&&s!==undefined?s.toFixed(2):'—'} · ${esc(t.others)} ${o!==null&&o!==undefined?o.toFixed(2):'—'}</span></div></div>`;
@@ -168,6 +176,8 @@
     const host=document.getElementById('compBars');
     if(!host||!agg)return;
     const t=tx();
+    const title=document.getElementById('areasTitle');
+    if(title)title.textContent=t.areas;
     host.innerHTML=(bank.competencies||[]).map((comp,i)=>{
       const s=agg.means.self[i],o=agg.others[i];
       return `<div class="bar-row"><div class="bar-label"><strong>${esc(name(comp.name))}</strong><span>${esc(t.self)} ${s!==null?s.toFixed(2):'—'} · ${esc(t.others)} ${o!==null?o.toFixed(2):'—'}</span></div><div class="track"><div class="fill" style="width:${o!==null?o/5*100:0}%"></div></div></div>`;
@@ -212,22 +222,24 @@
     if(busy)return;
     busy=true;
     try{
+      const G=core();
       const [bundle,bank]=await Promise.all([
         C.exportCycle(auth.assessmentId,auth.cycle||1,auth.manageToken),
-        window.GLA?.loadBank?GLA.loadBank():fetch('bank/questions.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.json())
+        G?.loadBank?G.loadBank():fetch('bank/questions.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.json())
       ]);
       if(!(bundle.responses||[]).length)return;
       const c=counts(bundle),pct=coverage(bundle,bank),agg=aggregate(bundle,bank);
-      renderStats(pct);
-      renderPrivacy(c,pct);
-      renderWeights(c);
-      renderClusters(agg);
-      renderDifferences(agg);
-      renderBars(agg,bank);
-      renderComments(agg,c);
-      renderRadar();
-      renderTransition();
-    }catch(_){}finally{busy=false}
+      const safeRun=fn=>{try{fn()}catch(e){console.warn('report enhancement',e)}};
+      safeRun(()=>renderStats(pct));
+      safeRun(()=>renderPrivacy(c,pct));
+      safeRun(()=>renderWeights(c));
+      safeRun(()=>renderClusters(agg));
+      safeRun(()=>renderDifferences(agg));
+      safeRun(()=>renderBars(agg,bank));
+      safeRun(()=>renderComments(agg,c));
+      safeRun(()=>renderRadar());
+      safeRun(()=>renderTransition());
+    }catch(e){console.warn('report enhancement load',e)}finally{busy=false}
   }
 
   function schedule(delay=60){
@@ -240,5 +252,5 @@
   ['wBoss','wPeers','wReports','wOthers','langToggle','loadBtn'].forEach(id=>document.getElementById(id)?.addEventListener('click',()=>schedule(140)));
   ['wBoss','wPeers','wReports','wOthers'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>schedule(140)));
   window.addEventListener('resize',()=>schedule(120));
-  schedule(700);
+  [450,900,1600,2800].forEach(ms=>setTimeout(apply,ms));
 })();
