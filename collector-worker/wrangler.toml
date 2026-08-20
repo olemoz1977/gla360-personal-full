@@ -1,5 +1,5 @@
 name = "leadership-360-collector"
-main = "src/entry.js"
+main = "src/bootstrap.js"
 compatibility_date = "2026-08-19"
 workers_dev = true
 
