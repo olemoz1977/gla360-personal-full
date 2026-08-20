@@ -135,6 +135,7 @@
     loadHelper('report-coverage.js?v=20260820-3');
     loadHelper('report-interpretation.js?v=20260820-1');
     loadHelper('report-plan-link.js?v=20260820-2');
+    loadHelper('report-radar-missing-style.js?v=20260820-1');
   }
   if(/\/guardian\.html$/i.test(location.pathname)){
     loadHelper('guardian-invites.js?v=20260820-2');
