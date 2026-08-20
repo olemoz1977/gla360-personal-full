@@ -96,9 +96,16 @@ function json(request, data, status = 200){
   return new Response(JSON.stringify(data), {status, headers});
 }
 
+async function runSchema(db, sql){
+  const statements = sql.split(';').map(statement => statement.trim()).filter(Boolean);
+  for(const statement of statements){
+    await db.prepare(statement).run();
+  }
+}
+
 async function ensureSchema(env){
-  await env.IDENTITY_DB.exec(IDENTITY_SCHEMA);
-  await env.RESPONSE_DB.exec(RESPONSE_SCHEMA);
+  await runSchema(env.IDENTITY_DB, IDENTITY_SCHEMA);
+  await runSchema(env.RESPONSE_DB, RESPONSE_SCHEMA);
 }
 
 async function validateAssessmentRequest(request){
