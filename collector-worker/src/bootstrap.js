@@ -122,7 +122,8 @@ function hexToBytes(hex){
   return Uint8Array.from(hex.match(/../g),h=>parseInt(h,16));
 }
 
-async function decryptToken(env,cipher,iv){
+async function decryptText(env,cipher,iv){
+  if(!cipher||!iv)return '';
   const key=await crypto.subtle.importKey('raw',hexToBytes(await rosterHex(env)),'AES-GCM',false,['decrypt']);
   const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:base64UrlToBytes(iv)},key,base64UrlToBytes(cipher));
   return dec.decode(plain);
@@ -157,7 +158,7 @@ async function recoverInvites(request,env,assessmentId,cycle){
   if(!assessment)return json(request,{ok:false,error:'unauthorized'},401);
 
   const rows=await env.IDENTITY_DB.prepare(
-    `SELECT role, language, token_cipher, token_iv, status
+    `SELECT role, language, email_cipher, email_iv, token_cipher, token_iv, status
        FROM invitations
       WHERE assessment_id = ? AND cycle = ? AND status != 'revoked'
       ORDER BY created_at ASC`
@@ -165,8 +166,9 @@ async function recoverInvites(request,env,assessmentId,cycle){
 
   const invites=[];
   for(const row of rows.results){
-    const token=await decryptToken(env,row.token_cipher,row.token_iv);
-    invites.push({role:row.role,language:row.language,status:row.status,url:surveyUrl(env,token)});
+    const token=await decryptText(env,row.token_cipher,row.token_iv);
+    const email=await decryptText(env,row.email_cipher,row.email_iv);
+    invites.push({role:row.role,language:row.language,email,status:row.status,url:surveyUrl(env,token)});
   }
   return json(request,{ok:true,assessmentId,cycle,invites});
 }
@@ -197,7 +199,7 @@ export default {
         ok:true,
         service:'Leadership 360 Collector',
         deployed:true,
-        bootstrap:6
+        bootstrap:7
       });
     }
 
@@ -208,7 +210,7 @@ export default {
         return json(request, {
           ok:true,
           service:'Leadership 360 Collector',
-          version:6,
+          version:7,
           schemaReady:true,
           secretReady:true
         });
