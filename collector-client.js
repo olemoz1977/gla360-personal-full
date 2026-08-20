@@ -114,7 +114,7 @@
 
   // Progressive enhancements are kept outside the stable page files.
   if(/\/survey-v2\.html$/i.test(location.pathname)){
-    loadHelper('survey-enhancements.js?v=20260820-1');
+    loadHelper('survey-enhancements.js?v=20260820-2');
   }
   if(/\/report-v2\.html$/i.test(location.pathname)){
     loadHelper('report-coverage.js?v=20260820-1');
