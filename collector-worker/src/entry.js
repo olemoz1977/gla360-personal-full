@@ -3,7 +3,6 @@ import core from './index.js';
 const enc = new TextEncoder();
 
 const IDENTITY_SCHEMA = `
-PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS assessments (
   assessment_id TEXT PRIMARY KEY,
   leader_name TEXT NOT NULL,
