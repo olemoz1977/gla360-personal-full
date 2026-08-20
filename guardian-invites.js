@@ -12,16 +12,16 @@
   const COPY={
     lt:{
       title:'Kvietimų valdymas',
-      note:'Kvietimai valdomi pagal gavėjo el. pašto adresą, rolę ir būseną. Sergėtojas mato, kas pakviestas ir ar kvietimas užpildytas, bet nemato individualaus atsakymo turinio.',
-      open:'Atidaryti apklausą ↗',done:'Užpildyta ✓',
+      note:'Sergėtojas mato gavėją, rolę ir būseną, bet negali atidaryti vertintojo apklausos ar atsakyti jo vardu. Kvietimo nuoroda skirta tik pačiam gavėjui.',
+      done:'Užpildyta ✓',waiting:'Valdoma per kvietimą',
       status:{pending:'neatidaryta',sent:'išsiųsta',opened:'atidaryta',submitting:'pateikiama',completed:'užpildyta',revoked:'atšaukta'},
       roles:{self:'SELF · Savivertinimas',boss:'VADOVAS · Vertina pavaldinį',peer:'KOLEGA · Vertina kolegą',report:'PAVALDINYS · Vertina vadovą',other:'KITAS · Darbo partneris'},
       load:'Kraunami kvietimai…',error:'Nepavyko įkelti kvietimų.'
     },
     en:{
       title:'Invitation management',
-      note:'Invitations are managed by recipient email, role, and status. The guardian can see who was invited and whether the invitation was completed, but cannot see individual response content.',
-      open:'Open survey ↗',done:'Completed ✓',
+      note:'The guardian can see the recipient, role and status, but cannot open an evaluator survey or answer on their behalf. The invitation link belongs only to the recipient.',
+      done:'Completed ✓',waiting:'Managed via invitation',
       status:{pending:'not opened',sent:'sent',opened:'opened',submitting:'submitting',completed:'completed',revoked:'revoked'},
       roles:{self:'SELF · Self-assessment',boss:'MANAGER · Rates direct report',peer:'PEER · Rates colleague',report:'DIRECT REPORT · Rates manager',other:'OTHER · Work partner'},
       load:'Loading invitations…',error:'Could not load invitations.'
@@ -60,7 +60,7 @@
       const state=t.status[inv.status]||inv.status||'';
       const action=inv.status==='completed'
         ? `<span class="muted" style="font-weight:700">${esc(t.done)}</span>`
-        : `<a class="btn secondary" href="${esc(inv.url)}" target="_blank" rel="noopener">${esc(t.open)}</a>`;
+        : `<span class="muted" style="font-weight:700">${esc(t.waiting)}</span>`;
       return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
         <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap">
           <div>
