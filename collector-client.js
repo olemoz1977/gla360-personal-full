@@ -103,4 +103,13 @@
   };
 
   global.Leadership360Collector = api;
+
+  // Progressive enhancement for the active survey. Kept outside survey-v2.html
+  // so the questionnaire can remain stable while UX rules evolve independently.
+  if(/\/survey-v2\.html$/i.test(location.pathname)){
+    const script=document.createElement('script');
+    script.src='survey-enhancements.js?v=20260820-1';
+    script.defer=true;
+    document.head.appendChild(script);
+  }
 })(window);
