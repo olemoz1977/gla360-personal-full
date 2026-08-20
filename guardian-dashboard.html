@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Leadership 360° – Sergėtojo darbo stalas</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .topbar{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;justify-content:flex-end;gap:8px}
+    .dash-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+    .stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+    .stat-card{border:1px solid var(--border);background:var(--surface2);border-radius:12px;padding:14px;text-align:center}
+    .stat-card .n{font-size:1.65rem;font-weight:750}.stat-card .lbl{font-size:.76rem;color:var(--muted);margin-top:3px}
+    .controls{display:grid;grid-template-columns:minmax(200px,1fr) 180px;gap:10px}
+    .assessment-row{border:1px solid var(--border);border-radius:14px;padding:15px;margin-top:10px;background:var(--surface)}
+    .row-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+    .leader{font-size:1.08rem;font-weight:750}.meta{font-size:.8rem;color:var(--muted);margin-top:3px}.status-pill{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--border);font-size:.75rem;font-weight:700}
+    .progressline{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:12px}.progressline>div{height:100%;background:var(--brand)}
+    .row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.empty{padding:28px 8px;text-align:center;color:var(--muted)}
+    .device-note{font-size:.8rem;color:var(--muted);line-height:1.45}
+    @media(max-width:700px){.stat-grid{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr}.row-actions .btn{flex:1 1 150px;text-align:center}}
+  </style>
+</head>
+<body>
+<div class="topbar"><a class="btn secondary" href="setup-v2.html" id="newTop"></a><button id="langToggle" class="secondary" type="button">EN</button></div>
+<header class="head"><h1>Leadership 360°</h1><p id="headSub"></p></header>
+<main class="wrap" style="max-width:1000px">
+  <section class="card">
+    <div class="dash-head">
+      <div><h2 id="workspaceTitle"></h2><p id="workspaceNote" class="device-note"></p></div>
+      <button id="refreshBtn" type="button" class="secondary"></button>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="n" id="statTotal">0</div><div class="lbl" id="statTotalLbl"></div></div>
+      <div class="stat-card"><div class="n" id="statActive">0</div><div class="lbl" id="statActiveLbl"></div></div>
+      <div class="stat-card"><div class="n" id="statDone">0</div><div class="lbl" id="statDoneLbl"></div></div>
+      <div class="stat-card"><div class="n" id="statWaiting">0</div><div class="lbl" id="statWaitingLbl"></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="controls">
+      <label><span id="searchLbl"></span><input id="searchInput" type="search"></label>
+      <label><span id="filterLbl"></span><select id="filterSelect"><option value="all"></option><option value="active"></option><option value="done"></option><option value="attention"></option></select></label>
+    </div>
+    <div id="loadState" class="muted" style="margin-top:10px"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="assessmentsTitle"></h2>
+    <div id="assessmentList"></div>
+  </section>
+</main>
+<script src="collector-client.js"></script>
+<script src="guardian-workspace.js"></script>
+<script>
+(function(){
+  const C=window.Leadership360Collector,W=window.Leadership360Workspace;
+  if(!C||!W)return;
+  const COPY={
+    lt:{sub:'Sergėtojo darbo stalas',title:'Visi valdomi 360° vertinimai',note:'Šiame prototipo etape darbo stalas saugomas šiame įrenginyje. Vertintojų tapatybės ir jų atsakymai tebėra atskirti.',new:'＋ Naujas 360°',refresh:'↻ Atnaujinti visus',stats:['Vertinimai','Vyksta','Užbaigta','Laukiami atsakymai'],search:'Paieška',searchPh:'Lyderis, projektas arba Assessment ID',filter:'Rodyti',filters:['Visi','Vykstantys','Užbaigti','Reikia dėmesio'],list:'Vertinimai',loading:'Atnaujinama būsena…',empty:'Šiame įrenginyje dar nėra išsaugotų sergėtojo vertinimų.',noMatch:'Pagal pasirinktą filtrą nieko nerasta.',open:'Atidaryti ciklą →',report:'Ataskaita',hide:'Paslėpti iš darbo stalo',hideConfirm:'Paslėpti šį vertinimą tik iš šio įrenginio darbo stalo? Pats Assessment nebus ištrintas.',cycle:'Ciklas',completed:'užpildyta',status:{done:'Užbaigta',active:'Vyksta',attention:'Reikia dėmesio',offline:'Nepasiekiama'},unknown:'Neįvardytas vertinimas'},
+    en:{sub:'Guardian workspace',title:'All managed 360° assessments',note:'At this prototype stage the workspace is stored on this device. Evaluator identities and their responses remain separated.',new:'＋ New 360°',refresh:'↻ Refresh all',stats:['Assessments','Active','Completed','Responses waiting'],search:'Search',searchPh:'Leader, project or Assessment ID',filter:'Show',filters:['All','Active','Completed','Needs attention'],list:'Assessments',loading:'Refreshing status…',empty:'No guardian assessments are stored on this device yet.',noMatch:'Nothing matches the selected filter.',open:'Open cycle →',report:'Report',hide:'Hide from workspace',hideConfirm:'Hide this assessment only from this device workspace? The Assessment itself will not be deleted.',cycle:'Cycle',completed:'completed',status:{done:'Completed',active:'Active',attention:'Needs attention',offline:'Unavailable'},unknown:'Unnamed assessment'}
+  };
+  let lang=(localStorage.getItem('leadership360_ui_lang')||document.documentElement.lang||'lt').startsWith('en')?'en':'lt';
+  let models=[];
+  const t=()=>COPY[lang];
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function renderStatic(){
+    const x=t();document.documentElement.lang=lang;document.title='Leadership 360° – '+x.sub;document.getElementById('headSub').textContent=x.sub;document.getElementById('workspaceTitle').textContent=x.title;document.getElementById('workspaceNote').textContent=x.note;document.getElementById('newTop').textContent=x.new;document.getElementById('refreshBtn').textContent=x.refresh;document.getElementById('statTotalLbl').textContent=x.stats[0];document.getElementById('statActiveLbl').textContent=x.stats[1];document.getElementById('statDoneLbl').textContent=x.stats[2];document.getElementById('statWaitingLbl').textContent=x.stats[3];document.getElementById('searchLbl').textContent=x.search;document.getElementById('searchInput').placeholder=x.searchPh;document.getElementById('filterLbl').textContent=x.filter;document.getElementById('filterSelect').options[0].textContent=x.filters[0];document.getElementById('filterSelect').options[1].textContent=x.filters[1];document.getElementById('filterSelect').options[2].textContent=x.filters[2];document.getElementById('filterSelect').options[3].textContent=x.filters[3];document.getElementById('assessmentsTitle').textContent=x.list;document.getElementById('langToggle').textContent=lang==='lt'?'EN':'LT';renderList();
+  }
+
+  function classify(m){
+    if(m.error)return'offline';
+    if(m.total>0&&m.completed>=m.total)return'done';
+    if(m.waiting>0&&(m.opened>0||m.completed>0))return'attention';
+    return'active';
+  }
+
+  async function refreshAll(){
+    const entries=W.list();
+    document.getElementById('loadState').textContent=t().loading;
+    if(!entries.length){models=[];document.getElementById('loadState').textContent='';renderList();return}
+    models=await Promise.all(entries.map(async item=>{
+      const m={...item,total:0,completed:0,opened:0,waiting:0,error:false};
+      try{
+        const data=await C.recoverInvites(item.assessmentId,item.cycle||1,item.manageToken);
+        const invites=data.invites||[];
+        m.leaderName=data.leaderName||item.leaderName||'';m.projectName=data.projectName||item.projectName||'';m.guardianName=data.guardianName||item.guardianName||'';
+        m.total=invites.length;m.completed=invites.filter(v=>v.status==='completed').length;m.opened=invites.filter(v=>v.status==='opened'||v.status==='submitting').length;m.waiting=Math.max(0,m.total-m.completed);
+        W.register(item,{leaderName:m.leaderName,projectName:m.projectName,guardianName:m.guardianName,createdAt:data.createdAt||item.createdAt||''});
+      }catch(_){
+        m.error=true;
+        try{
+          const s=await C.cycleStatus(item.assessmentId,item.cycle||1,item.manageToken);
+          const groups=s.groups||[];m.total=groups.reduce((n,g)=>n+Number(g.total||0),0);m.completed=groups.reduce((n,g)=>n+Number(g.completed||0),0);m.opened=groups.reduce((n,g)=>n+Number(g.opened||0),0);m.waiting=Math.max(0,m.total-m.completed);m.error=false;
+        }catch(__){}
+      }
+      m.kind=classify(m);return m;
+    }));
+    models.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));
+    document.getElementById('loadState').textContent='';renderList();
+  }
+
+  function renderStats(filteredBase=models){
+    document.getElementById('statTotal').textContent=filteredBase.length;
+    document.getElementById('statActive').textContent=filteredBase.filter(m=>m.kind==='active'||m.kind==='attention').length;
+    document.getElementById('statDone').textContent=filteredBase.filter(m=>m.kind==='done').length;
+    document.getElementById('statWaiting').textContent=filteredBase.reduce((n,m)=>n+(m.waiting||0),0);
+  }
+
+  function renderList(){
+    const list=document.getElementById('assessmentList');if(!list)return;
+    const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();
+    const filter=document.getElementById('filterSelect')?.value||'all';
+    const rows=models.filter(m=>{
+      const text=[m.leaderName,m.projectName,m.assessmentId].join(' ').toLowerCase();if(q&&!text.includes(q))return false;
+      if(filter==='active'&&!(m.kind==='active'||m.kind==='attention'))return false;
+      if(filter==='done'&&m.kind!=='done')return false;
+      if(filter==='attention'&&m.kind!=='attention')return false;
+      return true;
+    });
+    renderStats(models);
+    if(!models.length){list.innerHTML=`<div class="empty">${esc(t().empty)}</div>`;return}
+    if(!rows.length){list.innerHTML=`<div class="empty">${esc(t().noMatch)}</div>`;return}
+    list.innerHTML=rows.map(m=>{
+      const x=t(),kind=m.kind||classify(m),pct=m.total?Math.round(m.completed/m.total*100):0,name=m.leaderName||m.projectName||m.assessmentId||x.unknown;
+      const auth={assessmentId:m.assessmentId,manageToken:m.manageToken,cycle:m.cycle||1,lang};
+      const project=m.projectName?` · ${esc(m.projectName)}`:'';
+      return `<div class="assessment-row" data-aid="${esc(m.assessmentId)}"><div class="row-top"><div><div class="leader">${esc(name)}</div><div class="meta">${esc(m.assessmentId)}${project} · ${esc(x.cycle)} C${Number(m.cycle||1)}</div></div><span class="status-pill">${esc(x.status[kind]||kind)}</span></div><div class="meta" style="margin-top:10px"><strong>${m.completed}/${m.total}</strong> ${esc(x.completed)}</div><div class="progressline"><div style="width:${pct}%"></div></div><div class="row-actions"><a class="btn" href="${esc(C.guardianUrl(auth))}">${esc(x.open)}</a><a class="btn secondary" href="${esc(C.reportUrl(auth))}">${esc(x.report)}</a><button class="secondary hideBtn" type="button" data-aid="${esc(m.assessmentId)}">${esc(x.hide)}</button></div></div>`;
+    }).join('');
+    list.querySelectorAll('.hideBtn').forEach(btn=>btn.onclick=()=>{if(confirm(t().hideConfirm)){W.remove(btn.dataset.aid);models=models.filter(m=>m.assessmentId!==btn.dataset.aid);renderList()}});
+  }
+
+  document.getElementById('langToggle').onclick=()=>{lang=lang==='lt'?'en':'lt';localStorage.setItem('leadership360_ui_lang',lang);renderStatic()};
+  document.getElementById('refreshBtn').onclick=refreshAll;
+  document.getElementById('searchInput').addEventListener('input',renderList);
+  document.getElementById('filterSelect').addEventListener('change',renderList);
+  renderStatic();refreshAll();
+})();
+</script>
+</body>
+</html>
