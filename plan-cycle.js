@@ -4,11 +4,22 @@
   const C=window.Leadership360Collector;
   if(!C)return;
 
-  let auth=C.parseManageHash();
-  if(!auth.assessmentId||!auth.manageToken){
-    try{auth=JSON.parse(sessionStorage.getItem('leadership360_last_manage')||'null')||auth}catch(_){}
+  function valid(x){return x&&x.assessmentId&&x.manageToken}
+  function resolveAuth(){
+    let auth=C.parseManageHash();
+    if(valid(auth))return auth;
+    try{
+      const x=JSON.parse(sessionStorage.getItem('leadership360_last_manage')||'null');
+      if(valid(x))return x;
+    }catch(_){}
+    try{
+      const items=JSON.parse(localStorage.getItem('leadership360_guardian_workspace_v1')||'[]');
+      if(Array.isArray(items)&&items.length===1&&valid(items[0]))return items[0];
+    }catch(_){}
+    return null;
   }
-  if(!auth?.assessmentId||!auth?.manageToken)return;
+
+  const auth=resolveAuth();
 
   const copy={
     lt:{
@@ -17,6 +28,7 @@
       auto:'Pagal kitų vertinimo balus automatiškai pažymėtos 3 žemiausiai įvertintos sritys. Galite pasirinkimą pakeisti.',
       tie:score=>`Visų gebėjimų kitų vertinimo balas vienodas (${score}). Sistema negali objektyviai išskirti 1–3 prioritetų, todėl pasirinkite juos rankiniu būdu.`,
       manual:'Pasirinkite iki 3 gebėjimų, kuriems generuoti planą.',
+      missing:'Šis puslapis neturi aktyvaus ciklo konteksto. Grįžkite į ciklo ataskaitą ir 90 dienų planą atidarykite iš jos.',
       error:'Nepavyko automatiškai įkelti ciklo. Galite pasirinkti sritis rankiniu būdu.'
     },
     en:{
@@ -25,6 +37,7 @@
       auto:'The 3 lowest-rated competency areas were selected automatically from others’ ratings. You can change the selection.',
       tie:score=>`All competency areas have the same others rating (${score}). The system cannot objectively select 1–3 priorities, so choose them manually.`,
       manual:'Choose up to 3 competency areas for the plan.',
+      missing:'This page has no active cycle context. Return to the cycle report and open the 90-day plan from there.',
       error:'The cycle could not be loaded automatically. You can still choose areas manually.'
     }
   };
@@ -35,8 +48,9 @@
 
   function setText(){
     const header=document.querySelector('header.head p');
-    if(header)header.textContent=tx().subtitle;
+    if(header&&auth)header.textContent=tx().subtitle;
 
+    if(!auth)return;
     const grid=document.querySelector('.source-grid');
     const drop=document.getElementById('aggDrop');
     if(drop){
@@ -69,6 +83,10 @@
 
   async function apply(){
     setText();
+    if(!document.getElementById('cycleBanner'))return setTimeout(apply,250);
+    if(!auth){banner(tx().missing,'has-reflect');return}
+    try{sessionStorage.setItem('leadership360_last_manage',JSON.stringify(auth))}catch(_){}
+
     const core=G();
     if(!core?.loadBank||!core?.aggregate)return setTimeout(apply,250);
     if(!document.querySelector('.manual-comp'))return setTimeout(apply,250);
@@ -100,8 +118,7 @@
         select([]);
         banner(tx().direct(bundle.cycle||auth.cycle||1,responses.length)+'<br><span class="muted">'+tx().tie(min.toFixed(2))+'</span>');
       }else{
-        const chosen=ranked.slice(0,3).map(x=>x.name);
-        select(chosen);
+        select(ranked.slice(0,3).map(x=>x.name));
         banner(tx().direct(bundle.cycle||auth.cycle||1,responses.length)+'<br><span class="muted">'+tx().auto+'</span>');
       }
     }catch(e){
@@ -109,6 +126,7 @@
     }
   }
 
-  setTimeout(apply,500);
-  setTimeout(apply,1200);
+  setTimeout(apply,350);
+  setTimeout(apply,900);
+  setTimeout(apply,1800);
 })();
