@@ -4,10 +4,23 @@
   function isMobile(){return window.matchMedia('(max-width:650px)').matches}
   function lang(){return document.documentElement.lang==='en'?'en':'lt'}
   function title(){return lang()==='en'?'Radar axes':'Radaro ašys'}
+  function scaleNote(){return lang()==='en'
+    ? 'Scale: 1–5. 0 = not assessed / cannot assess. 0 is not a rating and is excluded from averages. Missing values are not connected in the radar line.'
+    : 'Skalė: 1–5. 0 = neįvertinta / negaliu įvertinti. 0 nėra vertinimo balas ir į vidurkius neįtraukiamas. Trūkstama reikšmė radaro kreivėje nejungiama.';
+  }
 
   function ensureKey(labels){
     const canvas=document.getElementById('radar');
     if(!canvas)return;
+    let note=document.getElementById('radarScaleNote');
+    if(!note){
+      note=document.createElement('p');
+      note.id='radarScaleNote';
+      note.style.cssText='font-size:.78rem;margin:10px 0 0;text-align:center;color:var(--muted)';
+      canvas.insertAdjacentElement('afterend',note);
+    }
+    note.textContent=scaleNote();
+
     let key=document.getElementById('radarAxisKey');
     if(!key){
       key=document.createElement('div');
@@ -27,7 +40,7 @@
   }
 
   function escapeHtml(value){
-    return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   }
 
   function apply(){
@@ -37,6 +50,14 @@
     const labels=(chart.data.labels||[]).map(String);
     const r=chart.options?.scales?.r;
     if(!r)return false;
+
+    // 0 is a visual baseline only: it means "not assessed" and is never averaged.
+    r.min=0;
+    r.max=5;
+    r.ticks=r.ticks||{};
+    r.ticks.stepSize=1;
+    r.ticks.callback=(value)=>Number(value)===0?'0*':String(value);
+
     r.pointLabels=r.pointLabels||{};
     if(isMobile()){
       r.pointLabels.display=true;
