@@ -5,8 +5,12 @@
   function lang(){return document.documentElement.lang==='en'?'en':'lt'}
   function title(){return lang()==='en'?'Radar axes':'Radaro ašys'}
   function scaleNote(){return lang()==='en'
-    ? 'Scale: 1–5. 0 = not assessed / cannot assess. 0 is not a rating and is excluded from averages. Missing values are not connected in the radar line.'
-    : 'Skalė: 1–5. 0 = neįvertinta / negaliu įvertinti. 0 nėra vertinimo balas ir į vidurkius neįtraukiamas. Trūkstama reikšmė radaro kreivėje nejungiama.';
+    ? 'Scale: 1–5. Not assessed / cannot assess is stored as a technical 0 only. It is not a rating and is excluded from averages.'
+    : 'Skalė: 1–5. Neįvertinta / negaliu įvertinti saugoma tik kaip techninė 0 reikšmė. Tai nėra vertinimo balas ir į vidurkius neįtraukiama.';
+  }
+  function missingNote(){return lang()==='en'
+    ? 'At least one value is not assessed. To avoid showing it as 0, that series is drawn without area fill and the line is left open at the missing axis.'
+    : 'Bent viena reikšmė neįvertinta. Kad ji neatrodytų kaip 0, tos serijos plotas neužpildomas, o kreivė ties trūkstama ašimi paliekama atvira.';
   }
 
   function escapeHtml(value){
@@ -20,21 +24,28 @@
     try{return Chart.getChart(canvas)||null}catch(_){return null}
   }
 
-  function ensureKey(labels){
+  function ensureKey(labels,hasMissing){
     const canvas=document.getElementById('radar');
     if(!canvas)return;
 
-    const oldNote=document.getElementById('radarMissingNote');
-    if(oldNote) oldNote.style.display='none';
-
-    let note=document.getElementById('radarScaleNote');
-    if(!note){
-      note=document.createElement('p');
-      note.id='radarScaleNote';
-      note.style.cssText='font-size:.78rem;margin:10px 0 0;text-align:center;color:var(--muted);line-height:1.45';
-      canvas.insertAdjacentElement('afterend',note);
+    let scale=document.getElementById('radarScaleNote');
+    if(!scale){
+      scale=document.createElement('p');
+      scale.id='radarScaleNote';
+      scale.style.cssText='font-size:.78rem;margin:10px 0 0;text-align:center;color:var(--muted);line-height:1.45';
+      canvas.insertAdjacentElement('afterend',scale);
     }
-    note.textContent=scaleNote();
+    scale.textContent=scaleNote();
+
+    let missing=document.getElementById('radarMissingNote');
+    if(!missing){
+      missing=document.createElement('p');
+      missing.id='radarMissingNote';
+      missing.style.cssText='font-size:.78rem;margin:8px 0 0;text-align:center;color:var(--muted);line-height:1.45';
+      scale.insertAdjacentElement('afterend',missing);
+    }
+    missing.textContent=hasMissing?missingNote():'';
+    missing.style.display=hasMissing?'block':'none';
 
     let key=document.getElementById('radarAxisKey');
     if(!key){
@@ -49,10 +60,12 @@
     }
     key.style.display='block';
     key.innerHTML='<div style="font-weight:700;color:var(--text);margin-bottom:8px">'+title()+'</div>'+
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px">'+
+      '<div style="display:grid;grid-template-columns:1fr;gap:6px 12px">'+
       labels.map((label,i)=>'<div style="display:flex;gap:6px;align-items:flex-start"><strong style="min-width:22px;color:var(--text)">'+(i+1)+'.</strong><span>'+escapeHtml(label)+'</span></div>').join('')+
       '</div>';
   }
+
+  function isMissing(v){return v===null||v===undefined||!Number.isFinite(Number(v))}
 
   function apply(){
     const chart=getChart();
@@ -61,13 +74,12 @@
     const r=chart.options && chart.options.scales && chart.options.scales.r;
     if(!r)return false;
 
-    // 0 is a visual baseline only. Real ratings are 1–5.
     r.min=0;
     r.max=5;
     r.beginAtZero=true;
     r.ticks=r.ticks||{};
     r.ticks.stepSize=1;
-    r.ticks.callback=(value)=>Number(value)===0?'0*':String(value);
+    r.ticks.callback=(value)=>Number(value)===0?'':String(value);
 
     r.pointLabels=r.pointLabels||{};
     r.pointLabels.display=true;
@@ -81,8 +93,18 @@
       r.pointLabels.padding=5;
     }
 
+    let hasMissing=false;
+    (chart.data.datasets||[]).forEach(ds=>{
+      const gap=(ds.data||[]).some(isMissing);
+      if(gap){
+        hasMissing=true;
+        ds.fill=false;
+        ds.spanGaps=false;
+      }
+    });
+
     chart.update('none');
-    ensureKey(labels);
+    ensureKey(labels,hasMissing);
     return true;
   }
 
