@@ -64,14 +64,27 @@ const RESPONSE_STATEMENTS = [
   `CREATE INDEX IF NOT EXISTS idx_responses_assessment_cycle ON responses(assessment_id, cycle, submitted_at)`
 ];
 
-function json(data, status = 200){
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      'content-type':'application/json; charset=utf-8',
-      'cache-control':'no-store'
-    }
-  });
+const ALLOWED_ORIGINS = new Set([
+  'https://olemoz1977.github.io',
+  'https://2rasi.lt',
+  'https://www.2rasi.lt',
+  'https://2rasi.com',
+  'https://www.2rasi.com',
+  'https://omesg360.eu',
+  'https://www.omesg360.eu'
+]);
+
+function json(request, data, status = 200){
+  const origin = request.headers.get('origin');
+  const headers = {
+    'content-type':'application/json; charset=utf-8',
+    'cache-control':'no-store'
+  };
+  if(origin && (ALLOWED_ORIGINS.has(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))){
+    headers['access-control-allow-origin'] = origin;
+    headers['vary'] = 'Origin';
+  }
+  return new Response(JSON.stringify(data), { status, headers });
 }
 
 function validateSecret(env){
@@ -97,19 +110,28 @@ export default {
   async fetch(request, env, ctx){
     const url = new URL(request.url);
 
+    if(url.pathname === '/ping' && request.method === 'GET'){
+      return json(request, {
+        ok:true,
+        service:'Leadership 360 Collector',
+        deployed:true,
+        bootstrap:4
+      });
+    }
+
     if(url.pathname === '/health' && request.method === 'GET'){
       try {
         validateSecret(env);
         await ensureSchema(env);
-        return json({
+        return json(request, {
           ok:true,
           service:'Leadership 360 Collector',
-          version:3,
+          version:4,
           schemaReady:true,
           secretReady:true
         });
       } catch(error){
-        return json({
+        return json(request, {
           ok:false,
           error:'health_check_failed',
           detail:error instanceof Error ? error.message : String(error)
