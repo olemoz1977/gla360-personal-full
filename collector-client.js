@@ -104,12 +104,18 @@
 
   global.Leadership360Collector = api;
 
-  // Progressive enhancement for the active survey. Kept outside survey-v2.html
-  // so the questionnaire can remain stable while UX rules evolve independently.
-  if(/\/survey-v2\.html$/i.test(location.pathname)){
+  function loadHelper(src){
     const script=document.createElement('script');
-    script.src='survey-enhancements.js?v=20260820-1';
+    script.src=src;
     script.defer=true;
     document.head.appendChild(script);
+  }
+
+  // Progressive enhancements are kept outside the stable page files.
+  if(/\/survey-v2\.html$/i.test(location.pathname)){
+    loadHelper('survey-enhancements.js?v=20260820-1');
+  }
+  if(/\/report-v2\.html$/i.test(location.pathname)){
+    loadHelper('report-coverage.js?v=20260820-1');
   }
 })(window);
