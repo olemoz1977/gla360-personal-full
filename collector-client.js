@@ -121,5 +121,9 @@
   }
   if(/\/guardian\.html$/i.test(location.pathname)){
     loadHelper('guardian-invites.js?v=20260820-1');
+    loadHelper('guardian-workspace.js?v=20260820-1');
+  }
+  if(/\/setup-v2\.html$/i.test(location.pathname)){
+    loadHelper('guardian-workspace.js?v=20260820-1');
   }
 })(window);
