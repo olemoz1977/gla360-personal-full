@@ -7,13 +7,13 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     .topbar{max-width:900px;margin:0 auto;padding:10px 20px;display:flex;justify-content:flex-end}.lang-btn{min-width:48px;padding:7px 12px}
-    .roster-row{display:grid;grid-template-columns:minmax(180px,1fr) 150px 95px 44px;gap:8px;align-items:end;margin:8px 0}
-    .roster-row label{margin:0}.roster-row button{height:42px;padding:0;background:transparent;color:var(--danger);border:1px solid var(--border)}
+    .count-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}.count-grid label{margin:0}.count-grid input{max-width:100%;text-align:center}
+    .roster-row{display:grid;grid-template-columns:150px minmax(180px,1fr) 95px;gap:10px;align-items:end;margin:10px 0;padding:10px 0;border-bottom:1px solid var(--border)}.roster-row:last-child{border-bottom:0}.roster-row label{margin:0}.r-role-label{font-weight:650;padding-bottom:11px}
     .summary-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.pill{padding:4px 9px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);font-size:.8rem}
     .secure-box{word-break:break-all;background:var(--surface2);padding:12px;border-radius:10px;border:1px solid var(--border)}
     .invite-item{padding:10px 0;border-bottom:1px solid var(--border)}.invite-item:last-child{border-bottom:0}
     .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--muted);margin-right:6px}.status-dot.ok{background:var(--accent)}.status-dot.bad{background:var(--danger)}
-    @media(max-width:650px){.roster-row{grid-template-columns:1fr 1fr}.roster-row .email{grid-column:1/-1}.roster-row button{width:100%}}
+    @media(max-width:650px){.count-grid{grid-template-columns:1fr 1fr}.roster-row{grid-template-columns:1fr 95px}.r-role-label{grid-column:1/-1;padding-bottom:0}.roster-row .email{grid-column:1/2}}
   </style>
 </head>
 <body>
@@ -36,23 +36,35 @@
   </section>
 
   <section class="card">
-    <h2 id="s2Title"></h2><p id="rosterNote" class="muted"></p>
-    <div id="roster"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button id="addRow" type="button" class="secondary"></button></div>
-    <div id="roleSummary" class="summary-pills"></div><div id="anonymityWarning" class="muted" style="font-size:.82rem;margin-top:10px"></div>
+    <h2 id="s2Title"></h2>
+    <p id="compositionNote" class="muted"></p>
+    <div class="count-grid">
+      <label><span id="bossCountLabel"></span><input id="countBoss" type="number" min="0" max="20" step="1" value="1" inputmode="numeric"></label>
+      <label><span id="peerCountLabel"></span><input id="countPeer" type="number" min="0" max="20" step="1" value="3" inputmode="numeric"></label>
+      <label><span id="reportCountLabel"></span><input id="countReport" type="number" min="0" max="20" step="1" value="3" inputmode="numeric"></label>
+      <label><span id="otherCountLabel"></span><input id="countOther" type="number" min="0" max="20" step="1" value="0" inputmode="numeric"></label>
+    </div>
+    <div id="roleSummary" class="summary-pills"></div>
+    <div id="anonymityWarning" class="muted" style="font-size:.82rem;margin-top:10px"></div>
   </section>
 
   <section class="card">
     <h2 id="s3Title"></h2>
+    <p id="rosterNote" class="muted"></p>
+    <div id="roster"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="s4Title"></h2>
     <div class="grid2 mt">
-      <label><span id="guardianNameLabel"></span><input id="guardianName" type="text"></label>
-      <label><span id="guardianEmailLabel"></span><input id="guardianEmail" type="email"></label>
+      <label><span id="guardianNameLabel"></span><input id="guardianName" type="text" autocomplete="name"></label>
+      <label><span id="guardianEmailLabel"></span><input id="guardianEmail" type="email" autocomplete="email"></label>
     </div>
     <p id="guardianNote" class="muted" style="font-size:.82rem;margin-top:8px"></p>
   </section>
 
   <section class="card">
-    <h2 id="s4Title"></h2>
+    <h2 id="s5Title"></h2>
     <label style="display:flex;gap:10px;align-items:flex-start;font-weight:400"><input id="privacyAck" type="checkbox" style="width:auto;margin-top:4px"><span id="privacyAckText"></span></label>
     <p style="margin-top:8px;font-size:.84rem"><a id="privacyLink" href="PRIVACY-v2.html" target="_blank" rel="noopener"></a></p>
     <div class="mt"><button id="createBtn" type="button"></button></div><div id="createStatus" class="muted" style="margin-top:10px"></div>
