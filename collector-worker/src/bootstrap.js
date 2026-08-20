@@ -90,6 +90,27 @@ function json(request, data, status = 200){
   return new Response(JSON.stringify(data), { status, headers });
 }
 
+function isTestOrigin(request){
+  const origin=String(request.headers.get('origin')||'');
+  return origin==='https://olemoz1977.github.io' || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+}
+
+async function sanitizeInviteResponse(request,response){
+  if(isTestOrigin(request) || !response?.ok)return response;
+  let data;
+  try{data=await response.clone().json()}catch(_){return response}
+  if(!Array.isArray(data?.invites))return response;
+  data.invites=data.invites.map(inv=>{
+    const {url,...safe}=inv||{};
+    return safe;
+  });
+  data.testMode=false;
+  const headers=new Headers(response.headers);
+  headers.set('content-type','application/json; charset=utf-8');
+  headers.set('cache-control','no-store');
+  return new Response(JSON.stringify(data),{status:response.status,headers});
+}
+
 function validateSecret(env){
   const raw = String(env?.ROSTER_KEY_HEX || '').trim();
   if(!raw) throw new Error('ROSTER_KEY_HEX_missing');
@@ -166,11 +187,16 @@ async function recoverInvites(request,env,assessmentId,cycle){
       ORDER BY created_at ASC`
   ).bind(assessmentId,cycle).all();
 
+  const testMode=isTestOrigin(request);
   const invites=[];
   for(const row of rows.results){
-    const token=await decryptText(env,row.token_cipher,row.token_iv);
     const email=await decryptText(env,row.email_cipher,row.email_iv);
-    invites.push({role:row.role,language:row.language,email,status:row.status,url:surveyUrl(env,token)});
+    const invite={role:row.role,language:row.language,email,status:row.status};
+    if(testMode){
+      const token=await decryptText(env,row.token_cipher,row.token_iv);
+      invite.url=surveyUrl(env,token);
+    }
+    invites.push(invite);
   }
   return json(request,{
     ok:true,
@@ -180,6 +206,7 @@ async function recoverInvites(request,env,assessmentId,cycle){
     projectName:assessment.project_name||'',
     guardianName:assessment.guardian_name||'',
     createdAt:assessment.created_at||'',
+    testMode,
     invites
   });
 }
@@ -210,7 +237,7 @@ export default {
         ok:true,
         service:'Leadership 360 Collector',
         deployed:true,
-        bootstrap:8
+        bootstrap:9
       });
     }
 
@@ -221,7 +248,7 @@ export default {
         return json(request, {
           ok:true,
           service:'Leadership 360 Collector',
-          version:8,
+          version:9,
           schemaReady:true,
           secretReady:true
         });
@@ -234,6 +261,10 @@ export default {
       }
     }
 
+    if(url.pathname === '/api/assessments' && request.method === 'POST'){
+      return sanitizeInviteResponse(request,await app.fetch(request,env,ctx));
+    }
+
     const recovery=url.pathname.match(/^\/api\/manage\/([^/]+)\/cycles\/(\d+)\/invites$/);
     if(recovery && request.method === 'GET'){
       try{
@@ -241,6 +272,11 @@ export default {
       }catch(error){
         return json(request,{ok:false,error:'invite_recovery_failed',detail:error instanceof Error?error.message:String(error)},500);
       }
+    }
+
+    const nextCycle=url.pathname.match(/^\/api\/manage\/([^/]+)\/cycles$/);
+    if(nextCycle && request.method === 'POST'){
+      return sanitizeInviteResponse(request,await app.fetch(request,env,ctx));
     }
 
     if(/^\/api\/invite\/[^/]+\/submit$/.test(url.pathname) && request.method === 'POST'){
