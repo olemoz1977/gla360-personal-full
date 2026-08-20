@@ -9,12 +9,12 @@ PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey-v
 [[d1_databases]]
 binding = "IDENTITY_DB"
 database_name = "leadership-360-identity"
-database_id = "REPLACE_WITH_IDENTITY_D1_ID"
+database_id = "0ff9806a-3b88-476b-ad79-aa4ea392514f"
 
 [[d1_databases]]
 binding = "RESPONSE_DB"
 database_name = "leadership-360-responses"
-database_id = "REPLACE_WITH_RESPONSE_D1_ID"
+database_id = "fddd64fc-902b-4b1f-85aa-e2bc20a5a10e"
 
 # Enable after Cloudflare Email Service is onboarded for the sending domain:
 # [[send_email]]
