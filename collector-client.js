@@ -5,6 +5,7 @@
   'use strict';
 
   const DEFAULT_API = 'https://leadership-360-collector.olemoz1977.workers.dev';
+  const inviteContextPromises = new Map();
 
   function apiBase(){
     const override = global.LEADERSHIP360_COLLECTOR_API || localStorage.getItem('leadership360_collector_api');
@@ -39,6 +40,18 @@
       throw e;
     }
     return data;
+  }
+
+  function inviteContext(token){
+    const key=String(token||'');
+    if(!inviteContextPromises.has(key)){
+      const p=request('/api/invite/' + encodeURIComponent(key)).catch(error=>{
+        inviteContextPromises.delete(key);
+        throw error;
+      });
+      inviteContextPromises.set(key,p);
+    }
+    return inviteContextPromises.get(key);
   }
 
   function normaliseLang(value){
@@ -86,7 +99,7 @@
     apiBase,
     health: () => request('/health'),
     createAssessment: payload => request('/api/assessments', { json: payload }),
-    inviteContext: token => request('/api/invite/' + encodeURIComponent(token)),
+    inviteContext,
     submitInvite: (token, payload) => request('/api/invite/' + encodeURIComponent(token) + '/submit', { json: payload }),
     cycleStatus: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/status', { manageToken }),
     exportCycle: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/export', { manageToken }),
@@ -114,7 +127,7 @@
 
   // Progressive enhancements are kept outside the stable page files.
   if(/\/survey-v2\.html$/i.test(location.pathname)){
-    loadHelper('survey-enhancements.js?v=20260820-2');
+    loadHelper('survey-enhancements.js?v=20260820-3');
   }
   if(/\/report-v2\.html$/i.test(location.pathname)){
     loadHelper('report-coverage.js?v=20260820-3');
