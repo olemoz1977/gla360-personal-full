@@ -3,170 +3,60 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Leadership 360° – Pradžia</title>
-  <meta name="description" content="Asmeninė 360° lyderystės apklausa. Be serverio, GitHub Pages.">
+  <title>Leadership 360°</title>
+  <meta name="description" content="Leadership 360° pseudoniminis lyderystės vertinimo ciklas: C1, refleksija, 90 dienų planas ir C2.">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px}.flow-step{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);font-size:.9rem}.flow-step strong{display:block;color:var(--brand);margin-bottom:5px}.note{font-size:.84rem}.navline{max-width:900px;margin:0 auto;padding:9px 20px;display:flex;gap:14px;flex-wrap:wrap}.navline a{text-decoration:none;color:var(--muted);font-size:.88rem}.navline a:first-child{color:var(--brand);font-weight:700}@media(max-width:700px){.flow{grid-template-columns:1fr}.hero-actions .btn,.hero-actions button{width:100%;text-align:center}}
+  </style>
 </head>
 <body>
-
-<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
-  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
-    <a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Auditas</a>
-    <a href="index.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🏠 Pradžia</a>
-    <a href="report.html" style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
-     <a href="compare.html" style="color:var(--muted);text-decoration:none;font-weight:600;">📈 Palyginimas</a>
-    <a href="reflect.html" style="color:var(--muted);text-decoration:none;">✍ Refleksija</a>
-    <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
-    <a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a>
-    <a href="PRIVACY.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a>
+<nav style="background:var(--surface2);border-bottom:1px solid var(--border)">
+  <div class="navline">
+    <a href="index.html">🏠 Leadership 360°</a>
+    <a href="setup-v2.html">➕ Naujas C1</a>
+    <a href="guardian.html">🛡 Sergėtojas</a>
+    <a href="report-v2.html">📊 Ataskaita</a>
+    <a href="compare-v2.html">📈 C1 / C2</a>
+    <a href="plan.html">📋 90 d. planas</a>
+    <a href="PRIVACY-v2.html">🔒 Privatumas</a>
   </div>
 </nav>
 <header class="head">
   <h1>Leadership 360°</h1>
-  <p>360° lyderystės apklausa · 5 klasteriai · 15 gebėjimų · 75 klausimai · be serverio</p>
+  <p>Grįžtamasis ryšys → refleksija → 90 dienų veiksmai → pakartotinis matavimas</p>
 </header>
-
 <main class="wrap">
-
   <section class="card">
-    <h2>Naujas vertinimas</h2>
-    <p class="muted">Įveskite savo vardą, nurodykite kiek žmonių vertins kiekvienoje grupėje ir spauskite <strong>Sukurti</strong>. Gausite nuorodas, kurias išsiųsite vertintojams per Anonimiškumo sergėtoja jeigu reikia didesnio anonimiškumo.</p>
-
-    <div class="grid2 mt">
-      <label>Jūsų vardas
-        <input type="text" id="leaderName" placeholder="Vardas Pavardė" autocomplete="name">
-      </label>
-      <label>Projekto pavadinimas <span style="font-weight:400">(nebūtina)</span>
-        <input type="text" id="projectName" placeholder="pvz., 2025 Q4 vertinimas">
-      </label>
+    <h2>Naujas C1 vertinimo ciklas</h2>
+    <p>Įveskite vertinamo lyderio duomenis, SELF el. paštą, vertintojų roles ir jų el. pašto adresus. Kiekvienam vertintojui bus sugeneruota individuali vienkartinė apklausos nuoroda.</p>
+    <p class="muted note">Vertintojų identitetai ir atsakymai saugomi atskirai. Atsakymų bazėje el. pašto adresų nėra. Sergėtojas valdo ciklą ir mato užpildymo būseną.</p>
+    <div class="hero-actions">
+      <a class="btn" href="setup-v2.html">Pradėti C1 →</a>
+      <a class="btn secondary" href="PRIVACY-v2.html">Kaip saugomas anonimiškumas?</a>
     </div>
-
-    <div class="grid4 mt">
-      <label>Vadovas (boss)
-        <input type="number" id="nBoss" min="0" step="1" value="1" inputmode="numeric">
-      </label>
-      <label>Kolegos (peer)
-        <input type="number" id="nPeers" min="0" step="1" value="3" inputmode="numeric">
-      </label>
-      <label>Pavaldiniai (report)
-        <input type="number" id="nReports" min="0" step="1" value="4" inputmode="numeric">
-      </label>
-      <label>Kiti (other)
-        <input type="number" id="nOthers" min="0" step="1" value="2" inputmode="numeric">
-      </label>
-    </div>
-
-    <div class="grid2 mt">
-      <label>Anonimiškumo sergėtojo vardas pavardė
-        <input type="text" id="guardianName" placeholder="pvz., Rasa Petrauskienė" autocomplete="off">
-      </label>
-      <label>Sergėtojo el. paštas
-        <input type="email" id="guardianEmail" placeholder="pvz., rasa@imone.lt" autocomplete="off">
-      </label>
-    </div>
-    <p class="muted" style="font-size:.82rem;margin-top:6px;">
-      🔒 Sergėtojo kontaktai bus rodomi vertintojams apklausos puslapyje — kad žinotų kam siųsti užpildytą failą.
-      Laukai neprivalomi.
-    </p>
-
-    <div class="mt">
-      <button id="create" type="button">Sukurti vertinimą</button>
-    </div>
-
-    <div id="links" class="mt"></div>
   </section>
 
   <section class="card">
-    <h2>Kaip tai veikia?</h2>
-    <ol style="padding-left:18px; line-height:2;">
-      <li>Sukurkite vertinimą aukščiau → gausite <strong>Assessment ID</strong> ir nuorodas.</li>
-      <li>Išsiųskite nuorodas savo vertintojams el. paštu arba žinute (didesniam anonimiškumui patartina naudoti Anonimiškumo sergėtojo funkciją).</li>
-      <li>Kiekvienas vertintojas atsakys į klausimus naršyklėje ir atsisiųs <code>*.json</code> failą. Priklausomai nuo susitarimo atsiusta failą persiunčia tiesiogiai vertinamajam arba Anonimiškumo sergėtojui.</li>
-      <li>Surinkite visus <code>*.json</code> failus asmeniškai arba per Anonimiškumo sergėtoja  ir atidarykite <a href="report.html">📊 Ataskaita</a>.</li>
-      <li>Peržiūrėkite rezultatus: radaras, klasteriai, Top 3 spragos ir stiprybės.</li>
-    </ol>
-    <p class="muted mt">🔒 Privatumas: jokių duomenų į serverį. Viskas vyksta naršyklėje.</p>
+    <h2>Vienas pilnas ciklas</h2>
+    <div class="flow">
+      <div class="flow-step"><strong>1 · C1</strong>SELF ir 360° vertintojų atsakymai</div>
+      <div class="flow-step"><strong>2 · Rezultatas</strong>Agreguota ataskaita ir spragos</div>
+      <div class="flow-step"><strong>3 · Refleksija</strong>Ką pasirinkti keisti</div>
+      <div class="flow-step"><strong>4 · 90 dienų</strong>Konkretūs veiksmai + Calendar / Telegram</div>
+      <div class="flow-step"><strong>5 · C2</strong>Pakartotinis matavimas ir pokyčio palyginimas</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Dabartinė bandymo kryptis</h2>
+    <p class="muted">Pirmiausia tikrinamas visas C1 → C2 procesas nuo realaus kvietimo iki pakartotinio matavimo. 90 dienų veiksmų turinys šiame prototipe orientuotas į Manufacturing / Operations kontekstą.</p>
   </section>
 
   <section class="card">
     <h2>Teisinė pastaba</h2>
-    <p class="muted">Leadership 360° yra <strong>nepriklausomas prototipas</strong>. Tai <strong>ne oficialus GLA360 produktas</strong>. Struktūra remiasi viešais aprašais:
-      <a href="https://globalcoachgroup.com/gla360/" target="_blank" rel="noopener">Global Coach Group</a> ·
-      <a href="https://www.leapingkoi.com/gla360.html" target="_blank" rel="noopener">LEAPING KOI</a> ·
-      <a href="https://mgscc.net/gla360/" target="_blank" rel="noopener">MGSCC</a>.
-    </p>
+    <p class="muted">Leadership 360° yra nepriklausomas prototipas. Tai nėra oficialus GLA360 produktas. Vertinimas skirtas ugdymui ir refleksijai, o ne diagnostikai ar automatiniams sprendimams apie žmogų.</p>
   </section>
-
 </main>
-
-<script src="app.js"></script>
-<script>
-(function(){
-  document.getElementById('create').addEventListener('click', function(){
-    const leader  = (document.getElementById('leaderName').value  || 'Lyderis').trim();
-    const project = (document.getElementById('projectName').value || '').trim();
-    const aid = GLA.newAssessmentId(leader);
-
-    const n = {
-      boss:   Number(document.getElementById('nBoss').value)    || 0,
-      peer:   Number(document.getElementById('nPeers').value)   || 0,
-      report: Number(document.getElementById('nReports').value) || 0,
-      other:  Number(document.getElementById('nOthers').value)  || 0
-    };
-
-    // Build base URL (same directory, survey.html)
-    const base = new URL(location.href);
-    base.search = ''; base.hash = '';
-    const dir = base.pathname.endsWith('/')
-      ? base.href
-      : base.href.substring(0, base.href.lastIndexOf('/') + 1);
-
-    const gName  = (document.getElementById('guardianName')?.value  || '').trim();
-    const gEmail = (document.getElementById('guardianEmail')?.value || '').trim();
-
-    function mkUrl(role, i){
-      const u = new URL('survey.html', dir);
-      u.searchParams.set('aid', aid);
-      u.searchParams.set('role', role);
-      u.searchParams.set('i', i);
-      if(leader) u.searchParams.set('ln', leader);
-      if(gName)  u.searchParams.set('gn', gName);
-      if(gEmail) u.searchParams.set('ge', gEmail);
-      return u.toString();
-    }
-
-    let html = `
-      <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
-      <p><strong>Assessment ID:</strong> <code>${aid}</code></p>`;
-
-    if(project) html += `<p class="muted">Projektas: ${project}</p>`;
-
-    // SELF link
-    const selfUrl = mkUrl('self', 1);
-    html += `
-      <div style="margin:10px 0;">
-        <strong>📎 Savivertinimas (SELF):</strong><br>
-        <ul class="link-list"><li><a href="${selfUrl}" target="_blank">${selfUrl}</a></li></ul>
-      </div>`;
-
-    // Other roles
-    const roleLabels = { boss:'Vadovas (boss)', peer:'Kolega (peer)', report:'Pavaldinys (report)', other:'Kitas (other)' };
-    ['boss','peer','report','other'].forEach(role => {
-      if(n[role] > 0){
-        html += `<details open><summary>${roleLabels[role]} – ${n[role]} nuoroda(-os)</summary><ul class="link-list">`;
-        for(let i = 1; i <= n[role]; i++){
-          const url = mkUrl(role, i);
-          html += `<li><a href="${url}" target="_blank">${url}</a></li>`;
-        }
-        html += `</ul></details>`;
-      }
-    });
-
-    html += `<p class="muted mt">Išsiųskite šias nuorodas vertintojams arba Anonimiškumo sergėtojui (priklauso nuo susitarimo ir anonimiškumoporeikio) . Užpildę jie atsisiųs <code>*.json</code> ir atsiųs jums tiesiogiai arba per Anonimiškumo sergėtoja .</p>`;
-    document.getElementById('links').innerHTML = html;
-    document.getElementById('links').scrollIntoView({ behavior:'smooth', block:'start' });
-  });
-})();
-</script>
 </body>
 </html>
