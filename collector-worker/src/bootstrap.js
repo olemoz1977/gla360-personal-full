@@ -74,6 +74,9 @@ const ALLOWED_ORIGINS = new Set([
   'https://www.omesg360.eu'
 ]);
 
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+
 function json(request, data, status = 200){
   const origin = request.headers.get('origin');
   const headers = {
@@ -95,6 +98,36 @@ function validateSecret(env){
   }
 }
 
+function bytesToHex(bytes){
+  return [...bytes].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function sha256Hex(value){
+  return bytesToHex(new Uint8Array(await crypto.subtle.digest('SHA-256',enc.encode(String(value)))));
+}
+
+async function rosterHex(env){
+  const raw=String(env?.ROSTER_KEY_HEX||'').trim();
+  validateSecret(env);
+  return /^[0-9a-f]{64}$/i.test(raw)?raw:sha256Hex(raw);
+}
+
+function base64UrlToBytes(value){
+  const padded=String(value||'').replace(/-/g,'+').replace(/_/g,'/')+'==='.slice((String(value||'').length+3)%4);
+  const binary=atob(padded);
+  return Uint8Array.from(binary,c=>c.charCodeAt(0));
+}
+
+function hexToBytes(hex){
+  return Uint8Array.from(hex.match(/../g),h=>parseInt(h,16));
+}
+
+async function decryptToken(env,cipher,iv){
+  const key=await crypto.subtle.importKey('raw',hexToBytes(await rosterHex(env)),'AES-GCM',false,['decrypt']);
+  const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:base64UrlToBytes(iv)},key,base64UrlToBytes(cipher));
+  return dec.decode(plain);
+}
+
 async function applyStatements(db, statements){
   for(const statement of statements){
     await db.prepare(statement).run();
@@ -106,6 +139,38 @@ async function ensureSchema(env){
   await applyStatements(env.RESPONSE_DB, RESPONSE_STATEMENTS);
 }
 
+function surveyUrl(env,token){
+  const u=new URL(String(env.PUBLIC_SURVEY_BASE||'https://olemoz1977.github.io/gla360-personal-full/survey-v2.html'));
+  u.search='';
+  u.searchParams.set('invite',token);
+  return u.toString();
+}
+
+async function recoverInvites(request,env,assessmentId,cycle){
+  const auth=request.headers.get('authorization')||'';
+  const match=auth.match(/^Bearer\s+(.+)$/i);
+  if(!match)return json(request,{ok:false,error:'unauthorized'},401);
+  const manageHash=await sha256Hex(match[1]);
+  const assessment=await env.IDENTITY_DB.prepare(
+    'SELECT assessment_id FROM assessments WHERE assessment_id = ? AND manage_token_hash = ? AND status = \'active\''
+  ).bind(assessmentId,manageHash).first();
+  if(!assessment)return json(request,{ok:false,error:'unauthorized'},401);
+
+  const rows=await env.IDENTITY_DB.prepare(
+    `SELECT role, language, token_cipher, token_iv, status
+       FROM invitations
+      WHERE assessment_id = ? AND cycle = ? AND status != 'revoked'
+      ORDER BY created_at ASC`
+  ).bind(assessmentId,cycle).all();
+
+  const invites=[];
+  for(const row of rows.results){
+    const token=await decryptToken(env,row.token_cipher,row.token_iv);
+    invites.push({role:row.role,language:row.language,status:row.status,url:surveyUrl(env,token)});
+  }
+  return json(request,{ok:true,assessmentId,cycle,invites});
+}
+
 export default {
   async fetch(request, env, ctx){
     const url = new URL(request.url);
@@ -115,7 +180,7 @@ export default {
         ok:true,
         service:'Leadership 360 Collector',
         deployed:true,
-        bootstrap:4
+        bootstrap:5
       });
     }
 
@@ -126,7 +191,7 @@ export default {
         return json(request, {
           ok:true,
           service:'Leadership 360 Collector',
-          version:4,
+          version:5,
           schemaReady:true,
           secretReady:true
         });
@@ -136,6 +201,15 @@ export default {
           error:'health_check_failed',
           detail:error instanceof Error ? error.message : String(error)
         }, 500);
+      }
+    }
+
+    const recovery=url.pathname.match(/^\/api\/manage\/([^/]+)\/cycles\/(\d+)\/invites$/);
+    if(recovery && request.method === 'GET'){
+      try{
+        return await recoverInvites(request,env,decodeURIComponent(recovery[1]),Number(recovery[2]));
+      }catch(error){
+        return json(request,{ok:false,error:'invite_recovery_failed',detail:error instanceof Error?error.message:String(error)},500);
       }
     }
 
