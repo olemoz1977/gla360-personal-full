@@ -153,7 +153,9 @@ async function recoverInvites(request,env,assessmentId,cycle){
   if(!match)return json(request,{ok:false,error:'unauthorized'},401);
   const manageHash=await sha256Hex(match[1]);
   const assessment=await env.IDENTITY_DB.prepare(
-    'SELECT assessment_id FROM assessments WHERE assessment_id = ? AND manage_token_hash = ? AND status = \'active\''
+    `SELECT assessment_id, leader_name, project_name, guardian_name, created_at
+       FROM assessments
+      WHERE assessment_id = ? AND manage_token_hash = ? AND status = 'active'`
   ).bind(assessmentId,manageHash).first();
   if(!assessment)return json(request,{ok:false,error:'unauthorized'},401);
 
@@ -170,7 +172,16 @@ async function recoverInvites(request,env,assessmentId,cycle){
     const email=await decryptText(env,row.email_cipher,row.email_iv);
     invites.push({role:row.role,language:row.language,email,status:row.status,url:surveyUrl(env,token)});
   }
-  return json(request,{ok:true,assessmentId,cycle,invites});
+  return json(request,{
+    ok:true,
+    assessmentId,
+    cycle,
+    leaderName:assessment.leader_name||'',
+    projectName:assessment.project_name||'',
+    guardianName:assessment.guardian_name||'',
+    createdAt:assessment.created_at||'',
+    invites
+  });
 }
 
 async function stripNotObservedAnswers(request){
@@ -199,7 +210,7 @@ export default {
         ok:true,
         service:'Leadership 360 Collector',
         deployed:true,
-        bootstrap:7
+        bootstrap:8
       });
     }
 
@@ -210,7 +221,7 @@ export default {
         return json(request, {
           ok:true,
           service:'Leadership 360 Collector',
-          version:7,
+          version:8,
           schemaReady:true,
           secretReady:true
         });
