@@ -14,6 +14,14 @@ async function sha256Hex(value){
   return bytesToHex(new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(String(value)))));
 }
 
+async function normalizeRosterSecret(env){
+  const raw = String(env?.ROSTER_KEY_HEX || '').trim();
+  if(!raw) return env;
+  if(/^[0-9a-f]{64}$/i.test(raw)) return env;
+  if(raw.length < 32) throw new Error('ROSTER_KEY_HEX must be at least 32 characters');
+  return { ...env, ROSTER_KEY_HEX: await sha256Hex(raw) };
+}
+
 function json(request, data, status = 200){
   const origin = request.headers.get('origin');
   const headers = {'content-type':'application/json; charset=utf-8','cache-control':'no-store'};
@@ -95,6 +103,7 @@ async function oneTimeSubmit(request, env, token){
 
 export default {
   async fetch(request, env){
+    env = await normalizeRosterSecret(env);
     const url = new URL(request.url);
 
     if(url.pathname === '/api/assessments' && request.method === 'POST'){
