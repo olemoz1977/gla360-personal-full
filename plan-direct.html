@@ -25,7 +25,7 @@
 
     try {
       const source = isEn ? 'plan-core-en.html' : 'plan-core.html';
-      const response = await fetch(source + '?v=20260821-direct-1', { cache:'no-store' });
+      const response = await fetch(source + '?v=20260821-direct-2', { cache:'no-store' });
       if(!response.ok) throw new Error('HTTP ' + response.status);
       let html = await response.text();
 
@@ -47,11 +47,25 @@
       html = html.replace('<h2>Duomenų šaltinis</h2>', `<h2>${sourceTitle}</h2><p class="muted" style="margin:0 0 12px">${sourceNote}</p>`);
       html = html.replace('<h2>Data source</h2>', `<h2>${sourceTitle}</h2><p class="muted" style="margin:0 0 12px">${sourceNote}</p>`);
 
-      // Hide JSON upload and use the existing manual picker as the only input route.
-      html = html.replace(/<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;" class="source-grid">\s*<div>[\s\S]*?<\/div>\s*<div>\s*<p style="font-weight:700;margin-bottom:8px;">B\) Pasirinkti rankiniu būdu<\/p>\s*<p class="muted" style="font-size:.88rem;margin-bottom:10px;">Pasirinkite iki 3 gebėjimų, kurioms generuoti planą\.<\/p>/,
-        `<div style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:14px;" class="source-grid"><div><p style="font-weight:700;margin-bottom:8px;">${pickerTitle}</p><p class="muted" style="font-size:.88rem;margin-bottom:10px;">${pickerNote}</p>`);
-      html = html.replace(/<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;" class="source-grid">\s*<div>[\s\S]*?<\/div>\s*<div>\s*<p style="font-weight:700;margin-bottom:8px;">B\) Choose manually<\/p>\s*<p class="muted" style="font-size:.88rem;margin-bottom:10px;">[\s\S]*?<\/p>/,
-        `<div style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:14px;" class="source-grid"><div><p style="font-weight:700;margin-bottom:8px;">${pickerTitle}</p><p class="muted" style="font-size:.88rem;margin-bottom:10px;">${pickerNote}</p>`);
+      // Preserve the JSON-upload DOM because the shared plan engine wires listeners
+      // to those elements during startup. Hiding them (instead of deleting them)
+      // keeps initialization intact and allows the manual picker to render.
+      html = html.replace(
+        'style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;" class="source-grid"',
+        'style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:14px;" class="source-grid"'
+      );
+      html = html.replace(
+        '<div>\n        <p style="font-weight:700;margin-bottom:8px;">A) Įkelti apibendrintą JSON</p>',
+        '<div style="display:none">\n        <p style="font-weight:700;margin-bottom:8px;">A) Įkelti apibendrintą JSON</p>'
+      );
+      html = html.replace(
+        '<div>\n        <p style="font-weight:700;margin-bottom:8px;">A) Upload aggregated JSON</p>',
+        '<div style="display:none">\n        <p style="font-weight:700;margin-bottom:8px;">A) Upload aggregated JSON</p>'
+      );
+      html = html.replace('B) Pasirinkti rankiniu būdu', pickerTitle);
+      html = html.replace('Pasirinkite iki 3 gebėjimų, kurioms generuoti planą.', pickerNote);
+      html = html.replace('B) Choose manually', pickerTitle);
+      html = html.replace('Choose up to 3 competency areas for the plan.', pickerNote);
 
       // Keep the shared plan engine and export behaviour, but do not load Collector,
       // C1/C2 recommendation or reflection adapters in this standalone route.
