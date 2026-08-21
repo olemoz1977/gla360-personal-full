@@ -63,6 +63,14 @@
   }
   if(oldTopbar)oldTopbar.style.display='none';
 
+  if(/\/guardian\.html$/i.test(location.pathname)){
+    const duplicatePrivacy=document.getElementById('privacyLink');
+    if(duplicatePrivacy){
+      const wrapper=duplicatePrivacy.closest('p');
+      (wrapper||duplicatePrivacy).style.display='none';
+    }
+  }
+
   const COPY={
     lt:{home:'🏠 Pradžia',workspace:'🛡️ Administravimo stalas',newAssessment:'＋ Naujas 360°',privacy:'🔒 Privatumas'},
     en:{home:'🏠 Home',workspace:'🛡️ Administration workspace',newAssessment:'＋ New 360°',privacy:'🔒 Privacy'}
