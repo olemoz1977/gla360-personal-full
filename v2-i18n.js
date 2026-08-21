@@ -58,3 +58,11 @@
 
   global.Leadership360I18n = { current, set, pick, bindToggle, normalise, fromHash };
 })(window);
+
+(function(){
+  const path=(location.pathname.split('/').pop()||'').toLowerCase();
+  if(path!=='privacy-v2.html' || document.querySelector('.site-nav')) return;
+  const script=document.createElement('script');
+  script.src='site-nav.js';
+  document.body.appendChild(script);
+})();
