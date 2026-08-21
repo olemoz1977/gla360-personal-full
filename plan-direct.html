@@ -25,7 +25,7 @@
 
     try {
       const source = isEn ? 'plan-core-en.html' : 'plan-core.html';
-      const response = await fetch(source + '?v=20260821-direct-3', { cache:'no-store' });
+      const response = await fetch(source + '?v=20260821-direct-4', { cache:'no-store' });
       if(!response.ok) throw new Error('HTTP ' + response.status);
       let html = await response.text();
 
@@ -53,13 +53,13 @@
         html = html.replaceAll('First cycle — full plan', 'Self-directed plan — full plan');
         html = html.replaceAll('★ First cycle', '★ Self-selected focus');
         html = html.replaceAll('<strong>First cycle.</strong> A standard 90-day plan will be generated.', '<strong>Self-directed plan.</strong> No assessment was performed; the plan is based on your selected focus.');
-        html = html.replaceAll('Phase 1 — Awareness and diagnosis', 'Phase 1 — Understand the situation');
+        html = html.replace(/Awareness(?:\s|&nbsp;)+and(?:\s|&nbsp;)+diagnosis/g, 'Understand the situation');
         html = html.replaceAll('Goal: understand why the gap exists. Gather data, talk to the team.', 'Goal: understand the current situation and what you specifically want to change. Gather observations and test the first actions.');
       } else {
         html = html.replaceAll('Pirmas ciklas — pilnas planas', 'Savarankiškas planas — pilnas planas');
         html = html.replaceAll('★ Pirmas ciklas', '★ Savarankiškas pasirinkimas');
         html = html.replaceAll('<strong>Pirmas ciklas.</strong> Generuojamas standartinis 90 dienų planas.', '<strong>Savarankiškas planas.</strong> Vertinimas neatliktas; planas kuriamas pagal jūsų pasirinktą fokusą.');
-        html = html.replaceAll('1 fazė — Suvokimas ir diagnozė', '1 fazė — Situacijos supratimas');
+        html = html.replace(/Suvokimas(?:\s|&nbsp;)+ir(?:\s|&nbsp;)+diagnozė/g, 'Situacijos supratimas');
         html = html.replaceAll('Tikslas: suprasti, kodėl spraga egzistuoja. Rinkti duomenis, kalbėtis su komanda.', 'Tikslas: suprasti dabartinę situaciją ir ką konkrečiai norite pakeisti. Rinkti pastebėjimus ir išbandyti pirmus veiksmus.');
       }
 
