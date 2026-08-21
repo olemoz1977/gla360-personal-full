@@ -100,11 +100,15 @@ async function sendGuardianAccess(env,data,input){
   }
 }
 
-async function withPolicyMarker(response){
+async function withPolicyMarker(response,env){
   if(!response?.ok)return response;
   let data;
   try{data=await response.clone().json()}catch(_){return response}
-  data={...data,policy:POLICY_VERSION};
+  data={
+    ...data,
+    policy:POLICY_VERSION,
+    guardianEmailReady:Boolean(env?.EMAIL&&env?.MAIL_FROM)
+  };
   const headers=new Headers(response.headers);
   headers.set('content-type','application/json; charset=utf-8');
   headers.set('cache-control','no-store');
@@ -160,7 +164,7 @@ export default {
     let response=await app.fetch(request,env,ctx);
 
     if(url.pathname==='/health'&&request.method==='GET'){
-      response=await withPolicyMarker(response);
+      response=await withPolicyMarker(response,env);
     }
 
     if(isCreate&&response.ok){
