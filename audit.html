@@ -4,550 +4,74 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Operatyvinės trinties auditas – Leadership 360°</title>
-  <meta name="description" content="Kodėl jūsų komanda nuolat gesina gaisrus? 3 minučių auditas atskleidžia paslėptą operatyvinę trintį.">
+  <meta name="description" content="3-minute operational friction audit for leaders.">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* ── Audit-specific overrides ── */
-    body { background: var(--bg); }
-
-    .audit-hero {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 48px 20px 32px;
-      text-align: center;
-    }
-    .audit-hero .eyebrow {
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--brand);
-      margin-bottom: 14px;
-    }
-    .audit-hero h1 {
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 16px;
-      color: var(--ink);
-    }
-    .audit-hero h1 em {
-      font-style: normal;
-      color: var(--brand);
-    }
-    .audit-hero .lead {
-      font-size: 1.05rem;
-      color: var(--muted);
-      max-width: 600px;
-      margin: 0 auto 28px;
-      line-height: 1.65;
-    }
-    .audit-meta {
-      display: inline-flex;
-      gap: 20px;
-      font-size: .82rem;
-      color: var(--muted);
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 8px;
-    }
-    .audit-meta span { display: flex; align-items: center; gap: 5px; }
-
-    /* ── Questions ── */
-    .audit-form { max-width: 780px; margin: 0 auto; padding: 0 20px 80px; }
-
-    .q-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px 22px;
-      margin: 12px 0;
-      transition: border-color .2s, box-shadow .2s;
-    }
-    .q-block:focus-within {
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(26,86,219,.08);
-    }
-    .q-num {
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      color: var(--brand);
-      margin-bottom: 8px;
-    }
-    .q-text {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--ink);
-      margin-bottom: 14px;
-      line-height: 1.45;
-    }
-    .q-context {
-      font-size: .82rem;
-      color: var(--muted);
-      margin-bottom: 14px;
-      font-style: italic;
-    }
-
-    .scale-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-    }
-    @media (max-width: 500px) {
-      .scale-row { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    .scale-opt {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      cursor: pointer;
-    }
-    .scale-opt input[type=radio] { display: none; }
-    .scale-btn {
-      width: 100%;
-      padding: 9px 4px;
-      border-radius: 10px;
-      border: 1.5px solid var(--border);
-      background: var(--surface2);
-      text-align: center;
-      font-size: .82rem;
-      font-weight: 600;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all .15s;
-      line-height: 1.3;
-    }
-    .scale-opt input:checked + .scale-btn {
-      border-color: var(--brand);
-      background: rgba(26,86,219,.08);
-      color: var(--brand);
-    }
-    .scale-opt:hover .scale-btn {
-      border-color: var(--brand);
-      color: var(--ink);
-    }
-
-    /* ── Visi pasirinkimai – neutrali mėlyna spalva (rezultatai tik pabaigoje) ── */
-    /* Spalvos NERODOMOS kol nepaspaustas skaičiavimo mygtukas */
-
-    /* ── Progress ── */
-    .audit-progress {
-      max-width: 780px;
-      margin: 0 auto 8px;
-      padding: 0 20px;
-    }
-    .audit-progress-bar {
-      height: 4px;
-      background: var(--surface2);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 6px;
-    }
-    .audit-progress-fill {
-      height: 100%;
-      background: var(--brand);
-      border-radius: 999px;
-      transition: width .4s ease;
-      width: 0%;
-    }
-    .audit-progress-text {
-      font-size: .78rem;
-      color: var(--muted);
-      text-align: right;
-    }
-
-    /* ── Submit ── */
-    .audit-submit {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 0 20px 60px;
-    }
-    .audit-submit button {
-      width: 100%;
-      padding: 1rem;
-      font-size: 1.05rem;
-      border-radius: 12px;
-    }
-
-    /* ── Results ── */
-    #auditResult { display: none; max-width: 780px; margin: 0 auto; padding: 0 20px 80px; }
-
-    .result-card {
-      border-radius: 16px;
-      padding: 28px;
-      margin: 16px 0;
-      border: 1px solid var(--border);
-    }
-    .result-card.green  { background: rgba(5,122,85,.06);  border-color: rgba(5,122,85,.25); }
-    .result-card.yellow { background: rgba(180,83,9,.06);  border-color: rgba(180,83,9,.25); }
-    .result-card.red    { background: rgba(192,57,43,.06); border-color: rgba(192,57,43,.25); }
-
-    .result-level {
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .result-level.green  { color: var(--accent); }
-    .result-level.yellow { color: var(--warn); }
-    .result-level.red    { color: var(--danger); }
-
-    .result-score {
-      font-size: 3rem;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .result-score.green  { color: var(--accent); }
-    .result-score.yellow { color: var(--warn); }
-    .result-score.red    { color: var(--danger); }
-
-    .result-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; }
-    .result-desc  { font-size: .95rem; color: var(--muted); line-height: 1.65; }
-
-    .hotspots {
-      margin: 20px 0;
-      background: var(--surface2);
-      border-radius: 12px;
-      padding: 16px;
-    }
-    .hotspots h3 { font-size: .88rem; font-weight: 700; margin-bottom: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-    .hotspot-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: .9rem;
-    }
-    .hotspot-item:last-child { border-bottom: none; }
-    .hotspot-score {
-      min-width: 32px;
-      text-align: center;
-      font-weight: 700;
-      font-size: .85rem;
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
-    .hs-0 { background: rgba(5,122,85,.1);  color: var(--accent); }
-    .hs-1 { background: rgba(180,83,9,.1);  color: var(--warn); }
-    .hs-2 { background: rgba(217,119,6,.1); color: #d97706; }
-    .hs-3 { background: rgba(192,57,43,.1); color: var(--danger); }
-
-    .reframe-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--brand);
-      border-radius: 0 12px 12px 0;
-      padding: 18px 20px;
-      margin: 20px 0;
-      font-size: .95rem;
-      line-height: 1.65;
-      color: var(--muted);
-    }
-    .reframe-block strong { color: var(--ink); }
-
-    .cta-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      margin: 20px 0;
-      text-align: center;
-    }
-    .cta-block h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
-    .cta-block p  { color: var(--muted); font-size: .92rem; margin-bottom: 20px; line-height: 1.6; }
-    .cta-buttons  { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-
-    .privacy-note {
-      text-align: center;
-      font-size: .78rem;
-      color: var(--muted);
-      margin-top: 16px;
-    }
-
-    /* ── Animations ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .q-block { animation: fadeUp .3s ease both; }
-    .q-block:nth-child(1) { animation-delay: .05s; }
-    .q-block:nth-child(2) { animation-delay: .10s; }
-    .q-block:nth-child(3) { animation-delay: .15s; }
-    .q-block:nth-child(4) { animation-delay: .20s; }
-    .q-block:nth-child(5) { animation-delay: .25s; }
-    .q-block:nth-child(6) { animation-delay: .30s; }
-    .q-block:nth-child(7) { animation-delay: .35s; }
-    .q-block:nth-child(8) { animation-delay: .40s; }
-
-    @media print { .no-print { display: none !important; } }
+    body{background:var(--bg)}
+    .audit-hero{max-width:900px;margin:0 auto;padding:48px 20px 32px;text-align:center}
+    .audit-hero .eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);margin-bottom:14px}
+    .audit-hero h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.2;margin-bottom:16px;color:var(--ink)}
+    .audit-hero h1 em{font-style:normal;color:var(--brand)}
+    .audit-hero .lead{font-size:1.05rem;color:var(--muted);max-width:620px;margin:0 auto 28px;line-height:1.65}
+    .audit-meta{display:inline-flex;gap:20px;font-size:.82rem;color:var(--muted);flex-wrap:wrap;justify-content:center;margin-bottom:8px}
+    .audit-form{max-width:780px;margin:0 auto;padding:0 20px 80px}
+    .q-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin:12px 0;transition:border-color .2s,box-shadow .2s}
+    .q-block:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px rgba(26,86,219,.08)}
+    .q-num{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin-bottom:8px}
+    .q-text{font-size:1rem;font-weight:600;color:var(--ink);margin-bottom:14px;line-height:1.45}
+    .q-context{font-size:.82rem;color:var(--muted);margin-bottom:14px;font-style:italic}
+    .scale-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .scale-opt{display:flex;flex-direction:column;align-items:center;cursor:pointer}.scale-opt input{display:none}
+    .scale-btn{width:100%;padding:9px 4px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);text-align:center;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;line-height:1.3}
+    .scale-opt input:checked+.scale-btn{border-color:var(--brand);background:rgba(26,86,219,.08);color:var(--brand)}
+    .audit-progress{max-width:780px;margin:0 auto 8px;padding:0 20px}.audit-progress-bar{height:4px;background:var(--surface2);border-radius:999px;overflow:hidden;margin-top:6px}.audit-progress-fill{height:100%;background:var(--brand);border-radius:999px;transition:width .4s ease;width:0}.audit-progress-text{font-size:.78rem;color:var(--muted);text-align:right}
+    .audit-submit{max-width:780px;margin:0 auto;padding:0 20px 60px}.audit-submit button{width:100%;padding:1rem;font-size:1.05rem;border-radius:12px}
+    #auditResult{display:none;max-width:780px;margin:0 auto;padding:0 20px 80px}
+    .result-card{border-radius:16px;padding:28px;margin:16px 0;border:1px solid var(--border)}.result-card.green{background:rgba(5,122,85,.06);border-color:rgba(5,122,85,.25)}.result-card.yellow{background:rgba(180,83,9,.06);border-color:rgba(180,83,9,.25)}.result-card.red{background:rgba(192,57,43,.06);border-color:rgba(192,57,43,.25)}
+    .result-level{font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}.result-level.green{color:var(--accent)}.result-level.yellow{color:var(--warn)}.result-level.red{color:var(--danger)}
+    .result-score{font-size:3rem;font-weight:700;line-height:1;margin-bottom:4px}.result-score.green{color:var(--accent)}.result-score.yellow{color:var(--warn)}.result-score.red{color:var(--danger)}
+    .result-title{font-size:1.3rem;font-weight:700;margin-bottom:10px}.result-desc{font-size:.95rem;color:var(--muted);line-height:1.65}
+    .hotspots{margin:20px 0;background:var(--surface2);border-radius:12px;padding:16px}.hotspots h3{font-size:.88rem;font-weight:700;margin-bottom:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.hotspot-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.9rem}.hotspot-item:last-child{border-bottom:none}.hotspot-score{min-width:56px;text-align:center;font-weight:700;font-size:.82rem;padding:2px 6px;border-radius:6px}.hs-0{background:rgba(5,122,85,.1);color:var(--accent)}.hs-1{background:rgba(180,83,9,.1);color:var(--warn)}.hs-2{background:rgba(217,119,6,.1);color:#d97706}.hs-3{background:rgba(192,57,43,.1);color:var(--danger)}
+    .reframe-block{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--brand);border-radius:0 12px 12px 0;padding:18px 20px;margin:20px 0;font-size:.95rem;line-height:1.65;color:var(--muted)}.reframe-block strong{color:var(--ink)}
+    .cta-block{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin:20px 0;text-align:center}.cta-block h2{font-size:1.2rem;font-weight:700;margin-bottom:8px}.cta-block p{color:var(--muted);font-size:.92rem;margin-bottom:20px;line-height:1.6}.cta-buttons{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .privacy-note{text-align:center;font-size:.78rem;color:var(--muted);margin-top:16px}
+    @media(max-width:500px){.scale-row{grid-template-columns:repeat(2,1fr)}}
+    @media print{.no-print,.site-nav{display:none!important}}
   </style>
 </head>
 <body>
-
-<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
-  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
-    <a href="audit.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🔍 Auditas</a>
-    <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
-    <a href="setup-v2.html" style="color:var(--muted);text-decoration:none;">📊 Pilnas 360°</a>
-    <a href="plan-direct.html" style="color:var(--muted);text-decoration:none;">🎯 Tik planas</a>
-    <a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a>
-    <a href="PRIVACY.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a>
-  </div>
-</nav>
-
-<!-- HERO -->
-<div class="audit-hero no-print">
-  <div class="eyebrow">Operatyvinės trinties auditas · 3 minutės</div>
-  <h1>Kodėl jūsų komanda<br>nuolat gesina <em>gaisrus</em>?</h1>
-  <p class="lead">
-    Dauguma operatyvinių problemų kyla ne iš blogos sistemos ar silpnų darbuotojų —
-    o iš paslėptų vadybos spragų, kurių pats vadovas paprastai nemato.
-  </p>
-  <div class="audit-meta">
-    <span>⏱ ~3 minutės</span>
-    <span>🔒 Duomenys nesiunčiami</span>
-    <span>📊 8 klausimai</span>
-  </div>
-</div>
-
-<!-- PROGRESS -->
-<div class="audit-progress no-print">
-  <div class="audit-progress-text"><span id="progressText">0 iš 8 atsakyta</span></div>
-  <div class="audit-progress-bar"><div class="audit-progress-fill" id="progressFill"></div></div>
-</div>
-
-<!-- FORM -->
-<form class="audit-form no-print" id="auditForm" onsubmit="return false;">
-  <div id="questionsContainer"></div>
-
-  <div class="audit-submit">
-    <button type="button" id="submitBtn" disabled>
-      Apskaičiuoti trinties lygį →
-    </button>
-    <p class="privacy-note" style="margin-top:10px;">
-      🔒 Atsakymai nesiunčiami į jokį serverį. Viskas skaičiuojama jūsų naršyklėje.
-    </p>
-  </div>
-</form>
-
-<!-- RESULTS -->
-<div id="auditResult">
-  <div id="resultContent"></div>
-</div>
-
+<script src="site-nav.js"></script>
+<div class="audit-hero no-print"><div class="eyebrow" id="eyebrow"></div><h1 id="heroTitle"></h1><p class="lead" id="lead"></p><div class="audit-meta" id="meta"></div></div>
+<div class="audit-progress no-print"><div class="audit-progress-text"><span id="progressText"></span></div><div class="audit-progress-bar"><div class="audit-progress-fill" id="progressFill"></div></div></div>
+<form class="audit-form no-print" id="auditForm" onsubmit="return false;"><div id="questionsContainer"></div><div class="audit-submit"><button type="button" id="submitBtn" disabled></button><p class="privacy-note" id="privacyNote"></p></div></form>
+<div id="auditResult"><div id="resultContent"></div></div>
 <script>
 (function(){
-
-  // ── Klausimai ────────────────────────────────────────────────────────────
-  const QUESTIONS = [
-    {
-      id: 'q1',
-      text: 'Darbuotojai laukia nurodymų prieš imdamiesi veiksmų.',
-      context: 'Net kai situacija aiški ir sprendimas logiškas.',
-      area: 'Atsakomybės delegavimas'
+  const qLang=new URLSearchParams(location.search).get('lang');let stored='';try{stored=localStorage.getItem('leadership360_ui_lang')||''}catch(_){}
+  const lang=String(qLang||stored||navigator.language||'lt').toLowerCase().startsWith('en')?'en':'lt';try{localStorage.setItem('leadership360_ui_lang',lang)}catch(_){}document.documentElement.lang=lang;
+  const COPY={
+    lt:{title:'Operatyvinės trinties auditas – Leadership 360°',eyebrow:'Operatyvinės trinties auditas · 3 minutės',hero:'Kodėl jūsų komanda<br>nuolat gesina <em>gaisrus</em>?',lead:'Dauguma operatyvinių problemų kyla ne iš blogos sistemos ar silpnų darbuotojų, o iš paslėptų vadybos spragų, kurių pats vadovas paprastai nemato.',meta:['⏱ ~3 minutės','🔒 Duomenys nesiunčiami','📊 8 klausimai'],progress:(a,n)=>`${a} iš ${n} atsakyta`,submit:'Apskaičiuoti trinties lygį →',privacy:'🔒 Atsakymai nesiunčiami į jokį serverį. Viskas skaičiuojama jūsų naršyklėje.',question:'Klausimas',scale:['Niekada','Kartais','Dažnai','Nuolat'],hotspots:'⚡ Didžiausi trinties taškai',next:'Ką norite daryti toliau?',nextText:'Auditas yra trumpas orientyras. Toliau galite rinktis išorinį grįžtamąjį ryšį per pilną 360° ciklą arba savarankiškai pasirinkti 1–3 tobulinimo sritis ir kurti praktinį 90 dienų planą be apklausos.',full:'📊 Pradėti pilną 360° →',plan:'🎯 Kurti 90 d. planą be apklausos',carry:'Audito atsakymai lieka jūsų naršyklėje ir automatiškai neperkeliami į 360° vertinimą ar planą.',again:'↩ Pildyti iš naujo',print:'🖨 Spausdinti rezultatus',
+      questions:[['Darbuotojai laukia nurodymų prieš imdamiesi veiksmų.','Net kai situacija aiški ir sprendimas logiškas.','Atsakomybės delegavimas'],['Tos pačios klaidos ar problemos kartojasi po aptarimų.','Pasitariate, sutariate, o po savaitės vėl tas pats.','Grįžtamojo ryšio kokybė'],['Pamainos perdavimo metu prarandama svarbi informacija.','Kita pamaina neturi viso vaizdo apie tai, kas vyko.','Komunikacijos struktūra'],['Stipriausi operatoriai perkrauti, o silpnesni neišnaudoti.','Darbas kaupiasi pas patikimus žmones.','Komandos išvystymas'],['Problemos pasiekia jus per vėlai, kai jau reikia skubiai reaguoti.','Ankstyvų signalų sistema neveikia arba jos nėra.','Ankstyvų signalų kultūra'],['Jūs asmeniškai sprendžiate tai, ką turėtų spręsti komanda.','Esate „butelio kaklelis“: be jūsų sprendimas neįvyksta.','Lyderystės dalijimasis'],['Grįžtamasis ryšys darbuotojams teikiamas tik tada, kai kažkas negerai.','Pastiprinimai retai, pastabos dažnai.','Grįžtamojo ryšio kultūra'],['Koordinacija su tech. priežiūra, kokybe ar logistika vyksta per jus asmeniškai.','Tarpfunkciniai ryšiai priklauso nuo jūsų, ne nuo sistemos.','Partnerystės ir koordinacija']],
+      levels:{green:['🟢 Stabili vadyba','Sistema dirba – žmonės dirba','Jūsų komandos operatyvinė trintis yra žema. Komanda veikia pakankamai savarankiškai, problemos sprendžiamos sistematiškai. Šis trumpas auditas vis tiek neparodo, ar kiti jūsų elgesį mato taip pat.','Stabili sistema dar nereiškia, kad komanda jus mato taip, kaip jūs manote. <strong>Pilnas 360° gali parodyti skirtumą tarp savivertinimo ir kitų žmonių stebimo elgesio.</strong>','Jei norite išorinio grįžtamojo ryšio, rinkitės pilną 360°. Jei jau žinote, ką norite keisti, galite iškart kurti 90 dienų planą be apklausos.'],yellow:['🟡 Paslėpta trintis','Komanda jaučia tai, ko jūs nematote','Jūsų komandoje yra paslėptų operatyvinės trinties taškų. Sistema veikia, tačiau dalį spragų žmonės gali kompensuoti prisitaikydami. Šis auditas tik parodo kryptį, bet nenustato konkrečių 360° kompetencijų.','Rezultatas rodo kelias galimas vadybinės trinties vietas: lūkesčius, grįžtamąjį ryšį, delegavimą ar koordinaciją. <strong>Pilnas 360° leidžia patikrinti, kaip konkretų jūsų elgesį vertina kiti.</strong>','Jei norite patikrinti akląsias zonas, rinkitės pilną 360°. Jei norite pradėti veikti dabar, pasirinkite savo 1–3 prioritetus ir kurkite 90 dienų planą be apklausos.'],red:['🔴 Reaktyvi vadyba','Sistema laikosi ant vieno žmogaus','Jūsų komandoje operatyvinė trintis yra aukšta. Komanda gali dirbti reaktyviai, sprendimai gali būti per daug centralizuoti, o informacijos srautai priklausyti nuo jūsų asmeninio dalyvavimo.','<strong>Šis auditas nėra diagnozė.</strong> Jis parodo, kur verta atidžiau pasižiūrėti į kasdienį vadybinį elgesį ir procesus. Pilnas 360° gali pridėti kitų žmonių perspektyvą.','Rinkitės pilną 360°, jei norite patikrinti savo suvokimą su kitų žmonių vertinimu. Arba kurkite 90 dienų planą be apklausos, jei prioritetus jau matote.']}
     },
-    {
-      id: 'q2',
-      text: 'Tos pačios klaidos ar problemos kartojasi po aptarimų.',
-      context: 'Pasitariate, sutariate — o po savaitės vėl tas pats.',
-      area: 'Grįžtamojo ryšio kokybė'
-    },
-    {
-      id: 'q3',
-      text: 'Pamainos perdavimo metu prarandama svarbi informacija.',
-      context: 'Kita pamaina neturi viso vaizdo apie tai kas vyko.',
-      area: 'Komunikacijos struktūra'
-    },
-    {
-      id: 'q4',
-      text: 'Stipriausi operatoriai perkrauti, o silpnesni — neišnaudoti.',
-      context: 'Darbas kaupiasi pas patikimus žmones.',
-      area: 'Komandos išvystymas'
-    },
-    {
-      id: 'q5',
-      text: 'Problemos pasiekia jus per vėlai — kai jau reikia skubiai reaguoti.',
-      context: 'Ankstyvų signalų sistema neveikia arba jos nėra.',
-      area: 'Ankstyvų signalų kultūra'
-    },
-    {
-      id: 'q6',
-      text: 'Jūs asmeniškai sprendžiate tai, ką turėtų spręsti komanda.',
-      context: 'Esate „butelio kaklelis" — be jūsų sprendimas neįvyksta.',
-      area: 'Lyderystės dalijimasis'
-    },
-    {
-      id: 'q7',
-      text: 'Grįžtamasis ryšys darbuotojams teikiamas tik tada, kai kažkas negerai.',
-      context: 'Pastiprinimai — retai. Pastabos — dažnai.',
-      area: 'Grįžtamojo ryšio kultūra'
-    },
-    {
-      id: 'q8',
-      text: 'Koordinacija su tech. priežiūra, kokybe ar logistika vyksta per jus asmeniškai.',
-      context: 'Tarpfunkciniai ryšiai priklauso nuo jūsų, ne nuo sistemos.',
-      area: 'Partnerystės ir koordinacija'
+    en:{title:'Operational Friction Audit – Leadership 360°',eyebrow:'Operational friction audit · 3 minutes',hero:'Why is your team<br>constantly <em>firefighting</em>?',lead:'Many day-to-day operational problems do not come from a bad system or weak employees, but from hidden management gaps that the leader often cannot see directly.',meta:['⏱ ~3 minutes','🔒 Data is not sent','📊 8 questions'],progress:(a,n)=>`${a} of ${n} answered`,submit:'Calculate friction level →',privacy:'🔒 Answers are not sent to any server. Everything is calculated in your browser.',question:'Question',scale:['Never','Sometimes','Often','Constantly'],hotspots:'⚡ Main friction points',next:'What would you like to do next?',nextText:'The audit is a short orientation. Next, you can seek external feedback through the full 360° cycle or choose 1–3 development areas yourself and create a practical 90-day plan without surveys.',full:'📊 Start full 360° →',plan:'🎯 Create a 90-day plan without surveys',carry:'Audit answers stay in your browser and are not automatically transferred into the 360° assessment or the plan.',again:'↩ Start again',print:'🖨 Print results',
+      questions:[['Employees wait for instructions before taking action.','Even when the situation is clear and the logical next step is obvious.','Delegation of responsibility'],['The same mistakes or problems recur after discussions.','You discuss it, agree on an action, and a week later the same issue returns.','Feedback quality'],['Important information is lost during shift handovers.','The next shift does not have the full picture of what happened.','Communication structure'],['The strongest operators are overloaded while weaker ones are underused.','Work keeps accumulating around the most reliable people.','Team development'],['Problems reach you too late, when urgent reaction is already required.','Early warning signals are weak or missing.','Early-signal culture'],['You personally solve issues that the team should solve.','You become the bottleneck: without you, the decision does not happen.','Shared leadership'],['Employees receive feedback mainly when something goes wrong.','Reinforcement is rare; corrective comments are frequent.','Feedback culture'],['Coordination with maintenance, quality or logistics depends on you personally.','Cross-functional links depend on you rather than on the system.','Partnership and coordination']],
+      levels:{green:['🟢 Stable management','The system works – people can work','Operational friction is low. The team appears reasonably autonomous and problems are handled systematically. This short audit still cannot show whether other people see your behaviour the same way you do.','A stable operating system does not guarantee that the team sees you as you see yourself. <strong>A full 360° can reveal gaps between self-perception and behaviour observed by others.</strong>','Choose the full 360° if you want external feedback. If you already know what to change, you can go directly to a 90-day plan without surveys.'],yellow:['🟡 Hidden friction','The team feels what you may not see','There are hidden operational friction points in the team. The system works, but people may be compensating for gaps by adapting around them. This audit shows direction; it does not diagnose specific 360° competencies.','The result points to possible friction around expectations, feedback, delegation or coordination. <strong>A full 360° lets you test how other people actually experience your behaviour.</strong>','Choose the full 360° to explore blind spots. Or select your own 1–3 priorities and start a 90-day plan immediately.'],red:['🔴 Reactive management','The system depends too much on one person','Operational friction is high. The team may be working reactively, decisions may be overly centralised, and information flows may depend on your personal involvement.','<strong>This audit is not a diagnosis.</strong> It highlights where closer observation of day-to-day leadership behaviour and processes may be useful. A full 360° can add the perspective of other people.','Choose the full 360° if you want to compare your own view with feedback from others. Or create a 90-day plan without surveys if your priorities are already clear.']}
     }
-  ];
-
-  const SCALE = [
-    { val: 0, label: 'Niekada',  short: 'N' },
-    { val: 1, label: 'Kartais',  short: 'K' },
-    { val: 2, label: 'Dažnai',   short: 'D' },
-    { val: 3, label: 'Nuolat',  short: 'Nu' },
-  ];
-
-  // ── Render klausimai ─────────────────────────────────────────────────────
-  const container = document.getElementById('questionsContainer');
-  container.innerHTML = QUESTIONS.map((q, i) => `
-    <div class="q-block" id="block_${q.id}">
-      <div class="q-num">Klausimas ${i+1} · ${q.area}</div>
-      <div class="q-text">${q.text}</div>
-      <div class="q-context">${q.context}</div>
-      <div class="scale-row">
-        ${SCALE.map(s => `
-          <label class="scale-opt" data-val="${s.val}">
-            <input type="radio" name="${q.id}" value="${s.val}" required>
-            <div class="scale-btn">${s.label}</div>
-          </label>
-        `).join('')}
-      </div>
-    </div>
-  `).join('');
-
-  // ── Pažanga ──────────────────────────────────────────────────────────────
-  const submitBtn = document.getElementById('submitBtn');
-  const progressFill = document.getElementById('progressFill');
-  const progressText = document.getElementById('progressText');
-
-  document.getElementById('auditForm').addEventListener('change', () => {
-    const answered = QUESTIONS.filter(q =>
-      document.querySelector(`input[name="${q.id}"]:checked`)
-    ).length;
-    const pct = Math.round(answered / QUESTIONS.length * 100);
-    progressFill.style.width = pct + '%';
-    progressText.textContent = `${answered} iš ${QUESTIONS.length} atsakyta`;
-    submitBtn.disabled = answered < QUESTIONS.length;
-    if(answered === QUESTIONS.length){
-      submitBtn.style.background = 'var(--accent)';
-    }
+  }[lang];
+  document.title=COPY.title;document.getElementById('eyebrow').textContent=COPY.eyebrow;document.getElementById('heroTitle').innerHTML=COPY.hero;document.getElementById('lead').textContent=COPY.lead;document.getElementById('meta').innerHTML=COPY.meta.map(x=>`<span>${x}</span>`).join('');document.getElementById('submitBtn').textContent=COPY.submit;document.getElementById('privacyNote').textContent=COPY.privacy;
+  const questions=COPY.questions.map((x,i)=>({id:'q'+(i+1),text:x[0],context:x[1],area:x[2]}));
+  const container=document.getElementById('questionsContainer');
+  container.innerHTML=questions.map((q,i)=>`<div class="q-block"><div class="q-num">${COPY.question} ${i+1} · ${q.area}</div><div class="q-text">${q.text}</div><div class="q-context">${q.context}</div><div class="scale-row">${COPY.scale.map((label,v)=>`<label class="scale-opt"><input type="radio" name="${q.id}" value="${v}" required><div class="scale-btn">${label}</div></label>`).join('')}</div></div>`).join('');
+  const submit=document.getElementById('submitBtn'),fill=document.getElementById('progressFill'),progress=document.getElementById('progressText');progress.textContent=COPY.progress(0,questions.length);
+  document.getElementById('auditForm').addEventListener('change',()=>{const answered=questions.filter(q=>document.querySelector(`input[name="${q.id}"]:checked`)).length;fill.style.width=Math.round(answered/questions.length*100)+'%';progress.textContent=COPY.progress(answered,questions.length);submit.disabled=answered<questions.length;if(answered===questions.length)submit.style.background='var(--accent)'});
+  submit.addEventListener('click',()=>{
+    const scores=questions.map(q=>({area:q.area,val:Number(document.querySelector(`input[name="${q.id}"]:checked`).value)}));
+    const total=scores.reduce((s,r)=>s+r.val,0),max=questions.length*3,hotspots=[...scores].sort((a,b)=>b.val-a.val).slice(0,4);
+    const color=total<=8?'green':total<=16?'yellow':'red',data=COPY.levels[color],href=p=>p+'?lang='+lang;
+    document.getElementById('resultContent').innerHTML=`<div class="result-card ${color}"><div class="result-level ${color}">${data[0]}</div><div class="result-score ${color}">${total}<span style="font-size:1.2rem;font-weight:400;color:var(--muted)">/${max}</span></div><div class="result-title">${data[1]}</div><div class="result-desc">${data[2]}</div></div><div class="hotspots"><h3>${COPY.hotspots}</h3>${hotspots.map(h=>`<div class="hotspot-item"><span class="hotspot-score hs-${h.val}">${COPY.scale[h.val]}</span><span>${h.area}</span></div>`).join('')}</div><div class="reframe-block">${data[3]}<br><br><em>${data[4]}</em></div><div class="cta-block"><h2>${COPY.next}</h2><p>${COPY.nextText}</p><div class="cta-buttons"><a href="${href('setup-v2.html')}" class="btn">${COPY.full}</a><a href="${href('plan-direct.html')}" class="btn secondary">${COPY.plan}</a></div><p style="font-size:.78rem;color:var(--muted);margin-top:14px">${COPY.carry}</p></div><div style="text-align:center;margin-top:10px" class="no-print"><button onclick="location.reload()" class="secondary">${COPY.again}</button><button onclick="window.print()" class="secondary" style="margin-left:8px">${COPY.print}</button></div>`;
+    document.getElementById('auditForm').style.display='none';document.querySelector('.audit-hero').style.display='none';document.querySelector('.audit-progress').style.display='none';document.getElementById('auditResult').style.display='block';document.getElementById('auditResult').scrollIntoView({behavior:'smooth',block:'start'});
   });
-
-  // ── Rezultatai ───────────────────────────────────────────────────────────
-  submitBtn.addEventListener('click', () => {
-    // Surinkti atsakymus
-    const scores = QUESTIONS.map(q => {
-      const checked = document.querySelector(`input[name="${q.id}"]:checked`);
-      return {
-        area: q.area,
-        text: q.text,
-        val: checked ? Number(checked.value) : 0
-      };
-    });
-
-    const total = scores.reduce((s, r) => s + r.val, 0);
-    const max   = QUESTIONS.length * 3; // 24
-
-    // Hotspots — rikiuoti pagal balą mažėjančia tvarka
-    const hotspots = [...scores].sort((a,b) => b.val - a.val).slice(0,4);
-
-    // Lygis
-    let level, color, title, desc, reframe, advice;
-
-    if(total <= 8){
-      level   = '🟢 Stabili vadyba';
-      color   = 'green';
-      title   = 'Sistema dirba — žmonės dirba';
-      desc    = 'Jūsų komandos operatyvinė trintis yra žema. Komanda veikia pakankamai savarankiškai, problemos sprendžiamos sistematiškai. Tai gerai — bet šis trumpas auditas neparodo, ar kiti jūsų elgesį mato taip pat.';
-      reframe = 'Stabili sistema dar nereiškia, kad komanda jus mato taip, kaip jūs manote. <strong>Pilnas 360° gali parodyti skirtumą tarp savivertinimo ir kitų žmonių stebimo elgesio.</strong>';
-      advice  = 'Jei norite išorinio grįžtamojo ryšio, rinkitės pilną 360°. Jei jau žinote, ką norite keisti, galite iškart kurti 90 dienų planą be apklausos.';
-    } else if(total <= 16){
-      level   = '🟡 Paslėpta trintis';
-      color   = 'yellow';
-      title   = 'Komanda jaučia tai, ko jūs nematote';
-      desc    = 'Jūsų komandoje yra paslėptų operatyvinės trinties taškų. Sistema veikia, tačiau dalį spragų žmonės gali kompensuoti prisitaikydami. Šis auditas tik parodo kryptį, bet nenustato konkrečių 360° kompetencijų.';
-      reframe = 'Rezultatas rodo kelias galimas vadybinės trinties vietas: lūkesčius, grįžtamąjį ryšį, delegavimą ar koordinaciją. <strong>Pilnas 360° leidžia patikrinti, kaip konkretų jūsų elgesį vertina kiti.</strong>';
-      advice  = 'Jei norite patikrinti akląsias zonas, rinkitės pilną 360°. Jei norite pradėti veikti dabar, pasirinkite savo 1–3 prioritetus ir kurkite 90 dienų planą be apklausos.';
-    } else {
-      level   = '🔴 Reaktyvi vadyba';
-      color   = 'red';
-      title   = 'Sistema laikosi ant vieno žmogaus';
-      desc    = 'Jūsų komandoje operatyvinė trintis yra aukšta. Komanda gali dirbti reaktyviai, sprendimai gali būti per daug centralizuoti, o informacijos srautai priklausyti nuo jūsų asmeninio dalyvavimo.';
-      reframe = '<strong>Šis auditas nėra diagnozė.</strong> Jis parodo, kur verta atidžiau pasižiūrėti į kasdienį vadybinį elgesį ir procesus. Pilnas 360° gali pridėti kitų žmonių perspektyvą, o savarankiškas planas leidžia pradėti nuo jūsų pasirinkto fokuso.';
-      advice  = 'Rinkitės pilną 360°, jei norite patikrinti savo suvokimą su kitų žmonių vertinimu. Arba kurkite 90 dienų planą be apklausos, jei prioritetus jau matote.';
-    }
-
-    // Render rezultatai
-    const hsHtml = hotspots.map(h => `
-      <div class="hotspot-item">
-        <span class="hotspot-score hs-${h.val}">${['Niekada','Kartais','Dažnai','Nuolat'][h.val]}</span>
-        <span>${h.area}</span>
-      </div>
-    `).join('');
-
-    document.getElementById('resultContent').innerHTML = `
-
-      <div class="result-card ${color}">
-        <div class="result-level ${color}">${level}</div>
-        <div class="result-score ${color}">${total}<span style="font-size:1.2rem;font-weight:400;color:var(--muted);">/${max}</span></div>
-        <div class="result-title">${title}</div>
-        <div class="result-desc">${desc}</div>
-      </div>
-
-      <div class="hotspots">
-        <h3>⚡ Didžiausi trinties taškai</h3>
-        ${hsHtml}
-      </div>
-
-      <div class="reframe-block">
-        ${reframe}<br><br>
-        <em>${advice}</em>
-      </div>
-
-      <div class="cta-block">
-        <h2>Ką norite daryti toliau?</h2>
-        <p>
-          Auditas yra trumpas orientyras. Toliau galite rinktis išorinį grįžtamąjį ryšį per pilną 360° ciklą
-          arba savarankiškai pasirinkti 1–3 tobulinimo sritis ir kurti praktinį 90 dienų planą be apklausos.
-        </p>
-        <div class="cta-buttons">
-          <a href="setup-v2.html" class="btn" style="font-size:1rem;padding:.7rem 1.4rem;">
-            📊 Pradėti pilną 360° →
-          </a>
-          <a href="plan-direct.html" class="btn secondary" style="font-size:1rem;padding:.7rem 1.4rem;">
-            🎯 Kurti 90 d. planą be apklausos
-          </a>
-        </div>
-        <p style="font-size:.78rem;color:var(--muted);margin-top:14px;">
-          Audito atsakymai lieka jūsų naršyklėje ir automatiškai neperkeliami į 360° vertinimą ar planą.
-        </p>
-      </div>
-
-      <div style="text-align:center;margin-top:10px;" class="no-print">
-        <button onclick="location.reload()" class="secondary" style="font-size:.88rem;">
-          ↩ Pildyti iš naujo
-        </button>
-        <button onclick="window.print()" class="secondary" style="font-size:.88rem;margin-left:8px;">
-          🖨 Spausdinti rezultatus
-        </button>
-      </div>
-    `;
-
-    // Slėpti formą, rodyti rezultatus
-    document.getElementById('auditForm').style.display   = 'none';
-    document.querySelector('.audit-hero').style.display  = 'none';
-    document.querySelector('.audit-progress').style.display = 'none';
-    document.getElementById('auditResult').style.display = 'block';
-    document.getElementById('auditResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
 })();
 </script>
 </body>
