@@ -21,15 +21,16 @@
     localStorage.setItem('leadership360_ui_lang','lt');
     document.documentElement.lang='lt';
     try {
-      const response = await fetch('plan-core.html?v=20260820-cycle-direct-3', { cache:'no-store' });
+      const response = await fetch('plan-core.html?v=20260821-cycle-direct-4', { cache:'no-store' });
       if(!response.ok) throw new Error('HTTP ' + response.status);
       let html = await response.text();
 
       const appTag = '<scr' + 'ipt src="app.js"></scr' + 'ipt>';
       const syncTag = '<scr' + 'ipt src="bot-sync.js?v=20260819-bot-sync-v4"></scr' + 'ipt>\n'
         + appTag + '\n'
-        + '<scr' + 'ipt src="collector-client.js?v=20260820-plan-2"></scr' + 'ipt>\n'
+        + '<scr' + 'ipt src="collector-client.js?v=20260821-plan-3"></scr' + 'ipt>\n'
         + '<scr' + 'ipt src="plan-cycle.js?v=20260820-4"></scr' + 'ipt>\n'
+        + '<scr' + 'ipt src="plan-priority-guard.js?v=20260821-1"></scr' + 'ipt>\n'
         + '<scr' + 'ipt src="plan-export-fixes.js?v=20260820-1"></scr' + 'ipt>';
       html = html.replace(appTag, syncTag);
 
