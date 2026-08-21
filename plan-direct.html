@@ -15,48 +15,35 @@
     const isEn = requested.startsWith('en');
     localStorage.setItem('leadership360_ui_lang', isEn ? 'en' : 'lt');
     document.documentElement.lang = isEn ? 'en' : 'lt';
+    if(isEn){
+      location.replace('plan-en.html?lang=en');
+      return;
+    }
     try {
       sessionStorage.removeItem('gla360_delta');
       sessionStorage.removeItem('gla360_reflect');
     } catch(_) {}
     try {
-      const source = isEn ? 'plan-core-en.html' : 'plan-core.html';
+      const source = 'plan-core.html';
       const response = await fetch(source + '?v=20260821-direct-6', { cache:'no-store' });
       if(!response.ok) throw new Error('HTTP ' + response.status);
       let html = await response.text();
-      const title = isEn ? '90-day development plan' : '90 dienų tobulėjimo planas';
-      const subtitle = isEn
-        ? 'No assessment is required. Choose up to 3 areas you want to work on and generate a practical 90-day plan.'
-        : 'Vertinimas nebūtinas. Pasirinkite iki 3 sričių, kurias norite keisti, ir sugeneruokite praktinį 90 dienų planą.';
-      const sourceTitle = isEn ? 'Choose your focus' : 'Pasirinkite savo fokusą';
-      const pickerTitle = isEn ? 'Development areas' : 'Tobulinimo sritys';
-      const pickerNote = isEn
-        ? 'Choose up to 3 areas. These are your own priorities, not a 360° recommendation.'
-        : 'Pasirinkite iki 3 sričių. Tai jūsų pačių prioritetai, o ne 360° rekomendacija.';
-      const sourceNote = isEn
-        ? 'Source: self-selected development priorities. No assessment was performed.'
-        : 'Duomenų šaltinis: savarankiškai pasirinktos tobulinimo sritys. Vertinimas neatliktas.';
-      const nav = isEn
-        ? `<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;"><div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;"><a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Home</a><a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Audit</a><a href="setup-v2.html?lang=en" style="color:var(--muted);text-decoration:none;">📊 Full 360°</a><a href="plan-direct.html?lang=en" style="color:var(--brand);text-decoration:none;font-weight:600;">🎯 Plan only</a><a href="README.html" style="color:var(--muted);text-decoration:none;">📖 About</a><a href="PRIVACY-v2.html?lang=en" style="color:var(--muted);text-decoration:none;">🔒 Privacy</a></div></nav>`
-        : `<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;"><div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;"><a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a><a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Auditas</a><a href="setup-v2.html" style="color:var(--muted);text-decoration:none;">📊 Pilnas 360°</a><a href="plan-direct.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🎯 Tik planas</a><a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a><a href="PRIVACY-v2.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a></div></nav>`;
+      const title = '90 dienų tobulėjimo planas';
+      const subtitle = 'Vertinimas nebūtinas. Pasirinkite iki 3 sričių, kurias norite keisti, ir sugeneruokite praktinį 90 dienų planą.';
+      const sourceTitle = 'Pasirinkite savo fokusą';
+      const pickerTitle = 'Tobulinimo sritys';
+      const pickerNote = 'Pasirinkite iki 3 sričių. Tai jūsų pačių prioritetai, o ne 360° rekomendacija.';
+      const sourceNote = 'Duomenų šaltinis: savarankiškai pasirinktos tobulinimo sritys. Vertinimas neatliktas.';
+      const nav = `<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;"><div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;"><a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a><a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Auditas</a><a href="setup-v2.html" style="color:var(--muted);text-decoration:none;">📊 Pilnas 360°</a><a href="plan-direct.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🎯 Tik planas</a><a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a><a href="PRIVACY-v2.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a></div></nav>`;
       html = html.replace(/<nav[\s\S]*?<\/nav>/, nav);
       html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
       html = html.replace(/<header class="head">[\s\S]*?<\/header>/, `<header class="head"><h1>${title}</h1><p>${subtitle}</p></header>`);
       html = html.replace('<h2>Duomenų šaltinis</h2>', `<h2>${sourceTitle}</h2><p class="muted" style="margin:0 0 12px">${sourceNote}</p>`);
-      html = html.replace('<h2>Data source</h2>', `<h2>${sourceTitle}</h2><p class="muted" style="margin:0 0 12px">${sourceNote}</p>`);
-      if(isEn){
-        html = html.replaceAll('First cycle — full plan', 'Self-directed plan — full plan');
-        html = html.replaceAll('★ First cycle', '★ Self-selected focus');
-        html = html.replaceAll('<strong>First cycle.</strong> A standard 90-day plan will be generated.', '<strong>Self-directed plan.</strong> No assessment was performed; the plan is based on your selected focus.');
-        html = html.replace(/Awareness(?:\s|&nbsp;)+and(?:\s|&nbsp;)+diagnosis/g, 'Understand the situation');
-        html = html.replaceAll('Goal: understand why the gap exists. Gather data, talk to the team.', 'Goal: understand the current situation and what you specifically want to change. Gather observations and test the first actions.');
-      } else {
-        html = html.replaceAll('Pirmas ciklas — pilnas planas', 'Savarankiškas planas — pilnas planas');
-        html = html.replaceAll('★ Pirmas ciklas', '★ Savarankiškas pasirinkimas');
-        html = html.replaceAll('<strong>Pirmas ciklas.</strong> Generuojamas standartinis 90 dienų planas.', '<strong>Savarankiškas planas.</strong> Vertinimas neatliktas; planas kuriamas pagal jūsų pasirinktą fokusą.');
-        html = html.replace(/Suvokimas(?:\s|&nbsp;)+ir(?:\s|&nbsp;)+diagnozė/g, 'Situacijos supratimas');
-        html = html.replaceAll('Tikslas: suprasti, kodėl spraga egzistuoja. Rinkti duomenis, kalbėtis su komanda.', 'Tikslas: suprasti dabartinę situaciją ir ką konkrečiai norite pakeisti. Rinkti pastebėjimus ir išbandyti pirmus veiksmus.');
-      }
+      html = html.replaceAll('Pirmas ciklas — pilnas planas', 'Savarankiškas planas — pilnas planas');
+      html = html.replaceAll('★ Pirmas ciklas', '★ Savarankiškas pasirinkimas');
+      html = html.replaceAll('<strong>Pirmas ciklas.</strong> Generuojamas standartinis 90 dienų planas.', '<strong>Savarankiškas planas.</strong> Vertinimas neatliktas; planas kuriamas pagal jūsų pasirinktą fokusą.');
+      html = html.replace(/Suvokimas(?:\s|&nbsp;)+ir(?:\s|&nbsp;)+diagnozė/g, 'Situacijos supratimas');
+      html = html.replaceAll('Tikslas: suprasti, kodėl spraga egzistuoja. Rinkti duomenis, kalbėtis su komanda.', 'Tikslas: suprasti dabartinę situaciją ir ką konkrečiai norite pakeisti. Rinkti pastebėjimus ir išbandyti pirmus veiksmus.');
       html = html.replace(
         'style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;" class="source-grid"',
         'style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:14px;" class="source-grid"'
@@ -65,14 +52,8 @@
         '<div>\n        <p style="font-weight:700;margin-bottom:8px;">A) Įkelti apibendrintą JSON</p>',
         '<div style="display:none">\n        <p style="font-weight:700;margin-bottom:8px;">A) Įkelti apibendrintą JSON</p>'
       );
-      html = html.replace(
-        '<div>\n        <p style="font-weight:700;margin-bottom:8px;">A) Upload aggregated JSON</p>',
-        '<div style="display:none">\n        <p style="font-weight:700;margin-bottom:8px;">A) Upload aggregated JSON</p>'
-      );
       html = html.replace('B) Pasirinkti rankiniu būdu', pickerTitle);
       html = html.replace('Pasirinkite iki 3 gebėjimų, kurioms generuoti planą.', pickerNote);
-      html = html.replace('B) Choose manually', pickerTitle);
-      html = html.replace('Choose up to 3 competency areas for the plan.', pickerNote);
       const appTag = '<scr' + 'ipt src="app.js"></scr' + 'ipt>';
       const extra = appTag + '\n'
         + '<scr' + 'ipt src="bot-sync.js?v=20260819-bot-sync-v4"></scr' + 'ipt>\n'
@@ -80,19 +61,15 @@
         + '<scr' + 'ipt src="plan-actions-bottom.js?v=20260821-2"></scr' + 'ipt>';
       html = html.replace(appTag, extra);
       const calendarButtonLt = '<button id="exportIcs" type="button">📅 Eksportuoti į kalendorių (.ics)</button>';
-      const calendarButtonEn = '<button id="exportIcs" type="button">📅 Export to calendar (.ics)</button>';
-      const telegramButton = `<button id="botSyncBtn" type="button" class="secondary">${isEn ? '📲 Send to Telegram' : '📲 Perduoti į Telegram'}</button>`;
+      const telegramButton = `<button id="botSyncBtn" type="button" class="secondary">📲 Perduoti į Telegram</button>`;
       if(html.includes(calendarButtonLt)) html = html.replace(calendarButtonLt, calendarButtonLt + '\n          ' + telegramButton);
-      if(html.includes(calendarButtonEn)) html = html.replace(calendarButtonEn, calendarButtonEn + '\n          ' + telegramButton);
       const newWiring = `    const botCard = document.getElementById('botCard');\n    if(botCard) botCard.style.display = 'block';\n    wireCalendarExport(leader);\n    if(window.Leadership360BotSync){\n      window.Leadership360BotSync.wire({ startDate: planStartDate });\n    }`;
       html = html.replace(/    \/\/ Bot card\n[\s\S]*?    wireCalendarExport\(leader\);/, newWiring);
       document.open();
       document.write(html);
       document.close();
     } catch(error) {
-      document.getElementById('loading').textContent = isEn
-        ? 'Could not load the 90-day plan. Refresh the page.'
-        : 'Nepavyko įkelti 90 dienų plano. Perkraukite puslapį.';
+      document.getElementById('loading').textContent = 'Nepavyko įkelti 90 dienų plano. Perkraukite puslapį.';
       console.error(error);
     }
   })();
