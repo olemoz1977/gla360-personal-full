@@ -3,101 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Leadership 360° – Privatumas</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="robots" content="noindex">
+  <title>Leadership 360° — Privacy</title>
+  <script>
+  (function(){
+    const u=new URL('PRIVACY-v2.html',location.href),current=new URL(location.href),lang=current.searchParams.get('lang')||localStorage.getItem('leadership360_ui_lang')||navigator.language||'lt';
+    u.search='';u.searchParams.set('lang',String(lang).toLowerCase().startsWith('en')?'en':'lt');
+    location.replace(u.toString());
+  })();
+  </script>
 </head>
 <body>
-
-<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
-  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
-    <a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Auditas</a>
-    <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
-    <a href="report.html" style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
-    <a href="compare.html" style="color:var(--muted);text-decoration:none;">📈 Palyginimas</a>
-     <a href="reflect.html" style="color:var(--muted);text-decoration:none;">✍ Refleksija</a>
-    <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
-    <a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a>
-    <a href="PRIVACY.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🔒 Privatumas</a>
-  </div>
-</nav>
-
-<header class="head">
-  <h1>Leadership 360° – Privatumas</h1>
-  <p>Šį puslapį galite persiųsti vertintojams kartu su apklausos nuoroda</p>
-</header>
-
-<main class="wrap">
-
-  <section class="card">
-    <h2>Kam skirta ši apklausa?</h2>
-    <p>Jūs esate pakviesti(-os) anonimiškai įvertinti kolegą(-ę) pagal 75 lyderystės elgsenos teiginius. Jūsų atsakymai padės lyderiui suprasti savo stiprybes ir tobulintinas sritis.</p>
-    <p style="margin-top:8px;">Apklausa užtrunka apie <strong>15–20 minučių</strong>.</p>
-  </section>
-
-  <section class="card">
-    <h2>Kaip tai veikia?</h2>
-    <ol style="padding-left:18px;line-height:2.2;">
-      <li>Atidarykite gautą nuorodą naršyklėje (veikia kompiuteryje ir telefone).</li>
-      <li>Atsakykite į visus klausimus (skalė 1–5).</li>
-      <li>Neprivaloma: parašykite trumpus komentarus apie stiprybes ir tobulintinas sritis.</li>
-      <li>Spauskite <strong>Baigti ir atsisiųsti JSON</strong> — jūsų kompiuteryje išsaugomas failas.</li>
-      <li>Išsiųskite šį failą <strong>Anonimiškumo sergėtojui</strong> (ne lyderiui tiesiogiai).</li>
-    </ol>
-    <p class="muted" style="margin-top:10px;">Sergėtojas yra: <strong>[ĮRAŠYKITE SERGĖTOJO VARDĄ IR KONTAKTĄ]</strong></p>
-  </section>
-
-  <section class="card">
-    <h2>Ar mano atsakymai anoniminiai?</h2>
-    <p><strong>Taip — jei laikotės proceso.</strong></p>
-    <table style="margin-top:12px;">
-      <thead><tr><th>Kas saugoma</th><th>Kaip</th></tr></thead>
-      <tbody>
-        <tr><td>Jūsų vardas</td><td>Niekada neįrašomas į failą</td></tr>
-        <tr><td>Jūsų el. paštas</td><td>Nematomas lyderiui (siųsti per Sergėtoją)</td></tr>
-        <tr><td>Jūsų vertintojo numeris</td><td>Neišsaugomas faile</td></tr>
-        <tr><td>Jūsų atsakymai</td><td>Agreguojami su kitų grupės narių atsakymais</td></tr>
-      </tbody>
-    </table>
-    <p class="muted" style="margin-top:12px;">⚠️ Jei jūsų grupėje mažiau nei 3 žmonės (kolegos arba pavaldiniai), anonimiškumas negali būti visiškai garantuotas.</p>
-  </section>
-
-  <section class="card">
-    <h2>Kaip rašyti komentarus?</h2>
-    <p>Komentarai rodomi lyderiui tik su grupės pavadinimu (pvz., <code>PEER</code>, <code>BOSS</code>) — be jūsų vardo.</p>
-    <p style="margin-top:10px;"><strong>Rekomenduojama:</strong></p>
-    <ul style="padding-left:18px;line-height:2;margin-top:6px;">
-      <li>Rašykite apie elgesį, ne asmenybę: „Dažnai keičia prioritetus be paaiškinimo" ✅</li>
-      <li>Venkite konkrečių datų ar situacijų, kurias tik jūs žinote ❌</li>
-      <li>Rašykite lietuviškai arba angliškai — bet nemaišykite, jei tai nėra įprasta</li>
-    </ul>
-  </section>
-
-  <section class="card">
-    <h2>Duomenų privatumas</h2>
-    <ul style="padding-left:18px;line-height:2;">
-      <li>Jūsų atsakymai <strong>nesiunčiami į jokį serverį</strong> — viskas vyksta tik jūsų naršyklėje.</li>
-      <li>Failas išsaugomas tik jūsų kompiuteryje.</li>
-      <li>Jūs kontroliuojate, kas gaus šį failą.</li>
-      <li>Duomenys nenaudojami jokiais kitais tikslais nei šis vertinimas.</li>
-    </ul>
-  </section>
-
-  <section class="card">
-    <h2>Techniniai reikalavimai</h2>
-    <ul style="padding-left:18px;line-height:2;">
-      <li>Bet kuri moderni naršyklė (Chrome, Firefox, Edge, Safari)</li>
-      <li>Interneto ryšys (tik puslapiui įkelti — atsakymai nesiunčiami)</li>
-      <li>Apie 5 KB laisvos vietos atsisiuntimui</li>
-    </ul>
-  </section>
-
-  <section class="card">
-    <h2>Klausimai?</h2>
-    <p>Jei iškilo techninių problemų ar klausimų dėl proceso — kreipkitės į <strong>Anonimiškumo sergėtoją</strong>:</p>
-    <p class="muted" style="margin-top:8px;"><strong>[ĮRAŠYKITE SERGĖTOJO VARDĄ IR KONTAKTĄ]</strong></p>
-    <p style="margin-top:16px;">Ačiū, kad skiriate laiko šiam vertinimui. Jūsų sąžiningas grįžtamasis ryšys yra vertingiausia šio proceso dalis.</p>
-  </section>
-
-</main>
+  <p>This legacy privacy page has moved.</p>
+  <p><a href="PRIVACY-v2.html">Open current privacy page</a></p>
 </body>
 </html>
