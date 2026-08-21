@@ -31,7 +31,60 @@
     label.appendChild(textarea);
   }
 
+  function seedFromToken(value){
+    let h=2166136261;
+    for(let i=0;i<value.length;i++){
+      h^=value.charCodeAt(i);
+      h=Math.imul(h,16777619);
+    }
+    return h>>>0;
+  }
+
+  function seededRandom(seed){
+    let s=seed>>>0;
+    return function(){
+      s+=0x6D2B79F5;
+      let t=s;
+      t=Math.imul(t^(t>>>15),t|1);
+      t^=t+Math.imul(t^(t>>>7),t|61);
+      return ((t^(t>>>14))>>>0)/4294967296;
+    };
+  }
+
+  function neutralizeQuestions(){
+    const root=document.getElementById('questions');
+    if(!root||root.dataset.neutralized==='1')return false;
+    const items=[...root.querySelectorAll('.q[data-key]')];
+    if(items.length<1)return false;
+    const openBlock=root.querySelector('.open-block');
+    if(!openBlock)return false;
+
+    const rand=seededRandom(seedFromToken(token));
+    for(let i=items.length-1;i>0;i--){
+      const j=Math.floor(rand()*(i+1));
+      [items[i],items[j]]=[items[j],items[i]];
+    }
+
+    root.querySelectorAll('.comp-block:not(.open-block)').forEach(block=>block.remove());
+    const frag=document.createDocumentFragment();
+    items.forEach((item,index)=>{
+      if(index%15===0){
+        const block=document.createElement('div');
+        block.className='comp-block survey-neutral-block';
+        frag.appendChild(block);
+      }
+      const block=frag.lastElementChild;
+      const num=item.querySelector('.q-num');
+      if(num)num.textContent=(index+1)+'.';
+      block.appendChild(item);
+    });
+    root.insertBefore(frag,openBlock);
+    root.dataset.neutralized='1';
+    return true;
+  }
+
   async function apply(){
+    if(!neutralizeQuestions())return false;
     let ctx;
     try{ctx=await C.inviteContext(token)}catch(_){return false}
     if(ctx?.role!=='self')return true;
