@@ -295,10 +295,8 @@
   <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
     <a href="audit.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🔍 Auditas</a>
     <a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
-    <a href="report.html" style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
-    <a href="compare.html" style="color:var(--muted);text-decoration:none;">📈 Palyginimas</a>
-     <a href="reflect.html" style="color:var(--muted);text-decoration:none;">✍ Refleksija</a>
-    <a href="plan.html" style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
+    <a href="setup-v2.html" style="color:var(--muted);text-decoration:none;">📊 Pilnas 360°</a>
+    <a href="plan-direct.html" style="color:var(--muted);text-decoration:none;">🎯 Tik planas</a>
     <a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a>
     <a href="PRIVACY.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a>
   </div>
@@ -467,23 +465,23 @@
       level   = '🟢 Stabili vadyba';
       color   = 'green';
       title   = 'Sistema dirba — žmonės dirba';
-      desc    = 'Jūsų komandos operatyvinė trintis yra žema. Komanda veikia pakankamai savarankiškai, problemos sprendžiamos sistematiškai. Tai gerai — bet nesijauskite perdaug patenkinti.';
-      reframe = 'Stabili sistema dar nereiškia, kad komanda jus mato taip, kaip jūs manote. <strong> 360° vertinimas dažnai atskleidžia spragas, kurių vadovas pats nemato</strong> — net ir gerai funkcionuojančiose komandose.';
-      advice  = 'Rekomenduojama: atlikite 360° vertinimą ir palyginkite savo savivertinimą su komandos požiūriu.';
+      desc    = 'Jūsų komandos operatyvinė trintis yra žema. Komanda veikia pakankamai savarankiškai, problemos sprendžiamos sistematiškai. Tai gerai — bet šis trumpas auditas neparodo, ar kiti jūsų elgesį mato taip pat.';
+      reframe = 'Stabili sistema dar nereiškia, kad komanda jus mato taip, kaip jūs manote. <strong>Pilnas 360° gali parodyti skirtumą tarp savivertinimo ir kitų žmonių stebimo elgesio.</strong>';
+      advice  = 'Jei norite išorinio grįžtamojo ryšio, rinkitės pilną 360°. Jei jau žinote, ką norite keisti, galite iškart kurti 90 dienų planą be apklausos.';
     } else if(total <= 16){
       level   = '🟡 Paslėpta trintis';
       color   = 'yellow';
       title   = 'Komanda jaučia tai, ko jūs nematote';
-      desc    = 'Jūsų komandoje yra paslėptų operatyvinės trinties taškų. Sistema veikia — bet tik todėl, kad žmonės prisitaiko, apeinant spragas. Tai kaupiasi.';
-      reframe = 'Dauguma vadovų šioje kategorijoje galvoja, kad problema yra žmonės arba sistema. <strong>Tyrimai rodo, kad dažniau problema yra nematoma vadybos elgsena</strong> — neaiškūs lūkesčiai, per retas grįžtamasis ryšys, nepakankamai deleguota atsakomybė.';
-      advice  = 'Rekomenduojama: atlikite 360° vertinimą ir sužinokite, kaip jus mato komanda - prieš problemoms tampant kritinemis.';
+      desc    = 'Jūsų komandoje yra paslėptų operatyvinės trinties taškų. Sistema veikia, tačiau dalį spragų žmonės gali kompensuoti prisitaikydami. Šis auditas tik parodo kryptį, bet nenustato konkrečių 360° kompetencijų.';
+      reframe = 'Rezultatas rodo kelias galimas vadybinės trinties vietas: lūkesčius, grįžtamąjį ryšį, delegavimą ar koordinaciją. <strong>Pilnas 360° leidžia patikrinti, kaip konkretų jūsų elgesį vertina kiti.</strong>';
+      advice  = 'Jei norite patikrinti akląsias zonas, rinkitės pilną 360°. Jei norite pradėti veikti dabar, pasirinkite savo 1–3 prioritetus ir kurkite 90 dienų planą be apklausos.';
     } else {
       level   = '🔴 Reaktyvi vadyba';
       color   = 'red';
       title   = 'Sistema laikosi ant vieno žmogaus';
-      desc    = 'Jūsų komandoje operatyvinė trintis yra aukšta. Komanda dirba reaktyviai, sprendimai centralizuoti, o informacijos srautai priklausomi nuo jūsų asmeninio dalyvavimo. Tai senka.';
-      reframe = '<strong>Tai ne silpnų žmonių problema.</strong> Tai — vadybos elgsenos modelio rezultatas. Reaktyvi vadyba formuojasi per metus ir keičiasi tik tada, kai vadovas sąmoningai keičia konkrečius elgesius — ne požiūrį ar motyvaciją, o kasdienę praktiką.';
-      advice  = 'Rekomenduojama: atlikite 360° vertinimą ir sužinokite tikslias spragas ir pradėkite nuo 3 konkrečių elgesio pakeitimų.';
+      desc    = 'Jūsų komandoje operatyvinė trintis yra aukšta. Komanda gali dirbti reaktyviai, sprendimai gali būti per daug centralizuoti, o informacijos srautai priklausyti nuo jūsų asmeninio dalyvavimo.';
+      reframe = '<strong>Šis auditas nėra diagnozė.</strong> Jis parodo, kur verta atidžiau pasižiūrėti į kasdienį vadybinį elgesį ir procesus. Pilnas 360° gali pridėti kitų žmonių perspektyvą, o savarankiškas planas leidžia pradėti nuo jūsų pasirinkto fokuso.';
+      advice  = 'Rinkitės pilną 360°, jei norite patikrinti savo suvokimą su kitų žmonių vertinimu. Arba kurkite 90 dienų planą be apklausos, jei prioritetus jau matote.';
     }
 
     // Render rezultatai
@@ -514,22 +512,21 @@
       </div>
 
       <div class="cta-block">
-        <h2>Kitas žingsnis: sužinokite, kaip jus mato komanda</h2>
+        <h2>Ką norite daryti toliau?</h2>
         <p>
-          Leadership 360° — anoniminė 360° apklausa, kuri veikia tiesiai naršyklėje.
-          Be serverio. Be įmonės IT. Be HR dalyvavimo. (anonimiškumui užtikrinti reikia tiesiog patikimo žmogaus) <br>
-          <strong>Tik jūs ir tiesa apie savo lyderystę.</strong>
+          Auditas yra trumpas orientyras. Toliau galite rinktis išorinį grįžtamąjį ryšį per pilną 360° ciklą
+          arba savarankiškai pasirinkti 1–3 tobulinimo sritis ir kurti praktinį 90 dienų planą be apklausos.
         </p>
         <div class="cta-buttons">
-          <a href="index.html" class="btn" style="font-size:1rem;padding:.7rem 1.4rem;">
-            Pradėti 360° vertinimą →
+          <a href="setup-v2.html" class="btn" style="font-size:1rem;padding:.7rem 1.4rem;">
+            📊 Pradėti pilną 360° →
           </a>
-          <a href="plan.html" class="btn secondary" style="font-size:1rem;padding:.7rem 1.4rem;">
-            Peržiūrėti tobulėjimo planą
+          <a href="plan-direct.html" class="btn secondary" style="font-size:1rem;padding:.7rem 1.4rem;">
+            🎯 Kurti 90 d. planą be apklausos
           </a>
         </div>
         <p style="font-size:.78rem;color:var(--muted);margin-top:14px;">
-          🔒 Be serverio · 📵 Be paskyrų · 🏭 Sukurta vadovams gamyboje bet gali būti naudinga visur
+          Audito atsakymai lieka jūsų naršyklėje ir automatiškai neperkeliami į 360° vertinimą ar planą.
         </p>
       </div>
 
