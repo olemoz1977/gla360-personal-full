@@ -1,6 +1,6 @@
 import app from './bootstrap.js';
 
-const POLICY_VERSION='guardian-v2';
+const POLICY_VERSION='guardian-v3';
 const ALLOWED_ORIGINS=new Set([
   'https://olemoz1977.github.io',
   'https://2rasi.lt',
@@ -76,27 +76,57 @@ function guardianMailCopy(input,url){
   };
 }
 
+function emailProvider(env){
+  if(env?.EMAIL&&env?.MAIL_FROM)return 'cloudflare';
+  if(env?.RESEND_API_KEY&&env?.MAIL_FROM)return 'resend';
+  return 'none';
+}
+
+async function sendViaResend(env,to,copy){
+  const response=await fetch('https://api.resend.com/emails',{
+    method:'POST',
+    headers:{
+      'authorization':`Bearer ${env.RESEND_API_KEY}`,
+      'content-type':'application/json'
+    },
+    body:JSON.stringify({
+      from:env.MAIL_FROM,
+      to:[to],
+      subject:copy.subject,
+      text:copy.text
+    })
+  });
+  if(response.ok)return;
+  let detail='';
+  try{detail=await response.text()}catch(_){}
+  throw new Error(`resend_${response.status}${detail?':'+detail.slice(0,500):''}`);
+}
+
 async function sendGuardianAccess(env,data,input){
   const guardianEmail=normaliseEmail(input?.guardianEmail||input?.guardian_email);
   if(!guardianEmail||!data?.manageToken||!data?.assessmentId){
-    return {status:'invalid'};
+    return {status:'invalid',provider:'none'};
   }
-  if(!env.EMAIL||!env.MAIL_FROM){
-    return {status:'not_configured'};
-  }
+  const provider=emailProvider(env);
+  if(provider==='none')return {status:'not_configured',provider};
+
   const url=createGuardianUrl(env,data,input);
   const copy=guardianMailCopy(input,url);
   try{
-    await env.EMAIL.send({
-      from:env.MAIL_FROM,
-      to:guardianEmail,
-      subject:copy.subject,
-      text:copy.text
-    });
-    return {status:'sent'};
+    if(provider==='cloudflare'){
+      await env.EMAIL.send({
+        from:env.MAIL_FROM,
+        to:guardianEmail,
+        subject:copy.subject,
+        text:copy.text
+      });
+    }else{
+      await sendViaResend(env,guardianEmail,copy);
+    }
+    return {status:'sent',provider};
   }catch(error){
-    console.error('guardian_access_email_failed',error);
-    return {status:'failed'};
+    console.error('guardian_access_email_failed',provider,error);
+    return {status:'failed',provider};
   }
 }
 
@@ -104,10 +134,12 @@ async function withPolicyMarker(response,env){
   if(!response?.ok)return response;
   let data;
   try{data=await response.clone().json()}catch(_){return response}
+  const provider=emailProvider(env);
   data={
     ...data,
     policy:POLICY_VERSION,
-    guardianEmailReady:Boolean(env?.EMAIL&&env?.MAIL_FROM)
+    guardianEmailReady:provider!=='none',
+    guardianEmailProvider:provider
   };
   const headers=new Headers(response.headers);
   headers.set('content-type','application/json; charset=utf-8');
@@ -119,7 +151,11 @@ async function withGuardianDelivery(response,delivery){
   if(!response?.ok)return response;
   let data;
   try{data=await response.clone().json()}catch(_){return response}
-  data={...data,guardianDelivery:delivery?.status||'unknown'};
+  data={
+    ...data,
+    guardianDelivery:delivery?.status||'unknown',
+    guardianEmailProvider:delivery?.provider||'none'
+  };
   const headers=new Headers(response.headers);
   headers.set('content-type','application/json; charset=utf-8');
   headers.set('cache-control','no-store');
