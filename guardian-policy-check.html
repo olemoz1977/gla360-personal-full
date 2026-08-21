@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Guardian policy check</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="head"><h1>Guardian policy check</h1><p>Serverio prieigos ribos patikra</p></header>
+<main class="wrap" style="max-width:760px">
+  <section class="card">
+    <h2 id="title">Tikrinama…</h2>
+    <p id="detail" class="muted">Naudojamas šiame įrenginyje jau išsaugotas Sergėtojo vertinimas. Valdymo raktas ekrane nerodomas.</p>
+  </section>
+</main>
+<script>
+(async()=>{
+  const title=document.getElementById('title'),detail=document.getElementById('detail');
+  try{
+    const health=await fetch('https://leadership-360-collector.olemoz1977.workers.dev/health',{cache:'no-store'}).then(r=>r.json());
+    if(health.policy!=='guardian-v1')throw new Error('Policy versija dar neaktyvi: '+(health.policy||'nėra'));
+    const items=JSON.parse(localStorage.getItem('leadership360_guardian_workspace_v1')||'[]');
+    const a=Array.isArray(items)?items.find(x=>x&&x.assessmentId&&x.manageToken):null;
+    if(!a)throw new Error('Šiame įrenginyje nerastas Sergėtojo vertinimas.');
+    const cycle=Math.max(1,Number(a.cycle||1)||1);
+    const url='https://leadership-360-collector.olemoz1977.workers.dev/api/manage/'+encodeURIComponent(a.assessmentId)+'/cycles/'+cycle+'/invites';
+    const res=await fetch(url,{headers:{authorization:'Bearer '+a.manageToken},cache:'no-store'});
+    let data=null;try{data=await res.json()}catch(_){ }
+    if(!res.ok)throw new Error((data&&data.error)||('HTTP '+res.status));
+    const invites=Array.isArray(data&&data.invites)?data.invites:[];
+    const leaked=invites.some(i=>i&&('url' in i||'token' in i));
+    if(leaked){
+      title.textContent='FAIL';
+      detail.textContent='Normalus Guardian atsakymas vis dar turi invite URL arba token. Toliau netestuok.';
+      return;
+    }
+    title.textContent='PASS';
+    detail.textContent='guardian-v1 aktyvus. Normalus Guardian /invites atsakymas negrąžina invite URL ar token. Patikrinta '+invites.length+' kvietimų įrašų.';
+  }catch(e){
+    title.textContent='NEPATVIRTINTA';
+    detail.textContent=e.message||String(e);
+  }
+})();
+</script>
+</body>
+</html>
