@@ -4,47 +4,84 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Leadership 360°</title>
-  <meta name="description" content="Leadership 360° pseudoniminis lyderystės vertinimo ciklas: C1, refleksija, 90 dienų planas ir C2.">
+  <meta name="description" content="Leadership 360°: trumpas auditas, pilnas 360° vertinimo ciklas arba savarankiškas 90 dienų veiksmų planas.">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px}.flow-step{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);font-size:.9rem}.flow-step strong{display:block;color:var(--brand);margin-bottom:5px}.note{font-size:.84rem}.navline{max-width:900px;margin:0 auto;padding:9px 20px;display:flex;gap:14px;flex-wrap:wrap}.navline a{text-decoration:none;color:var(--muted);font-size:.88rem}.navline a:first-child{color:var(--brand);font-weight:700}@media(max-width:700px){.flow{grid-template-columns:1fr}.hero-actions .btn,.hero-actions button{width:100%;text-align:center}}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+    .flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px}
+    .flow-step{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);font-size:.9rem}
+    .flow-step strong{display:block;color:var(--brand);margin-bottom:5px}
+    .note{font-size:.84rem}
+    .navline{max-width:900px;margin:0 auto;padding:9px 20px;display:flex;gap:14px;flex-wrap:wrap}
+    .navline a{text-decoration:none;color:var(--muted);font-size:.88rem}
+    .navline a:first-child{color:var(--brand);font-weight:700}
+    .entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
+    .entry-card{border:1px solid var(--border);border-radius:16px;background:var(--surface2);padding:18px;display:flex;flex-direction:column;gap:10px;min-height:220px}
+    .entry-card h3{margin:0;font-size:1.05rem}
+    .entry-card p{margin:0;line-height:1.55}
+    .entry-kicker{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brand)}
+    .entry-card .btn{margin-top:auto;text-align:center}
+    .entry-card.recommended{border-color:rgba(26,86,219,.35);box-shadow:0 0 0 1px rgba(26,86,219,.05)}
+    @media(max-width:700px){.flow,.entry-grid{grid-template-columns:1fr}.hero-actions .btn,.hero-actions button,.entry-card .btn{width:100%;text-align:center}.entry-card{min-height:0}}
   </style>
 </head>
 <body>
 <nav style="background:var(--surface2);border-bottom:1px solid var(--border)">
   <div class="navline">
     <a href="index.html">🏠 Leadership 360°</a>
-    <a href="setup-v2.html">➕ Naujas C1</a>
+    <a href="audit.html">🔍 3 min. auditas</a>
+    <a href="setup-v2.html">➕ Pilnas 360°</a>
     <a href="guardian.html">🛡 Sergėtojas</a>
     <a href="report-v2.html">📊 Ataskaita</a>
     <a href="compare-v2.html">📈 C1 / C2</a>
-    <a href="plan.html">📋 90 d. planas</a>
+    <a href="plan-direct.html">🎯 Tik planas</a>
     <a href="PRIVACY-v2.html">🔒 Privatumas</a>
   </div>
 </nav>
 <header class="head">
   <h1>Leadership 360°</h1>
-  <p>Grįžtamasis ryšys → refleksija → 90 dienų veiksmai → pakartotinis matavimas</p>
+  <p>Pasirinkite tiek gylio, kiek jums dabar reikia.</p>
 </header>
 <main class="wrap">
   <section class="card">
-    <h2>Naujas C1 vertinimo ciklas</h2>
-    <p>Įveskite vertinamo lyderio duomenis, SELF el. paštą, vertintojų roles ir jų el. pašto adresus. Kiekvienam vertintojui bus sugeneruota individuali vienkartinė apklausos nuoroda.</p>
-    <p class="muted note">Vertintojų identitetai ir atsakymai saugomi atskirai. Atsakymų bazėje el. pašto adresų nėra. Sergėtojas valdo ciklą ir mato užpildymo būseną.</p>
-    <div class="hero-actions">
-      <a class="btn" href="setup-v2.html">Pradėti C1 →</a>
-      <a class="btn secondary" href="PRIVACY-v2.html">Kaip saugomas anonimiškumas?</a>
+    <h2>Nuo ko norite pradėti?</h2>
+    <p class="muted">Nebūtina iškart organizuoti pilno 360° vertinimo. Galite pradėti nuo trumpo audito, pilno grįžtamojo ryšio ciklo arba tiesiog nuo konkretaus 90 dienų veiksmų plano.</p>
+
+    <div class="entry-grid">
+      <div class="entry-card">
+        <div class="entry-kicker">Greitas įėjimas</div>
+        <h3>🔍 3 min. auditas</h3>
+        <p>Trumpai pasižiūrėkite, kur gali būti vadybinės trinties ar nepastebėtų spragų. Tai nėra mini 360° ir respondentų nereikia.</p>
+        <p class="muted note">Po audito galėsite nuspręsti, ar verta eiti į pilną vertinimą.</p>
+        <a class="btn secondary" href="audit.html">Atlikti auditą →</a>
+      </div>
+
+      <div class="entry-card recommended">
+        <div class="entry-kicker">Pilnas ciklas</div>
+        <h3>📊 Leadership 360°</h3>
+        <p>Savivertinimas + kitų žmonių vertinimas, ataskaita, 90 dienų planas ir pakartotinis C2 matavimas.</p>
+        <p class="muted note">Kai norite ne tik veiksmų, bet ir išorinio grįžtamojo ryšio bei pokyčio matavimo.</p>
+        <a class="btn" href="setup-v2.html">Pradėti C1 →</a>
+      </div>
+
+      <div class="entry-card">
+        <div class="entry-kicker">Be apklausų</div>
+        <h3>🎯 Noriu tik veiksmų plano</h3>
+        <p>Jau žinote, ką norite keisti? Pasirinkite iki 3 tobulinimo sričių ir sugeneruokite 90 dienų planą be SELF ar kitų vertintojų apklausų.</p>
+        <p class="muted note">Plane aiškiai pažymima, kad prioritetai pasirinkti savarankiškai, o vertinimas neatliktas.</p>
+        <a class="btn secondary" href="plan-direct.html">Kurti 90 d. planą →</a>
+      </div>
     </div>
   </section>
 
   <section class="card">
-    <h2>Vienas pilnas ciklas</h2>
+    <h2>Vienas pilnas Leadership 360° ciklas</h2>
     <div class="flow">
       <div class="flow-step"><strong>1 · C1</strong>SELF ir 360° vertintojų atsakymai</div>
       <div class="flow-step"><strong>2 · Rezultatas</strong>Agreguota ataskaita ir spragos</div>
-      <div class="flow-step"><strong>3 · Refleksija</strong>Ką pasirinkti keisti</div>
-      <div class="flow-step"><strong>4 · 90 dienų</strong>Konkretūs veiksmai + Calendar / Telegram</div>
-      <div class="flow-step"><strong>5 · C2</strong>Pakartotinis matavimas ir pokyčio palyginimas</div>
+      <div class="flow-step"><strong>3 · 90 dienų</strong>Konkretūs veiksmai + Calendar / Telegram</div>
+      <div class="flow-step"><strong>4 · C2</strong>Pakartotinis matavimas ir pokyčio palyginimas</div>
+      <div class="flow-step"><strong>5 · Refleksija</strong>Tik toms sritims, kurios susilpnėjo</div>
     </div>
   </section>
 
