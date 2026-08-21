@@ -138,7 +138,7 @@
     loadHelper('report-radar-missing-style.js?v=20260820-1');
   }
   if(/\/compare-v2\.html$/i.test(location.pathname)){
-    loadHelper('compare-radar-safe.js?v=20260821-1');
+    loadHelper('compare-radar-safe.js?v=20260821-2');
   }
   if(/\/guardian\.html$/i.test(location.pathname)){
     loadHelper('guardian-invites.js?v=20260820-2');
