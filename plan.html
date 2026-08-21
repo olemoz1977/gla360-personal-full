@@ -64,6 +64,38 @@
       html = html.replace(/    \/\/ Bot card\n[\s\S]*?    wireCalendarExport\(leader\);/, newWiring);
       html = html.replace("const fname = `GLA360_${leader.replace(/\\s+/g,'_')}_90d.ics`;", "const fname = `Leadership360_${leader.replace(/\\s+/g,'_')}_90d.ics`;");
 
+      // C2 adaptation rule: improvement alone is not enough for maintenance.
+      // If the current Others score is still below 3.75, keep a full development plan
+      // while acknowledging that the direction is positive. A missing C1 value is not
+      // a "first cycle" when we are already in C2; it is a missing baseline.
+      html = html.replace(
+        "if(item) return { trend: item.trend, cause: null, delta: item.delta_others };",
+        `if(item){
+      const currentOthers = Number(item.c2_others);
+      const hasCurrent = Number.isFinite(currentOthers);
+      let trend = item.trend;
+      if(trend === 'first_time' && delta) trend = 'no_baseline';
+      if((trend === 'improved' || trend === 'mild_improved') && hasCurrent && currentOthers < 3.75) trend = 'progressing';
+      return { trend, cause: null, delta: item.delta_others };
+    }`
+      );
+      html = html.replace(
+        "if(!db) return { p1: [], p2: [], p3: [], mode: 'first_time' };\n\n    if(trend === 'improved' || trend === 'mild_improved')",
+        "if(!db) return { p1: [], p2: [], p3: [], mode: 'first_time' };\n\n    if(trend === 'progressing' || trend === 'no_baseline'){\n      return { p1: db.p1, p2: db.p2, p3: db.p3, mode: trend };\n    }\n\n    if(trend === 'improved' || trend === 'mild_improved')"
+      );
+      html = html.replace(
+        "first_time:    '★ Pirmas ciklas',",
+        "first_time:    '★ Pirmas ciklas',\n      no_baseline:   '★ Nėra C1 palyginimo',\n      progressing:   '↑ Gerėja, bet balas dar žemas',"
+      );
+      html = html.replace(
+        "first_time:        { icon:'🎯', text:'Pirmas ciklas — pilnas planas',         cls:'neg'   },",
+        "first_time:        { icon:'🎯', text:'Pirmas ciklas — pilnas planas',         cls:'neg'   },\n      no_baseline:       { icon:'🎯', text:'Nėra C1 palyginimo — pilnas planas',      cls:'neg'   },\n      progressing:       { icon:'↗', text:'Pažanga vyksta — tęsiamas pilnas planas', cls:'warn'  },"
+      );
+      html = html.replace(
+        ".trend-chip.first_time    { background: rgba(26,86,219,.10);  color: var(--brand);  }",
+        ".trend-chip.first_time    { background: rgba(26,86,219,.10);  color: var(--brand);  }\n    .trend-chip.no_baseline   { background: rgba(26,86,219,.10);  color: var(--brand);  }\n    .trend-chip.progressing   { background: rgba(180,83,9,.10);   color: var(--warn);   }"
+      );
+
       document.open();document.write(html);document.close();
     } catch(error) {
       document.getElementById('loading').textContent = 'Nepavyko įkelti 90 dienų plano. Perkraukite puslapį.';
