@@ -4,312 +4,140 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Leadership 360° – Aprašas</title>
+  <meta name="description" content="Dabartinis Leadership 360° prototipo procesas: auditas, C1, ataskaita, 90 dienų planas, C2, palyginimas ir sąlyginė refleksija.">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .cycle-block {
-      border-left: 3px solid var(--brand);
-      padding-left: 16px;
-      margin: 16px 0;
-    }
-    .cycle-block.cycle2 { border-color: var(--accent); }
-    .cycle-title {
-      font-size: .78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--brand);
-      margin-bottom: 8px;
-    }
-    .cycle-block.cycle2 .cycle-title { color: var(--accent); }
-
-    .flow-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-size: .88rem;
-      margin: 10px 0;
-    }
-    .flow-step {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .flow-step a { color: var(--ink); text-decoration: none; }
-    .flow-step a:hover { color: var(--brand); }
-    .flow-arrow { color: var(--muted); font-size: 1rem; }
-    .flow-step.conditional {
-      border-style: dashed;
-      color: var(--warn);
-      border-color: rgba(180,83,9,.3);
-      background: rgba(180,83,9,.05);
-    }
-
-    .session-table td:first-child { font-family: 'DM Mono', monospace; font-size: .82rem; }
+    .navline{max-width:900px;margin:0 auto;padding:9px 20px;display:flex;gap:14px;flex-wrap:wrap}
+    .navline a{text-decoration:none;color:var(--muted);font-size:.88rem}
+    .navline a.active{color:var(--brand);font-weight:700}
+    .flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+    .flow-step{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);font-size:.88rem;line-height:1.5}
+    .flow-step strong{display:block;color:var(--brand);margin-bottom:5px}
+    .flow-step.conditional{border-style:dashed;border-color:rgba(180,83,9,.35)}
+    .path-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+    .path{padding:15px;border:1px solid var(--border);border-radius:14px;background:var(--surface2)}
+    .path strong{display:block;margin-bottom:7px}
+    .step{border-left:3px solid var(--brand);padding-left:15px;margin:18px 0}
+    .step.conditional{border-color:var(--warn)}
+    .step h3{margin:0 0 6px;font-size:1rem}
+    .note{padding:12px 14px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);font-size:.86rem;line-height:1.55}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:9px 8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top;font-size:.86rem}
+    @media(max-width:700px){.flow,.path-grid{grid-template-columns:1fr}.wrap{padding-left:20px;padding-right:20px}}
   </style>
 </head>
 <body>
-
-<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;">
-  <div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;">
-    <a href="audit.html"   style="color:var(--muted);text-decoration:none;">🔍 Auditas</a>
-    <a href="index.html"   style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a>
-    <a href="report.html"  style="color:var(--muted);text-decoration:none;">📊 Ataskaita</a>
-    <a href="compare.html" style="color:var(--muted);text-decoration:none;">📈 Palyginimas</a>
-    <a href="reflect.html" style="color:var(--muted);text-decoration:none;">✍ Refleksija</a>
-    <a href="plan.html"    style="color:var(--muted);text-decoration:none;">📋 90 d. planas</a>
-    <a href="README.html"  style="color:var(--brand);text-decoration:none;font-weight:600;">📖 Aprašas</a>
-    <a href="PRIVACY.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a>
+<nav style="background:var(--surface2);border-bottom:1px solid var(--border)">
+  <div class="navline">
+    <a href="index.html">🏠 Pradžia</a>
+    <a href="audit.html">🔍 3 min. auditas</a>
+    <a href="setup-v2.html">📊 Pilnas 360°</a>
+    <a href="plan-direct.html">🎯 Tik planas</a>
+    <a class="active" href="README.html">📖 Aprašas</a>
+    <a href="PRIVACY-v2.html">🔒 Privatumas</a>
   </div>
 </nav>
 
 <header class="head">
   <h1>Leadership 360° – Aprašas</h1>
-  <p>Visas proceso aprašas – pirmas ciklas ir pakartotiniai vertinimai</p>
+  <p>Dabartinis prototipo procesas nuo pirmo įėjimo iki pakartotinio matavimo.</p>
 </header>
 
 <main class="wrap">
-
-  <!-- Kas tai -->
   <section class="card">
-    <h2>Kas tai?</h2>
-    <p>Asmeninė 360° lyderystės apklausa kuri veikia tiesiai naršyklėje — be serverio, be IT, be HR dalyvavimo. Lyderis gauna struktūruotą grįžtamąjį ryšį iš aplinkinių ir palygina jį su savivertinimu.</p>
-    <p style="margin-top:8px;"><strong>Rezultatas:</strong> radarinė diagrama · sričių vidurkiai · Top 3 spragos ir stiprybės · automatinis 90 dienų veiksmų planas.</p>
-    <p class="muted" style="margin-top:10px;">⚠️ Tai <strong>ne oficialus</strong> GLA360 produktas. Struktūra remiasi viešais aprašais:
-      <a href="https://globalcoachgroup.com/gla360/" target="_blank">Global Coach Group</a> ·
-      <a href="https://www.leapingkoi.com/gla360.html" target="_blank">LEAPING KOI</a> ·
-      <a href="https://mgscc.net/gla360/" target="_blank">MGSCC</a>
-    </p>
+    <h2>Trys skirtingi keliai</h2>
+    <p class="muted">Nebūtina pradėti nuo pilno 360°. Šie keliai yra atskiri ir jų duomenys automatiškai nesumaišomi.</p>
+    <div class="path-grid">
+      <div class="path"><strong>🔍 3 min. auditas</strong>Trumpas orientyras apie galimą vadybinę trintį. Tai nėra mini 360° ir respondentų nereikia.</div>
+      <div class="path"><strong>📊 Pilnas Leadership 360°</strong>Savivertinimas + kitų vertinimas → C1 ataskaita → 90 dienų planas → C2 → pokyčio palyginimas.</div>
+      <div class="path"><strong>🎯 Tik 90 d. planas</strong>Iki 3 sričių pasirenkamos savarankiškai. Vertinimas neatliekamas ir plane tai aiškiai pažymima.</div>
+    </div>
   </section>
 
-  <!-- Techniniai parametrai -->
   <section class="card">
-    <h2>📋 Techniniai parametrai</h2>
+    <h2>Pagrindiniai vertinimo parametrai</h2>
     <table>
-      <thead><tr><th>Parametras</th><th>Reikšmė</th></tr></thead>
       <tbody>
-        <tr><td>Klasteriai</td><td>5</td></tr>
-        <tr><td>Kompetencijos</td><td>15</td></tr>
-        <tr><td>Klausimai</td><td>75 (15 × 5)</td></tr>
-        <tr><td>Skalė</td><td>1–5 (elgesio dažnumas)</td></tr>
-        <tr><td>Atsakymų formatas</td><td><code>gla360-personal@2</code></td></tr>
-        <tr><td>Palyginimo formatas</td><td><code>gla360-compare@1</code></td></tr>
-        <tr><td>Refleksijos formatas</td><td><code>gla360-reflect@1</code></td></tr>
-        <tr><td>Priklausomybės</td><td>Chart.js 4.4.4 (tik report.html ir compare.html)</td></tr>
-        <tr><td>Serveris</td><td>Nereikalingas</td></tr>
+        <tr><th>Lyderystės sritys</th><td>5 klasteriai</td></tr>
+        <tr><th>Gebėjimai</th><td>15 kompetencijų</td></tr>
+        <tr><th>Teiginiai</th><td>75, po 5 kiekvienai kompetencijai</td></tr>
+        <tr><th>Skalė</th><td>1–5 pagal stebimo elgesio dažnumą</td></tr>
+        <tr><th>„Negaliu įvertinti“</th><td>Nėra vertinimo balas ir į vidurkius neįtraukiama</td></tr>
+        <tr><th>Atviri komentarai</th><td>Savirefleksija ir vertintojų komentarai rodomi atskirai nuo skaitinių balų</td></tr>
       </tbody>
     </table>
   </section>
 
-  <!-- PIRMAS CIKLAS -->
   <section class="card">
-    <h2>🔵 Pirmas ciklas</h2>
-
-    <div class="flow-row">
-      <div class="flow-step"><a href="audit.html">🔍 Auditas</a></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step"><a href="index.html">🏠 Vertinimo kūrimas</a></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step">📨 Apklausa</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step"><a href="report.html">📊 Ataskaita</a></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step"><a href="plan.html">📋 90 d. planas</a></div>
+    <h2>Pilnas C1 → C2 ciklas</h2>
+    <div class="flow">
+      <div class="flow-step"><strong>1 · C1</strong>Sukuriamas vertinimas, savivertinimas ir vertintojų kvietimai.</div>
+      <div class="flow-step"><strong>2 · Rezultatas</strong>Ataskaita skaičiuojama iš saugaus surinkimo sluoksnio.</div>
+      <div class="flow-step"><strong>3 · 90 dienų</strong>Pasirenkami iki 3 prioritetų ir konkretūs veiksmai.</div>
+      <div class="flow-step"><strong>4 · C2</strong>Pakartotinis matavimas su naujais vienkartiniais kvietimais.</div>
+      <div class="flow-step"><strong>5 · Pokytis</strong>C1 ir C2 palyginami pagal kitų vertinimo pokytį.</div>
+      <div class="flow-step conditional"><strong>6 · Refleksija, jei reikia</strong>Tik pablogėjusioms sritims prieš naują planą.</div>
     </div>
 
-    <div class="cycle-block" style="margin-top:16px;">
-      <div class="cycle-title">1 žingsnis — Operatyvinės trinties auditas</div>
-      <p style="font-size:.9rem;">Prieš pradedant 360° vertinimą rekomenduojame atlikti 3 min. auditą — jis padeda suprasti ar yra paslėptų vadybos spragų.</p>
-      <p style="margin-top:8px;"><a href="audit.html" class="btn" style="font-size:.88rem;">🔍 Atlikti auditą →</a></p>
+    <div class="step">
+      <h3>1. Sukuriamas C1 vertinimas</h3>
+      <p>Lyderis arba Anonimiškumo sergėtojas nurodo lyderį, vertintojų sudėtį, jų el. paštus ir sergėtojo kontaktą. Kiekvienam dalyviui sukuriamas individualus vienkartinis kvietimas.</p>
+      <p><a class="btn" href="setup-v2.html">Pradėti pilną 360° →</a></p>
     </div>
 
-    <div class="cycle-block" style="margin-top:12px;">
-      <div class="cycle-title">2 žingsnis — Sukurti vertinimą</div>
-      <ol style="padding-left:18px;line-height:2.1;font-size:.9rem;">
-        <li>Atidarykite <a href="index.html">Pradžia</a> → įveskite vardą, projekto pavadinimą.</li>
-        <li>Nurodykite kiek žmonių vertins kiekvienoje grupėje.</li>
-        <li>Įveskite <strong>Anonimiškumo sergėtojo</strong> vardą ir el. paštą (neprivaloma, bet rekomenduojama).</li>
-        <li>Spauskite <strong>Sukurti</strong> — gausite unikalų <strong>Assessment ID</strong> ir nuorodas.</li>
-        <li>Nuorodas perduokite per Sergėtoją — ne tiesiogiai vertintojams.</li>
-      </ol>
+    <div class="step">
+      <h3>2. Atsakymai surenkami atskirai nuo tapatybės</h3>
+      <p>Vertintojo el. paštas ir kvietimo būsena priklauso tapatybės sluoksniui. Apklausos atsakymai saugomi atsakymų sluoksnyje be vertintojo el. pašto.</p>
+      <p class="muted">Prototipo testavimo režime manualios kvietimų nuorodos dar gali būti naudojamos E2E patikrai. Produkciniame sraute sergėtojas neturi gauti vertintojo slapto kvietimo rakto.</p>
     </div>
 
-    <div class="cycle-block" style="margin-top:12px;">
-      <div class="cycle-title">3 žingsnis — Anonimiškumas ir sergėtojas</div>
-      <p style="font-size:.9rem;margin-bottom:10px;">Vertintojas užpildo apklausą ir atsisiunčia <code>*.json</code> failą. Jei siunčia tiesiogiai lyderiui — siuntėjo adresas matomas ir anonimiškumas pažeidžiamas.</p>
-      <p style="font-size:.9rem;"><strong>Sergėtojas</strong> — patikimas žmogus (HR, administratorius) kuris:</p>
-      <ul style="padding-left:18px;line-height:2;margin:8px 0;font-size:.9rem;">
-        <li>Išsiunčia nuorodas vertintojams</li>
-        <li>Gauna <code>*.json</code> failus iš vertintojų</li>
-        <li>Perduoda failus lyderiui <strong>be informacijos kas ką atsiuntė</strong></li>
-      </ul>
-      <table style="margin-top:10px;font-size:.88rem;">
-        <thead><tr><th>Grupė</th><th>Minimalus sk.</th><th>Pastaba</th></tr></thead>
-        <tbody>
-          <tr><td>Boss</td><td>1</td><td>Paprastai neanoniminė</td></tr>
-          <tr><td>Peer</td><td><strong>≥ 3</strong></td><td>Mažiau → identifikuojamas</td></tr>
-          <tr><td>Report</td><td><strong>≥ 3</strong></td><td>Mažiau → identifikuojamas</td></tr>
-          <tr><td>Other</td><td><strong>≥ 2</strong></td><td>Rekomenduojama</td></tr>
-          <tr><td>Self</td><td>1</td><td>Savivertinimas</td></tr>
-        </tbody>
-      </table>
+    <div class="step">
+      <h3>3. Ataskaita</h3>
+      <p>Ataskaita atidaroma iš ciklo valdymo. JSON failų rankiniu būdu kelti nereikia. Rodomi savivertinimo ir kitų balai, 5 sričių vidurkiai, 15 kompetencijų, stebėjimo aprėptis, skirtumai ir atviri komentarai.</p>
+      <p class="muted">Vadovo vertinimas yra individualus. Anoniminėms grupėms ataskaitoje taikomos minimalaus dydžio taisyklės.</p>
     </div>
 
-    <div class="cycle-block" style="margin-top:12px;">
-      <div class="cycle-title">4 žingsnis — Vertintojai užpildo apklausą</div>
-      <ol style="padding-left:18px;line-height:2.1;font-size:.9rem;">
-        <li>Vertintojas atidaro nuorodą naršyklėje (veikia kompiuteryje ir telefone).</li>
-        <li>Atsako į 75 klausimus (skalė 1–5) ir neprivalomą atvirą dalį.</li>
-        <li>Spaudžia <strong>Baigti ir atsisiųsti JSON</strong> — failas išsaugomas lokaliai.</li>
-        <li>Failą siunčia Sergėtojui (ne lyderiui tiesiogiai).</li>
-      </ol>
-      <p class="muted" style="margin-top:8px;font-size:.85rem;">🔒 Atsakymai nesiunčiami į jokį serverį. Viskas vyksta naršyklėje. Pažangą naršyklė saugo automatiškai — galima tęsti vėliau.</p>
+    <div class="step">
+      <h3>4. 90 dienų planas</h3>
+      <p>Plano puslapis automatiškai gauna aktyvaus ciklo rezultatą. Sistema pateikia duomenimis paremtas rekomendacijas, tačiau galutinį 1–3 sričių pasirinkimą palieka žmogui.</p>
+      <p>Kalendoriui ir Telegram pasirenkami tik 1–3 konkretūs veiksmai. PDF saugo visą planą.</p>
     </div>
 
-    <div class="cycle-block" style="margin-top:12px;">
-      <div class="cycle-title">5 žingsnis — Ataskaita</div>
-      <ol style="padding-left:18px;line-height:2.1;font-size:.9rem;">
-        <li>Sergėtojas perduoda visus <code>*.json</code> failus lyderiui.</li>
-        <li>Lyderis atidaro <a href="report.html">📊 Ataskaita</a>.</li>
-        <li>Įkelia failus (tempti ir paleisti arba per mygtuką).</li>
-        <li>Pakoreguoja svorius jei reikia (numatyta: Boss 30% · Peer 30% · Report 30% · Other 10%).</li>
-        <li>Spaudžia <strong>Skaičiuoti rezultatus</strong>.</li>
-        <li><strong>Svarbu:</strong> atsisiunčia apibendrintą JSON (<strong>Atsisiųsti JSON</strong>) ir išsaugo — jis reikalingas palyginimui po 90 dienų.</li>
-      </ol>
-      <p style="margin-top:8px;font-size:.9rem;"><strong>Gausite:</strong> radarinę diagramą · sričių vidurkius · Top 3 stiprybes ir spragas · gebėjimų diagramą · atvirus komentarus.</p>
+    <div class="step">
+      <h3>5. C2 ir palyginimas</h3>
+      <p>Po veiksmų laikotarpio tame pačiame Assessment sukuriamas C2. Vertintojams generuojami nauji vienkartiniai kvietimai. C1 ir C2 palyginami tiesiai iš Collector, todėl dviejų JSON failų įkelti nereikia.</p>
+      <p><strong>Pokyčio taisyklė:</strong> Δ ≤ −0,20 laikoma pablogėjimu; −0,20 &lt; Δ &lt; +0,20 – be aiškaus pokyčio; nuo +0,20 – pagerėjimas.</p>
     </div>
 
-    <div class="cycle-block" style="margin-top:12px;">
-      <div class="cycle-title">6 žingsnis — 90 dienų planas</div>
-      <ol style="padding-left:18px;line-height:2.1;font-size:.9rem;">
-        <li>Iš Ataskaitos atsisiųskite apibendrintą JSON → atidarykite <a href="plan.html">📋 90 d. planas</a>.</li>
-        <li>Įkelkite JSON — planas sugeneruojamas automatiškai pagal Top 3 spragas.</li>
-        <li>Pažymėkite veiksmus ir eksportuokite į kalendorių (.ics).</li>
-      </ol>
-      <p style="margin-top:8px;font-size:.9rem;"><strong>Plano struktūra:</strong> Fazė 1 (1–30 d.) · Fazė 2 (31–60 d.) · Fazė 3 (61–90 d.) · Savaitinis ritmas · Sėkmės rodikliai.</p>
+    <div class="step conditional">
+      <h3>6. Refleksija – tik jei kažkas pablogėjo</h3>
+      <p>Refleksija nėra atskiras pagrindinės navigacijos įėjimas. Į ją pereinama iš C1/C2 palyginimo tik tada, kai bent viena kompetencija turi pablogėjimo signalą.</p>
+      <p>Kiekvienai pablogėjusiai sričiai pateikiami 4 klausimai. Norint tęsti reikia bent vieno konkretaus atsakymo ir pasirinkti pagrindinę priežastį: pasikeitusios aplinkybės, netinkamas planas, nevykdytas planas arba kita / mišri priežastis.</p>
+      <p class="muted">Refleksijos tekstas laikomas tik naršyklės sesijoje ir naudojamas kitam planui adaptuoti. Į Collector ar Telegram jis nesiunčiamas.</p>
     </div>
+
+    <div class="note"><strong>Jei pablogėjusių sričių nėra:</strong> refleksijos etapas praleidžiamas ir iš palyginimo pereinama tiesiai į kitą 90 dienų planą.</div>
   </section>
 
-  <!-- PAKARTOTINIS CIKLAS -->
   <section class="card">
-    <h2>🟢 Pakartotinis ciklas (po 90 dienų)</h2>
-    <p class="muted" style="font-size:.9rem;margin-bottom:14px;">Pakartokite apklausą su tais pačiais ar naujais vertintojais. Sistema automatiškai palygina rezultatus ir adaptuoja planą.</p>
-
-    <div class="flow-row">
-      <div class="flow-step"><a href="index.html">🏠 Naujas vertinimas</a></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step"><a href="report.html">📊 Ataskaita C2</a></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step"><a href="compare.html">📈 Palyginimas</a></div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step conditional">🪞 Refleksija (jei reikia)</div>
-      <div class="flow-arrow">→</div>
-      <div class="flow-step"><a href="plan.html">📋 Adaptyvas planas</a></div>
-    </div>
-
-    <div class="cycle-block cycle2" style="margin-top:16px;">
-      <div class="cycle-title">7 žingsnis — Palyginimas</div>
-      <ol style="padding-left:18px;line-height:2.1;font-size:.9rem;">
-        <li>Pakartokite apklausą (žingsniai 2–5) ir atsisiųskite naują apibendrintą JSON (C2).</li>
-        <li>Atidarykite <a href="compare.html">📈 Palyginimas</a>.</li>
-        <li>Įkelkite du JSON failus: C1 (ankstesnis) ir C2 (dabartinis).</li>
-        <li>Spauskite <strong>Palyginti ciklus</strong>.</li>
-      </ol>
-      <p style="margin-top:8px;font-size:.9rem;"><strong>Gausite:</strong> delta lentelę · radarą su trimis linijomis (Self C1 · Others C1 · Others C2) · top pagerėjusias ir pablogėjusias kompetencijas.</p>
-      <p style="margin-top:8px;font-size:.9rem;">Tendencijos pagal Δ Others vidurkį:</p>
-      <table style="margin-top:6px;font-size:.85rem;">
-        <thead><tr><th>Δ</th><th>Tendencija</th><th>Plano režimas</th></tr></thead>
-        <tbody>
-          <tr><td>≥ +0.5</td><td>↑↑ Aiškiai pagerėjo</td><td>Palaikymo fazė (trumpas planas)</td></tr>
-          <tr><td>+0.2 iki +0.5</td><td>↑ Pagerėjo</td><td>Palaikymo fazė</td></tr>
-          <tr><td>-0.2 iki +0.2</td><td>→ Nepasikeitė</td><td>Alternatyvūs veiksmai (retry)</td></tr>
-          <tr><td>≤ -0.2</td><td>↓ Pablogėjo</td><td>Refleksija → adaptyvas planas</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="cycle-block cycle2" style="margin-top:12px;">
-      <div class="cycle-title">8 žingsnis — Refleksija (tik jei yra pablogėjusių sričių)</div>
-      <p style="font-size:.9rem;margin-bottom:8px;">Jei palyginime aptinkamos pablogėjusios kompetencijos — sistema pasiūlo pereiti į <a href="reflect.html">🪞 Refleksija</a> prieš kuriant naują planą.</p>
-      <p style="font-size:.9rem;">Refleksijos puslapyje kiekvienai pablogėjusiai kompetencijai:</p>
-      <ol style="padding-left:18px;line-height:2.1;font-size:.9rem;">
-        <li>Atsakote į 4 atvirus klausimus (privaloma, min. 10 simbolių).</li>
-        <li>Pasirenkate pagrindinę priežastį:
-          <ul style="padding-left:16px;margin-top:4px;">
-            <li><strong>Aplinkybės pasikeitė</strong> → originalus planas su kontekstu</li>
-            <li><strong>Planas buvo netinkamas</strong> → alternatyvūs veiksmai (retry)</li>
-            <li><strong>Planas nebuvo vykdytas</strong> → mikro-žingsniai (micro)</li>
-            <li><strong>Kita</strong> → originalus planas</li>
-          </ul>
-        </li>
-        <li>Spauskite <strong>Baigti refleksiją</strong> → automatiškai perkeliama į plano generatorių.</li>
-      </ol>
-      <p class="muted" style="margin-top:8px;font-size:.85rem;">💾 Refleksija automatiškai saugoma naršyklėje (localStorage) — galima tęsti vėliau. Išvaloma tik užbaigus.</p>
-    </div>
-
-    <div class="cycle-block cycle2" style="margin-top:12px;">
-      <div class="cycle-title">9 žingsnis — Adaptyvas 90 dienų planas</div>
-      <p style="font-size:.9rem;margin-bottom:8px;"><a href="plan.html">📋 90 d. planas</a> automatiškai nuskaito palyginimo ir refleksijos duomenis iš naršyklės atminties ir parenka tinkamą veiksmų rinkinį:</p>
-      <table style="font-size:.85rem;">
-        <thead><tr><th>Situacija</th><th>Plano režimas</th><th>Struktūra</th></tr></thead>
-        <tbody>
-          <tr><td>Pirmas ciklas</td><td>🎯 Pilnas planas</td><td>3 fazės (1–30 · 31–60 · 61–90 d.)</td></tr>
-          <tr><td>Pagerėjo</td><td>✅ Palaikymo fazė</td><td>1 fazė, 3 veiksmai visai 90 d.</td></tr>
-          <tr><td>Nepasikeitė</td><td>🔄 Alternatyvūs veiksmai</td><td>3 fazės, kitoks turinys</td></tr>
-          <tr><td>Pablogėjo + planas nevykdytas</td><td>🪜 Mikro-žingsniai</td><td>3 fazės, kasdieniai mini-veiksmai</td></tr>
-          <tr><td>Pablogėjo + aplinkybės</td><td>⚠️ Originalus + kontekstas</td><td>3 fazės, standartinis turinys</td></tr>
-          <tr><td>Nauja spraga (C2)</td><td>🎯 Pilnas planas</td><td>3 fazės kaip pirmas ciklas</td></tr>
-        </tbody>
-      </table>
-      <p style="margin-top:10px;font-size:.9rem;">Viename plane gali būti iki 3 kompetencijų su <strong>skirtingais režimais</strong> — pvz., viena palaikymo, dvi retry.</p>
-    </div>
+    <h2>Savarankiškas planas be apklausų</h2>
+    <p>Šis kelias nepriklauso C1/C2 procesui. Pasirenkama iki 3 kompetencijų, generuojamas standartinis 90 dienų planas ir aiškiai rodoma, kad prioritetai pasirinkti savarankiškai.</p>
+    <p><a class="btn secondary" href="plan-direct.html">🎯 Kurti 90 d. planą →</a></p>
   </section>
 
-  <!-- Duomenų srautas tarp puslapių -->
   <section class="card">
-    <h2>🔄 Duomenų srautas tarp puslapių</h2>
-    <p class="muted" style="font-size:.9rem;margin-bottom:12px;">Sistema nenaudoja serverio. Duomenys perduodami per naršyklės atmintį ir failus.</p>
-    <table class="session-table">
-      <thead><tr><th>Saugojimo vieta</th><th>Kas saugoma</th><th>Kada išvaloma</th></tr></thead>
-      <tbody>
-        <tr><td>localStorage</td><td>Refleksijos juodraštis (<code>gla360_reflect_draft</code>)</td><td>Užbaigus refleksiją</td></tr>
-        <tr><td>localStorage</td><td>Apklausos pažanga (<code>gla360_survey_*</code>)</td><td>Nepaliečiama automatiškai</td></tr>
-        <tr><td>sessionStorage</td><td>Delta (<code>gla360_delta</code>)</td><td>Uždarius naršyklės langą</td></tr>
-        <tr><td>sessionStorage</td><td>Refleksija (<code>gla360_reflect</code>)</td><td>Uždarius naršyklės langą</td></tr>
-        <tr><td>Failas (.json)</td><td>Apibendrintas vertinimas (C1, C2)</td><td>Lyderis saugo pats</td></tr>
-      </tbody>
-    </table>
-    <p class="muted" style="margin-top:10px;font-size:.85rem;">⚠️ sessionStorage išvaloma uždarius langą. Jei planuojate generuoti planą kitą dieną — pirmiausia eksportuokite delta.json iš Palyginimo puslapio.</p>
-  </section>
-
-  <!-- Svoriai -->
-  <section class="card">
-    <h2>Svoriai (Others grupė)</h2>
-    <p>Numatytieji svoriai: <strong>Boss 30%</strong> · <strong>Peer 30%</strong> · <strong>Report 30%</strong> · <strong>Other 10%</strong></p>
-    <p class="muted" style="margin-top:8px;">Jei viena grupė nedalyvauja — jos svoris perskirstomas proporcingai tarp likusių automatiškai.</p>
-  </section>
-
-  <!-- Privatumas -->
-  <section class="card">
-    <h2>Privatumas</h2>
-    <ul style="padding-left:18px;line-height:2;">
-      <li>Visi duomenys apdorojami <strong>tik naršyklėje</strong> — jokių serverių, jokių duomenų bazių.</li>
-      <li>JSON failai saugomi tik vietiniame kompiuteryje.</li>
-      <li>Refleksijos turinys saugomas tik jūsų naršyklėje (localStorage) — niekas kitas nemato.</li>
-      <li>Anonimiškumas priklauso nuo proceso (žr. Anonimiškumo sergėtojas aukščiau).</li>
+    <h2>Dabartinės prototipo ribos</h2>
+    <ul style="padding-left:20px;line-height:1.8">
+      <li>90 dienų veiksmų turinys šiuo metu orientuotas į Manufacturing / Operations kontekstą. Platesnis universalumas numatytas prieš monetizacijos etapą.</li>
+      <li>Automatinis el. laiškų siuntimas dar nėra galutinai sukonfigūruotas; E2E bandymuose naudojamas testinis kvietimų režimas.</li>
+      <li>Produktas skirtas ugdymui ir refleksijai, o ne diagnozei ar automatiniams sprendimams apie žmogų.</li>
     </ul>
-    <p style="margin-top:12px;"><a href="PRIVACY.html">📄 Pilnas privatumo aprašas ir instrukcija vertintojams →</a></p>
   </section>
 
-  <!-- Licencija -->
   <section class="card">
-    <h2>Licencija</h2>
-    <p>MIT. Naudokite laisvai asmeniniais ir komerciniais tikslais. Neminėkite kaip oficialaus GLA360 produkto.</p>
+    <h2>Teisinė pastaba</h2>
+    <p class="muted">Leadership 360° yra nepriklausomas prototipas ir nėra oficialus GLA360 produktas. Dabartinis sprendimas kuriamas kaip atskiras 2rasi / OMESG360 produktinis kelias.</p>
   </section>
-
 </main>
 </body>
 </html>
