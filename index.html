@@ -7,10 +7,10 @@
   <meta name="description" content="Leadership 360°: trumpas auditas, pilnas 360° vertinimo ciklas arba savarankiškas 90 dienų veiksmų planas.">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
-    .flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px}
+    .flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
     .flow-step{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);font-size:.9rem}
     .flow-step strong{display:block;color:var(--brand);margin-bottom:5px}
+    .flow-step.conditional{border-style:dashed}
     .note{font-size:.84rem}
     .navline{max-width:900px;margin:0 auto;padding:9px 20px;display:flex;gap:14px;flex-wrap:wrap}
     .navline a{text-decoration:none;color:var(--muted);font-size:.88rem}
@@ -22,19 +22,17 @@
     .entry-kicker{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brand)}
     .entry-card .btn{margin-top:auto;text-align:center}
     .entry-card.recommended{border-color:rgba(26,86,219,.35);box-shadow:0 0 0 1px rgba(26,86,219,.05)}
-    @media(max-width:700px){.flow,.entry-grid{grid-template-columns:1fr}.hero-actions .btn,.hero-actions button,.entry-card .btn{width:100%;text-align:center}.entry-card{min-height:0}}
+    @media(max-width:700px){.flow,.entry-grid{grid-template-columns:1fr}.entry-card .btn{width:100%;text-align:center}.entry-card{min-height:0}}
   </style>
 </head>
 <body>
 <nav style="background:var(--surface2);border-bottom:1px solid var(--border)">
   <div class="navline">
-    <a href="index.html">🏠 Leadership 360°</a>
+    <a href="index.html">🏠 Pradžia</a>
     <a href="audit.html">🔍 3 min. auditas</a>
-    <a href="setup-v2.html">➕ Pilnas 360°</a>
-    <a href="guardian.html">🛡 Sergėtojas</a>
-    <a href="report-v2.html">📊 Ataskaita</a>
-    <a href="compare-v2.html">📈 C1 / C2</a>
+    <a href="setup-v2.html">📊 Pilnas 360°</a>
     <a href="plan-direct.html">🎯 Tik planas</a>
+    <a href="README.html">📖 Aprašas</a>
     <a href="PRIVACY-v2.html">🔒 Privatumas</a>
   </div>
 </nav>
@@ -52,7 +50,7 @@
         <div class="entry-kicker">Greitas įėjimas</div>
         <h3>🔍 3 min. auditas</h3>
         <p>Trumpai pasižiūrėkite, kur gali būti vadybinės trinties ar nepastebėtų spragų. Tai nėra mini 360° ir respondentų nereikia.</p>
-        <p class="muted note">Po audito galėsite nuspręsti, ar verta eiti į pilną vertinimą.</p>
+        <p class="muted note">Po audito galėsite nuspręsti, ar verta eiti giliau.</p>
         <a class="btn secondary" href="audit.html">Atlikti auditą →</a>
       </div>
 
@@ -75,13 +73,15 @@
   </section>
 
   <section class="card">
-    <h2>Vienas pilnas Leadership 360° ciklas</h2>
+    <h2>Kaip atrodo pilnas Leadership 360° ciklas</h2>
+    <p class="muted">Trumpas auditas nėra privaloma šio ciklo dalis. Jis yra tik vienas galimų įėjimų.</p>
     <div class="flow">
-      <div class="flow-step"><strong>1 · C1</strong>SELF ir 360° vertintojų atsakymai</div>
-      <div class="flow-step"><strong>2 · Rezultatas</strong>Agreguota ataskaita ir spragos</div>
-      <div class="flow-step"><strong>3 · 90 dienų</strong>Konkretūs veiksmai + Calendar / Telegram</div>
+      <div class="flow-step"><strong>1 · C1</strong>SELF ir vertintojų atsakymai</div>
+      <div class="flow-step"><strong>2 · Rezultatas</strong>Ataskaita ir savęs / kitų skirtumai</div>
+      <div class="flow-step"><strong>3 · 90 dienų</strong>Pasirinkti prioritetai ir konkretūs veiksmai</div>
       <div class="flow-step"><strong>4 · C2</strong>Pakartotinis matavimas ir pokyčio palyginimas</div>
-      <div class="flow-step"><strong>5 · Refleksija</strong>Tik toms sritims, kurios susilpnėjo</div>
+      <div class="flow-step conditional"><strong>5 · Refleksija, jei reikia</strong>Tik toms sritims, kurios susilpnėjo</div>
+      <div class="flow-step"><strong>6 · Kitas planas</strong>Pagal C2 rezultatą adaptuotas naujas 90 dienų ciklas</div>
     </div>
   </section>
 
