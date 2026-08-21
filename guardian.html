@@ -14,7 +14,7 @@
   <section class="card" id="nextCycleCard"><h2 id="repeatTitle"></h2><p id="repeatNote" class="muted"></p><div style="display:flex;gap:8px;flex-wrap:wrap"><button id="nextCycleBtn" type="button" class="secondary"></button><a id="compareLink" class="btn secondary" href="#"></a></div></section>
   <section class="card danger-zone"><h2 id="deleteTitle"></h2><p id="deleteNote" class="muted"></p><button id="deleteBtn" type="button" style="background:var(--danger)"></button></section>
 </main>
-<script src="app.js"></script><script src="v2-i18n.js"></script><script src="collector-client.js"></script>
+<script src="app.js"></script><script src="v2-i18n.js"></script><script src="collector-client.js?v=20260821-c2-qa1"></script>
 <script>
 (function(){
  const I=window.Leadership360I18n,C=window.Leadership360Collector;let auth=C.parseManageHash();if(!auth.assessmentId||!auth.manageToken){try{const s=JSON.parse(sessionStorage.getItem('leadership360_last_manage')||'null');if(s)auth=s}catch(e){}}
