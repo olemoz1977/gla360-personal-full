@@ -23,6 +23,19 @@
     };
   }
 
+  function installLanguageToggle(){
+    if(!/plan-direct\.html$/i.test(location.pathname) || document.getElementById('planDirectLangToggle')) return;
+    const navInner = document.querySelector('nav > div');
+    if(!navInner) return;
+    const link = document.createElement('a');
+    link.id = 'planDirectLangToggle';
+    link.href = isEn() ? 'plan-direct.html?lang=lt' : 'plan-direct.html?lang=en';
+    link.textContent = isEn() ? 'LT' : 'EN';
+    link.setAttribute('aria-label', isEn() ? 'Perjungti į lietuvių kalbą' : 'Switch to English');
+    link.style.cssText = 'margin-left:auto;border:1px solid var(--border);background:var(--surface);color:var(--brand);border-radius:9px;padding:5px 10px;text-decoration:none;font-size:.82rem;font-weight:700;';
+    navInner.appendChild(link);
+  }
+
   function selectedCount(){
     return document.querySelectorAll('.cal-cb:checked').length;
   }
@@ -46,6 +59,7 @@
   }
 
   function install(){
+    installLanguageToggle();
     if(document.getElementById('planExportCard')) return;
     const output = document.getElementById('planOutput');
     const calendar = document.getElementById('exportIcs');
@@ -72,7 +86,6 @@
     telegram.textContent = t.telegram;
     print.textContent = t.print;
 
-    // Buttons have already been moved; remove empty legacy action wrapper if one remains.
     Array.from(output.querySelectorAll('.no-print')).forEach(el => {
       if(el !== card && el.children.length === 0 && !String(el.textContent||'').trim()) el.remove();
     });
