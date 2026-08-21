@@ -15,20 +15,15 @@
     const isEn = requested.startsWith('en');
     localStorage.setItem('leadership360_ui_lang', isEn ? 'en' : 'lt');
     document.documentElement.lang = isEn ? 'en' : 'lt';
-
-    // Standalone mode must never inherit C1/C2 comparison or reflection state
-    // from a previously opened Leadership 360° cycle in the same browser tab.
     try {
       sessionStorage.removeItem('gla360_delta');
       sessionStorage.removeItem('gla360_reflect');
     } catch(_) {}
-
     try {
       const source = isEn ? 'plan-core-en.html' : 'plan-core.html';
-      const response = await fetch(source + '?v=20260821-direct-4', { cache:'no-store' });
+      const response = await fetch(source + '?v=20260821-direct-5', { cache:'no-store' });
       if(!response.ok) throw new Error('HTTP ' + response.status);
       let html = await response.text();
-
       const title = isEn ? '90-day development plan' : '90 dienų tobulėjimo planas';
       const subtitle = isEn
         ? 'No assessment is required. Choose up to 3 areas you want to work on and generate a practical 90-day plan.'
@@ -41,14 +36,10 @@
       const sourceNote = isEn
         ? 'Source: self-selected development priorities. No assessment was performed.'
         : 'Duomenų šaltinis: savarankiškai pasirinktos tobulinimo sritys. Vertinimas neatliktas.';
-
       html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
       html = html.replace(/<header class="head">[\s\S]*?<\/header>/, `<header class="head"><h1>${title}</h1><p>${subtitle}</p></header>`);
       html = html.replace('<h2>Duomenų šaltinis</h2>', `<h2>${sourceTitle}</h2><p class="muted" style="margin:0 0 12px">${sourceNote}</p>`);
       html = html.replace('<h2>Data source</h2>', `<h2>${sourceTitle}</h2><p class="muted" style="margin:0 0 12px">${sourceNote}</p>`);
-
-      // Standalone plan is not a Leadership 360° cycle. Keep the shared engine,
-      // but remove cycle-derived language from the user-facing output.
       if(isEn){
         html = html.replaceAll('First cycle — full plan', 'Self-directed plan — full plan');
         html = html.replaceAll('★ First cycle', '★ Self-selected focus');
@@ -62,10 +53,6 @@
         html = html.replace(/Suvokimas(?:\s|&nbsp;)+ir(?:\s|&nbsp;)+diagnozė/g, 'Situacijos supratimas');
         html = html.replaceAll('Tikslas: suprasti, kodėl spraga egzistuoja. Rinkti duomenis, kalbėtis su komanda.', 'Tikslas: suprasti dabartinę situaciją ir ką konkrečiai norite pakeisti. Rinkti pastebėjimus ir išbandyti pirmus veiksmus.');
       }
-
-      // Preserve the JSON-upload DOM because the shared plan engine wires listeners
-      // to those elements during startup. Hiding them (instead of deleting them)
-      // keeps initialization intact and allows the manual picker to render.
       html = html.replace(
         'style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;" class="source-grid"',
         'style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:14px;" class="source-grid"'
@@ -82,25 +69,19 @@
       html = html.replace('Pasirinkite iki 3 gebėjimų, kurioms generuoti planą.', pickerNote);
       html = html.replace('B) Choose manually', pickerTitle);
       html = html.replace('Choose up to 3 competency areas for the plan.', pickerNote);
-
-      // Keep the shared plan engine and export behaviour, but do not load Collector,
-      // C1/C2 recommendation or reflection adapters in this standalone route.
       const appTag = '<scr' + 'ipt src="app.js"></scr' + 'ipt>';
       const extra = appTag + '\n'
         + '<scr' + 'ipt src="bot-sync.js?v=20260819-bot-sync-v4"></scr' + 'ipt>\n'
-        + '<scr' + 'ipt src="plan-export-fixes.js?v=20260820-1"></scr' + 'ipt>\n'
-        + '<scr' + 'ipt src="plan-actions-bottom.js?v=20260821-1"></scr' + 'ipt>';
+        + '<scr' + 'ipt src="plan-export-fixes.js?v=20260821-2"></scr' + 'ipt>\n'
+        + '<scr' + 'ipt src="plan-actions-bottom.js?v=20260821-2"></scr' + 'ipt>';
       html = html.replace(appTag, extra);
-
       const calendarButtonLt = '<button id="exportIcs" type="button">📅 Eksportuoti į kalendorių (.ics)</button>';
       const calendarButtonEn = '<button id="exportIcs" type="button">📅 Export to calendar (.ics)</button>';
       const telegramButton = `<button id="botSyncBtn" type="button" class="secondary">${isEn ? '📲 Send to Telegram' : '📲 Perduoti į Telegram'}</button>`;
       if(html.includes(calendarButtonLt)) html = html.replace(calendarButtonLt, calendarButtonLt + '\n          ' + telegramButton);
       if(html.includes(calendarButtonEn)) html = html.replace(calendarButtonEn, calendarButtonEn + '\n          ' + telegramButton);
-
       const newWiring = `    const botCard = document.getElementById('botCard');\n    if(botCard) botCard.style.display = 'block';\n    wireCalendarExport(leader);\n    if(window.Leadership360BotSync){\n      window.Leadership360BotSync.wire({ startDate: planStartDate });\n    }`;
       html = html.replace(/    \/\/ Bot card\n[\s\S]*?    wireCalendarExport\(leader\);/, newWiring);
-
       document.open();
       document.write(html);
       document.close();
