@@ -21,7 +21,7 @@
     } catch(_) {}
     try {
       const source = isEn ? 'plan-en.html' : 'plan-core.html';
-      const response = await fetch(source + '?v=20260821-direct-7', { cache:'no-store' });
+      const response = await fetch(source + '?v=20260821-direct-8', { cache:'no-store' });
       if(!response.ok) throw new Error('HTTP ' + response.status);
       let html = await response.text();
       const title = isEn ? '90-day development plan' : '90 dienų tobulėjimo planas';
@@ -55,7 +55,8 @@
         html = html.replace(/<a href="plan\.html\?lang=lt"[\s\S]*?>LT<\/a>/, '');
         html = html.replaceAll('★ First cycle', '★ Self-selected focus');
         html = html.replaceAll('First cycle', 'Self-directed');
-        html = html.replace('</body>', '<script src="plan-actions-bottom.js?v=20260821-3"></script></body>');
+        const actionsTag = '<scr' + 'ipt src="plan-actions-bottom.js?v=20260821-4"></scr' + 'ipt>';
+        html = html.replace('</body>', actionsTag + '</body>');
       } else {
         html = html.replaceAll('Pirmas ciklas — pilnas planas', 'Savarankiškas planas — pilnas planas');
         html = html.replaceAll('★ Pirmas ciklas', '★ Savarankiškas pasirinkimas');
