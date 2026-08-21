@@ -66,6 +66,15 @@
     top.insertBefore(a,top.firstChild);
   }
 
+  function loadGuardianNav(){
+    if(document.getElementById('guardianRoleNav')||document.querySelector('script[data-guardian-nav]'))return;
+    const script=document.createElement('script');
+    script.src='guardian-nav.js?v=20260821-1';
+    script.defer=true;
+    script.dataset.guardianNav='1';
+    document.head.appendChild(script);
+  }
+
   async function enrichGuardian(auth){
     if(!auth?.assessmentId||!auth?.manageToken)return;
     register(auth);
@@ -109,6 +118,7 @@
 
   function guardianRegistration(){
     addTopLink();
+    loadGuardianNav();
     const sync=()=>{
       const auth=currentAuth();
       if(auth){
@@ -135,6 +145,7 @@
   if(/\/setup-v2\.html$/i.test(location.pathname))setupRegistration();
   if(/\/guardian\.html$/i.test(location.pathname))guardianRegistration();
   if(/\/guardian-dashboard\.html$/i.test(location.pathname)){
+    loadGuardianNav();
     const auth=currentAuth();
     if(auth)register(auth);
     fixDashboardMobile();
