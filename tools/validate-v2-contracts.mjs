@@ -7,7 +7,11 @@ const root = path.resolve(here, '..');
 let failed = false;
 
 function read(rel){ return fs.readFileSync(path.join(root, rel), 'utf8'); }
-function fail(message){ failed = true; console.error('FAIL:', message); }
+function fail(message){
+  failed = true;
+  if(process.env.GITHUB_ACTIONS) console.error(`::error::${message}`);
+  console.error('FAIL:', message);
+}
 function pass(message){ console.log('PASS:', message); }
 function includesAll(text, needles, label){
   for(const needle of needles){ if(!text.includes(needle)) fail(`${label} missing ${needle}`); }
@@ -23,7 +27,10 @@ const identitySchema = read('collector-worker/schema-identity.sql');
 includesAll(identitySchema, ['email_cipher','token_hash','token_cipher','submitting'], 'Identity schema');
 
 const wrangler = read('collector-worker/wrangler.toml');
-includesAll(wrangler, ['main = "src/entry.js"','PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey-v2.html"','binding = "IDENTITY_DB"','binding = "RESPONSE_DB"'], 'wrangler.toml');
+includesAll(wrangler, ['main = "src/bootstrap.js"','PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey-v2.html"','binding = "IDENTITY_DB"','binding = "RESPONSE_DB"'], 'wrangler.toml');
+
+const bootstrap = read('collector-worker/src/bootstrap.js');
+includesAll(bootstrap, ["import app from './entry.js'",'return app.fetch(request, env, ctx)','sanitizeInviteResponse','stripNotObservedAnswers'], 'Collector bootstrap');
 
 const entry = read('collector-worker/src/entry.js');
 includesAll(entry, ['exactly_one_self_required','duplicate_email_in_cycle','status = \'submitting\'','already_submitted','assessmentId'], 'Collector middleware');
