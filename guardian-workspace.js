@@ -42,10 +42,10 @@
   function clear(){try{localStorage.removeItem(KEY)}catch(_){} return []}
   function currentAuth(){
     let auth=C.parseManageHash();
-    if(auth?.assessmentId&&auth?.manageToken)return auth;
+    if(auth?.assessmentId&&auth?.manageToken&&auth.manageToken!=='undefined')return auth;
     try{
       const x=JSON.parse(sessionStorage.getItem('leadership360_last_manage')||'null');
-      if(x?.assessmentId&&x?.manageToken)return x;
+      if(x?.assessmentId&&x?.manageToken&&x.manageToken!=='undefined')return x;
     }catch(_){}
     return null;
   }
@@ -89,33 +89,6 @@
     }catch(_){}
   }
 
-  function setupRegistration(){
-    addTopLink();
-    const card=document.getElementById('createdCard');
-    if(!card)return;
-    const apply=()=>{
-      if(getComputedStyle(card).display==='none')return;
-      const auth=currentAuth();
-      if(!auth)return;
-      register(auth,{
-        leaderName:document.getElementById('leaderName')?.value||'',
-        projectName:document.getElementById('projectName')?.value||'',
-        guardianName:document.getElementById('guardianName')?.value||''
-      });
-      const actions=document.getElementById('openGuardian')?.parentElement;
-      if(actions&&!document.getElementById('openWorkspaceFromSetup')){
-        const a=document.createElement('a');
-        a.id='openWorkspaceFromSetup';
-        a.className='btn secondary';
-        a.href=dashboardUrl();
-        a.textContent=document.documentElement.lang==='en'?'Open workspace →':'Atidaryti darbo stalą →';
-        actions.appendChild(a);
-      }
-    };
-    new MutationObserver(apply).observe(card,{attributes:true,attributeFilter:['style','class']});
-    setTimeout(apply,400);setTimeout(apply,1000);
-  }
-
   function guardianRegistration(){
     addTopLink();
     loadGuardianNav();
@@ -142,7 +115,8 @@
     document.head.appendChild(style);
   }
 
-  if(/\/setup-v2\.html$/i.test(location.pathname))setupRegistration();
+  // setup-v2 is intentionally excluded: the assessed leader must never receive
+  // or register Guardian management credentials on the setup device.
   if(/\/guardian\.html$/i.test(location.pathname))guardianRegistration();
   if(/\/guardian-dashboard\.html$/i.test(location.pathname)){
     loadGuardianNav();
