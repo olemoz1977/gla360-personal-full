@@ -7,6 +7,12 @@
     return String(value || '').toLowerCase().startsWith('en') ? 'en' : 'lt';
   }
 
+  function fromQuery(search = location.search){
+    const qs = new URLSearchParams(String(search || '').replace(/^\?/, ''));
+    const lang = qs.get('lang');
+    return lang ? normalise(lang) : '';
+  }
+
   function fromHash(hash = location.hash){
     const raw = String(hash || '').replace(/^#/, '');
     const qs = new URLSearchParams(raw);
@@ -15,6 +21,8 @@
   }
 
   function current(){
+    const queryLang = fromQuery();
+    if(queryLang) return queryLang;
     const hashLang = fromHash();
     if(hashLang) return hashLang;
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -33,6 +41,14 @@
       qs.set('lang', value);
       history.replaceState(null, '', location.pathname + location.search + '#' + qs.toString());
     }
+
+    if(options.syncQuery){
+      const u = new URL(location.href);
+      u.searchParams.set('lang', value);
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    }
+
+    window.dispatchEvent(new CustomEvent('leadership360:languagechange',{detail:{lang:value}}));
     return value;
   }
 
@@ -49,14 +65,14 @@
     }
     button.addEventListener('click', () => {
       const next = current() === 'lt' ? 'en' : 'lt';
-      set(next, { syncHash: options.syncHash });
+      set(next, { syncHash: options.syncHash, syncQuery: options.syncQuery !== false });
       render();
       if(typeof onChange === 'function') onChange(next);
     });
     render();
   }
 
-  global.Leadership360I18n = { current, set, pick, bindToggle, normalise, fromHash };
+  global.Leadership360I18n = { current, set, pick, bindToggle, normalise, fromQuery, fromHash };
 })(window);
 
 (function(){
