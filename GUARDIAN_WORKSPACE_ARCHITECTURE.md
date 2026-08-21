@@ -1,234 +1,331 @@
-# Leadership 360° Guardian Workspace
+# Leadership 360° – Role-scoped workspaces and Guardian architecture
 
-## Product decision
+Status: current product architecture decision.
 
-The guardian workspace is the operational centre of the Leadership 360° product.
-`setup-v2.html` is a creation flow inside that workspace, not the product home screen.
+## Core product decision
 
-The long-term commercial architecture is a multi-tenant SaaS model:
+Leadership 360° must not have one omnipotent workspace.
+
+The product has role-scoped surfaces that answer different questions:
+
+- **Guardian administration:** what must I administer so the assessment runs correctly?
+- **Assessed leader space:** what did I learn and what should I do next?
+- **Organisation analytics:** is the programme being used and what patterns repeat across the organisation?
+- **Evaluator:** what survey do I need to complete?
+
+The Guardian workspace is therefore an operational administration surface, not the universal product home and not a report viewer.
+
+The long-term commercial model remains:
 
 `Organization -> User -> Assessment -> Cycle -> Invitation`
 
-The current per-assessment `manageToken` model is a prototype access mechanism only. New product work should not make it harder to replace that mechanism with organization/account authorization later.
+The current per-assessment `manageToken` is a prototype access mechanism only. It must not become the final permission model.
 
-## Current prototype layer
+## Guardian is a governance role, not a job title
 
-The current implementation keeps a registry of assessment management credentials in the guardian's browser (`guardian-workspace.js`) and presents them in `guardian-dashboard.html`.
+Guardian is assigned in the context of a specific Assessment.
 
-This solves the immediate UX problem for a guardian who manages many assessments on one device:
+The real-world person may be:
 
-- one workspace instead of many secret links;
-- search by leader, project or Assessment ID;
-- active / completed / needs-attention filters;
-- completion progress;
-- direct access to cycle management and reports;
-- creation of a new assessment from the same workspace.
+- HR / People partner;
+- an organisation owner in a small company;
+- another authorised manager;
+- coach;
+- consultant;
+- an external assessment administrator.
 
-This browser registry is a bridge for the prototype. It is not the final enterprise authentication model.
+Guardian is not defined by hierarchy. The same person may be a manager evaluator in one Assessment, a peer evaluator in another, and a Guardian in a third.
 
-## Commercial / SaaS target
+### Non-negotiable conflict rule
 
-For an HR guardian managing 50+ employees, the final model is organization/account based.
+The assessed leader cannot be the Guardian of their own Assessment.
 
-### Tenant model
+Recommended production rule for real multi-rater organisational 360°:
 
-Recommended business entities:
+- `assessed_user_id != guardian_user_id`;
+- prefer a Guardian who is not an evaluator in the same Assessment;
+- if no suitable internal Guardian exists, assign an external Guardian.
 
-- `organizations`
-- `users`
-- `organization_memberships`
-- `assessments`
-- `cycles`
-- `invitations`
-- `subscriptions`
-- `audit_events`
+A large organisation may maintain a Guardian pool and assign a different Guardian per Assessment.
 
-Every business-side record must be scoped by `organization_id` directly or through a parent object.
+## Role resolution
 
-A signed-in user must never be able to access another organization's records by changing an Assessment ID or URL.
+Do not model permissions as:
 
-### Authentication and authorization
+`User -> permanent role -> permissions`
 
-Do not build a custom password system.
+Use:
 
-Use a dedicated authentication provider supporting a progression such as:
+`User -> Organization -> Assessment -> role assignment -> permissions`
 
-- magic link / email sign-in for early paid plans;
-- Google / Microsoft sign-in;
-- later SSO / SAML for enterprise customers.
+Example:
 
-Suggested application roles:
+```text
+Jonas
+Assessment A -> Guardian
+Assessment B -> Peer evaluator
+Assessment C -> Assessed leader
+Assessment D -> Manager evaluator
+```
 
-- Organization Owner
-- Guardian / HR
-- Coach
-- Read-only report viewer
-- Participant / leader
+The same account may hold multiple roles across the organisation, but permissions are evaluated in the active role and Assessment context. Permissions do not merge into a superuser view.
 
-Authorization must be enforced server-side. UI hiding is not an authorization boundary.
+## Guardian permission boundary
 
-### Guardian identity
+Guardian may administer:
 
-A guardian signs in once and belongs to one or more organizations. The workspace lists every assessment the guardian is authorized to manage.
-
-The browser must not need to retain one permanent management token per assessment once account authentication exists.
-
-### Workspace list
-
-Each row represents one leader assessment and should show only operational identity data:
-
-- leader name;
-- project / cohort;
-- current cycle;
-- invited count;
-- completed count;
-- deadline;
-- status (`draft`, `collecting`, `completed`, `closed`);
-- whether reminders are needed.
-
-### Invitation management
-
-Inside one assessment the guardian may see:
-
+- assessment/cycle identity and operational metadata;
+- evaluator roster where required;
 - evaluator email;
-- evaluator role;
-- language;
-- invitation state (`pending`, `sent`, `opened`, `completed`);
-- resend action.
+- evaluator relationship/role;
+- invitation language;
+- invitation state (`pending`, `sent`, `opened`, `completed`, `revoked`);
+- deadlines;
+- reminders / resend;
+- cycle creation;
+- operational completion counts.
 
-The guardian must not be able to map an evaluator identity to an individual response.
+Guardian must not receive access merely because they administer the process to:
+
+- individual survey answers;
+- open comments;
+- response bundles;
+- report contents;
+- the assessed leader's report page;
+- 90-day plan;
+- reflection flow;
+- C1–C2 result comparison;
+- “view as assessed leader” capability;
+- evaluator invitation secrets / survey URLs in normal product mode.
+
+Product principle:
+
+> The person who administers the 360° process does not automatically get to read what they administer.
+
+## Assessed leader space
+
+The assessed leader receives a separate role-scoped area containing their own authorised outputs, for example:
+
+- current report;
+- interpretation;
+- reflection where needed;
+- selected development priorities;
+- 90-day plan;
+- C1–C2 comparison;
+- progress history.
+
+This area is not reachable because a user has Guardian permission.
+
+## Evaluator experience
+
+Evaluator is usually a one-time participation role, not a workspace role.
+
+The evaluator receives an opaque invitation and sees only the survey they are authorised to complete.
+
+The long-term architecture should not require every evaluator to create an account unless an enterprise customer specifically needs authenticated participation.
+
+## Organisation analytics is a separate permission
+
+Organisation analytics is not a Guardian permission and is not a leader report.
+
+Example permission:
+
+`organization_analytics_viewer`
+
+It may be granted to authorised HR/People leadership, organisation owner, programme owner, coach or consultant.
+
+It receives only suppressed organisation/campaign aggregates. See `ORGANIZATION_ANALYTICS_ARCHITECTURE.md`.
+
+A Guardian does not automatically receive organisation analytics because they manage invitations.
+
+## Organisation / campaign administration
+
+Mass assessment introduces a level above one Guardian.
+
+A future `Organization Admin` or `Campaign Admin` may:
+
+- create a campaign;
+- select the population of assessed leaders;
+- assign Guardians from a Guardian pool;
+- see aggregate programme progress;
+- manage organisation settings and policy.
+
+This still does not automatically grant access to individual leader reports or individual evaluator answers.
+
+Destructive permissions such as deleting the entire Assessment should ultimately belong to an audited `Organization Admin / Owner` permission rather than being inherent to Guardian. The current prototype still allows Guardian deletion and records this as migration debt.
+
+## Current prototype implementation
+
+### Guardian administration workspace
+
+`guardian-dashboard.html`
+
+Current purpose:
+
+- list locally registered Assessments;
+- show active/completed/needs-attention operational status;
+- show completion progress;
+- open Guardian cycle administration;
+- create another Assessment.
+
+The dashboard must not contain a report button.
+
+`guardian.html`
+
+Current purpose:
+
+- group-level completion status;
+- refresh status;
+- send/resend invitations when email delivery becomes available;
+- create the next cycle;
+- show privacy / access boundary;
+- prototype deletion action.
+
+It must not contain report, response-bundle export or C1–C2 comparison actions.
+
+### Browser registry
+
+`guardian-workspace.js` keeps a local prototype registry containing management credentials and display metadata. This is only a bridge while account authentication does not exist.
+
+In the commercial product, the browser must not persist one permanent `manageToken` per Assessment.
+
+## QA invitation links are not a Guardian feature
+
+Automatic email delivery is not configured in the current prototype, so manual survey links remain necessary for E2E testing.
+
+They are therefore isolated as an explicit QA capability:
+
+- GitHub Pages / localhost only;
+- explicit `?qa=1` mode;
+- never part of normal Guardian UI;
+- never enabled on production domains;
+- never treated as a Guardian permission.
+
+`guardian-test-console.js` and `invite-recovery.js` are QA helpers only.
+
+The Worker entrypoint `collector-worker/src/policy.js` strips invitation URLs/tokens from normal management responses even on the GitHub test origin. It preserves them only for explicit QA requests from allowed test origins.
+
+Until that Worker entrypoint is deployed, normal Guardian frontends avoid the legacy `/invites` recovery route and use the aggregate `/status` route instead.
 
 ## Privacy architecture
 
-### Identity and response separation
+### Identity side
 
-Identity and responses remain separate as a core product invariant.
+May contain:
 
-**Identity side** may contain:
+- organisation / membership data;
+- assessed leader identity;
+- evaluator email and relationship;
+- invitation secret/token;
+- invitation delivery and completion state;
+- Guardian assignment;
+- deadline/reminder state.
 
-- organization and membership data;
-- leader names;
-- evaluator names/emails where needed;
-- roles;
-- invitation tokens and delivery state;
-- completion state;
-- deadlines and reminder state.
+### Response side
 
-**Response side** may contain:
+May contain:
 
 - Assessment ID;
 - cycle;
-- role;
+- evaluator relationship/role;
 - language;
 - numeric answers;
 - open comments;
 - response timestamp;
-- question-bank version;
-- no evaluator email, name, account id, invitation id or roster index.
+- question-bank version.
 
-There must be no normal application path from an invitation/email record to that person's response record.
+It must not contain:
 
-### Submission grant target
+- evaluator email or name;
+- evaluator account ID;
+- invitation ID/token;
+- roster position capable of reconstructing identity.
 
-For the commercial version, prefer a short-lived submission grant between identity and response services.
+There must be no normal application path from one identity/invitation record to that person's response row.
 
-Expected flow:
+## Submission grant target
 
-1. evaluator opens an opaque invitation token;
-2. identity service validates invitation and role;
-3. identity service issues a short-lived signed submission grant containing only assessment, cycle, role and expiry;
-4. survey submits the response using that grant;
-5. response service stores no evaluator identity;
-6. identity service learns only that the invitation completed.
+For the commercial version, prefer a short-lived submission grant between identity and response services:
 
-This reduces the ability of application code to correlate identity and response content even accidentally.
+1. evaluator opens opaque invitation token;
+2. Identity service validates invitation and relationship;
+3. Identity service issues short-lived grant containing only Assessment, cycle, relationship and expiry;
+4. survey submits using that grant;
+5. Response service stores no evaluator identity;
+6. Identity service learns only that the invitation completed.
 
-### Report boundary
+## Authentication / authorization target
 
-Reports operate on pseudonymous response bundles and enforce anonymity rules server-side before role-level presentation.
+Do not build a custom password system.
 
-Rules include:
+Use a specialist identity provider with a progression such as:
 
-- peer role interpretation only when the configured minimum group threshold is met;
-- direct-report role interpretation only when the configured minimum group threshold is met;
-- small groups merged or suppressed where required;
-- open comments handled more conservatively than numeric answers;
-- `Not observed / cannot assess` treated as missing observation data, not a sixth score;
-- observation coverage reported alongside score averages.
+- magic link/email sign-in;
+- Google/Microsoft;
+- later SSO/SAML.
 
-Client-side JavaScript may display these rules, but it must not be the only enforcement layer in a paid product.
+Possible application roles/permissions:
 
-## Practical infrastructure direction
+- Organization Owner / Admin;
+- Campaign Admin;
+- Guardian;
+- Coach;
+- Report Viewer;
+- Assessed Leader;
+- Organization Analytics Viewer;
+- Evaluator invitation grant.
 
-The existing Cloudflare architecture is suitable for the product's next phase and should not be replaced prematurely.
+Authorization must be enforced server-side. Hiding a UI button is not an authorization boundary.
 
-Recommended progression:
+## Infrastructure direction
 
-- Frontend: Cloudflare Pages
-- API/business logic: Cloudflare Workers
-- Identity/operational data now: D1
-- Response data now: separate D1
-- generated exports / PDFs later: R2
-- background reminders / jobs: Queues
-- transactional email: dedicated provider or supported Cloudflare delivery integration
-- authentication: specialist identity provider
-- billing: Stripe or equivalent payment provider
+The current Cloudflare architecture remains appropriate for the next phase:
 
-If organization/account data becomes substantially more complex, PostgreSQL is the preferred long-term system of record for tenant, membership, billing and operational workflow data. Response storage may remain separately isolated.
+- frontend: Cloudflare Pages;
+- API/business logic: Cloudflare Workers;
+- identity/operational data now: D1;
+- response data now: separate D1;
+- generated exports later: R2;
+- reminders/jobs: Queues;
+- transactional email: dedicated provider / supported delivery integration;
+- authentication: specialist identity provider;
+- billing: Stripe or equivalent.
 
-Do not migrate to PostgreSQL merely for architecture aesthetics; migrate when the account/tenant model or operational workload justifies it.
-
-## Monetization boundary
-
-The primary paid object is not the questionnaire itself. The commercial value is the managed workflow:
-
-`Invitations -> confidentiality controls -> completion monitoring -> aggregation -> report -> 90-day plan -> repeat cycle -> progress comparison`
-
-Suggested future packaging:
-
-- Individual: one leader / limited assessment cycles
-- Team: a defined annual number of assessments
-- Business: organization workspace, multiple guardian users, history and repeat cycles
-- Enterprise: SSO, audit log, configurable retention, DPA/security controls, branding and enterprise administration
-
-Billing and entitlements must be organization-scoped rather than tied to individual invitation links.
+If tenant/account complexity later justifies it, PostgreSQL is the preferred system of record for organisations, memberships, billing and operational workflow. Response storage should remain separately isolated.
 
 ## Security requirements before paid launch
 
-Minimum non-negotiable controls:
+Non-negotiable controls:
 
-- tenant-scoped server-side authorization;
-- external authentication provider;
+- tenant-scoped server authorization;
+- role/Assessment-context authorization;
+- assessed leader cannot be own Guardian;
 - separate identity and response stores;
-- encrypted sensitive identity fields at rest where applicable;
 - no identity fields in response rows;
-- secure invitation-token lifecycle and expiration policy;
-- audit log for guardian/admin actions, not raw survey answers;
-- configurable retention/deletion policy;
+- invitation-token lifecycle and expiration;
+- no invitation secret exposure to Guardian;
+- report permission separate from Guardian;
+- organisation analytics permission separate from Guardian;
+- server-side anonymity/suppression rules;
+- audit log for admin/Guardian actions, not raw answers;
+- retention/deletion policy;
 - rate limiting and abuse controls;
-- backups/recovery plan;
-- server-side anonymity threshold enforcement;
-- documented privacy/data-processing model;
-- no secrets in public URLs as the normal long-term guardian authentication method.
+- account recovery and backup plan;
+- no permanent management secrets as the normal workspace authentication model.
 
 ## Migration path
 
-1. **Now:** finish current C1 end-to-end flow and validate the browser guardian workspace.
-2. **Next:** deadlines, reminder queue, assessment lifecycle states and workspace UX.
-3. **Then:** introduce `organization_id`, account identity and organization memberships without changing response semantics.
-4. **Then:** replace per-assessment browser secrets with server-authorized workspace access.
-5. **Then:** add short-lived submission grants and harden report-side anonymity enforcement.
-6. **Then:** billing/entitlements, audit logs, retention controls and account recovery.
-7. **Enterprise:** SSO/SAML, organization policy controls, security documentation and contractual data-processing support.
+1. **Now:** keep current C1/C2 prototype working while enforcing role-scoped UI boundaries.
+2. **Now:** isolate manual invitation links behind explicit QA mode.
+3. **Next:** deploy the Worker policy wrapper so normal management responses cannot expose invitation secrets on the GitHub test origin.
+4. **Next:** deadlines, reminder queue, lifecycle states and safe per-recipient invitation-status endpoint.
+5. **Then:** introduce `organization_id`, authenticated users and Assessment-level role assignments.
+6. **Then:** split Guardian, leader report and organisation analytics authorization server-side.
+7. **Then:** short-lived evaluator submission grants, audit logs, retention and billing.
+8. **Enterprise:** SSO/SAML, policy controls, security documentation and contractual data-processing support.
 
-## Rule for current development
+## Current rule
 
-Do not interrupt the current E2E test by prematurely rebuilding authentication.
+Guardian is a durable product concept. `manageToken` is not.
 
-However, all new work should respect these boundaries:
-
-- do not bind response records to evaluator identities;
-- do not make `manageToken` a permanent product concept;
-- do not make the setup page the product home screen;
-- model the guardian workspace as the future organization workspace;
-- keep business identity/operational data separable from survey response data.
+The Guardian is an Assessment governance role whose purpose is to run the process without acquiring privileged access to the feedback itself.

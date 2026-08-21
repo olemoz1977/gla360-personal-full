@@ -12,6 +12,24 @@
     return String(override || DEFAULT_API).replace(/\/+$/, '');
   }
 
+  function isTestOrigin(){
+    const origin=String(location.origin||'');
+    return origin==='https://olemoz1977.github.io' || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  }
+
+  function qaMode(){
+    if(!isTestOrigin())return false;
+    const query=new URLSearchParams(location.search||'');
+    if(query.get('qa')==='1')return true;
+    const hash=new URLSearchParams(String(location.hash||'').replace(/^#/,''));
+    return hash.get('qa')==='1';
+  }
+
+  function qaPath(path){
+    if(!qaMode())return path;
+    return path+(path.includes('?')?'&':'?')+'qa=1';
+  }
+
   async function request(path, options = {}){
     const headers = new Headers(options.headers || {});
     if(options.json !== undefined) headers.set('content-type', 'application/json');
@@ -40,6 +58,20 @@
       throw e;
     }
     return data;
+  }
+
+  function stripInviteUrls(data){
+    if(!data || !Array.isArray(data.invites))return data;
+    return {
+      ...data,
+      testMode:false,
+      invites:data.invites.map(inv=>{
+        const safe={...(inv||{})};
+        delete safe.url;
+        delete safe.token;
+        return safe;
+      })
+    };
   }
 
   function inviteContext(token){
@@ -81,6 +113,7 @@
   function pageUrl(page, auth){
     const u = new URL(page, location.href);
     u.search = '';
+    if(qaMode())u.searchParams.set('qa','1');
     u.hash = manageHash(auth);
     return u.toString();
   }
@@ -95,17 +128,57 @@
     return u.toString();
   }
 
+  function cycleStatus(assessmentId, cycle, manageToken){
+    return request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/status', { manageToken });
+  }
+
+  // Until the Worker policy wrapper is deployed, the legacy /invites endpoint can
+  // return survey URLs on the GitHub test origin. Normal guardian UI therefore
+  // derives only aggregate completion rows from the safe /status endpoint.
+  async function recoverInvites(assessmentId, cycle, manageToken){
+    const status=await cycleStatus(assessmentId,cycle,manageToken);
+    const invites=[];
+    for(const group of status.groups||[]){
+      const total=Math.max(0,Number(group.total||0));
+      const completed=Math.max(0,Math.min(total,Number(group.completed||0)));
+      const opened=Math.max(0,Math.min(total-completed,Number(group.opened||0)));
+      const sent=Math.max(0,Math.min(total-completed-opened,Number(group.sent||0)));
+      for(let i=0;i<completed;i++)invites.push({role:group.role,status:'completed'});
+      for(let i=0;i<opened;i++)invites.push({role:group.role,status:'opened'});
+      for(let i=0;i<sent;i++)invites.push({role:group.role,status:'sent'});
+      for(let i=invites.filter(v=>v.role===group.role).length;i<total;i++)invites.push({role:group.role,status:'pending'});
+    }
+    return {...status,aggregateOnly:true,invites};
+  }
+
+  async function recoverInvitesQa(assessmentId, cycle, manageToken){
+    if(!qaMode())throw new Error('qa_mode_required');
+    return request(qaPath('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/invites'), { manageToken });
+  }
+
+  async function createAssessment(payload){
+    const data=await request(qaPath('/api/assessments'), { json: payload });
+    return qaMode()?data:stripInviteUrls(data);
+  }
+
+  async function createNextCycle(assessmentId, manageToken, payload = {}){
+    const data=await request(qaPath('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles'), { manageToken, json: payload });
+    return qaMode()?data:stripInviteUrls(data);
+  }
+
   const api = {
     apiBase,
+    qaMode,
     health: () => request('/health'),
-    createAssessment: payload => request('/api/assessments', { json: payload }),
+    createAssessment,
     inviteContext,
     submitInvite: (token, payload) => request('/api/invite/' + encodeURIComponent(token) + '/submit', { json: payload }),
-    cycleStatus: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/status', { manageToken }),
+    cycleStatus,
     exportCycle: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/export', { manageToken }),
-    recoverInvites: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/invites', { manageToken }),
+    recoverInvites,
+    recoverInvitesQa,
     sendInvitations: (assessmentId, cycle, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles/' + Number(cycle) + '/send', { method:'POST', manageToken, json:{} }),
-    createNextCycle: (assessmentId, manageToken, payload = {}) => request('/api/manage/' + encodeURIComponent(assessmentId) + '/cycles', { manageToken, json: payload }),
+    createNextCycle,
     deleteAssessment: (assessmentId, manageToken) => request('/api/manage/' + encodeURIComponent(assessmentId), { method:'DELETE', manageToken }),
     parseManageHash,
     manageHash,
@@ -141,9 +214,10 @@
     loadHelper('compare-radar-safe.js?v=20260821-2');
   }
   if(/\/guardian\.html$/i.test(location.pathname)){
-    loadHelper('guardian-invites.js?v=20260820-2');
     loadHelper('guardian-workspace.js?v=20260820-1');
-    loadHelper('guardian-test-console.js?v=20260821-1');
+    // Per-recipient identity/status UI is intentionally paused until the safe
+    // Worker /invites policy is deployed. QA links remain available only in ?qa=1.
+    if(qaMode())loadHelper('guardian-test-console.js?v=20260821-roles1');
   }
   if(/\/setup-v2\.html$/i.test(location.pathname)){
     loadHelper('guardian-workspace.js?v=20260820-1');

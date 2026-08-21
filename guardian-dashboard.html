@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Leadership 360° – Sergėtojo darbo stalas</title>
+  <title>Leadership 360° – Sergėtojo administravimo stalas</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     .topbar{max-width:1000px;margin:0 auto;padding:10px 20px;display:flex;justify-content:flex-end;gap:8px}
@@ -17,7 +17,7 @@
     .leader{font-size:1.08rem;font-weight:750}.meta{font-size:.8rem;color:var(--muted);margin-top:3px}.status-pill{display:inline-block;padding:4px 9px;border-radius:999px;border:1px solid var(--border);font-size:.75rem;font-weight:700}
     .progressline{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:12px}.progressline>div{height:100%;background:var(--brand)}
     .row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.empty{padding:28px 8px;text-align:center;color:var(--muted)}
-    .device-note{font-size:.8rem;color:var(--muted);line-height:1.45}
+    .device-note{font-size:.8rem;color:var(--muted);line-height:1.45}.boundary{border-left:3px solid var(--brand);padding:10px 12px;background:var(--surface2);border-radius:8px;margin-top:12px}
     @media(max-width:700px){.stat-grid{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr}.row-actions .btn{flex:1 1 150px;text-align:center}}
   </style>
 </head>
@@ -30,6 +30,7 @@
       <div><h2 id="workspaceTitle"></h2><p id="workspaceNote" class="device-note"></p></div>
       <button id="refreshBtn" type="button" class="secondary"></button>
     </div>
+    <div id="boundaryNote" class="boundary"></div>
     <div class="stat-grid">
       <div class="stat-card"><div class="n" id="statTotal">0</div><div class="lbl" id="statTotalLbl"></div></div>
       <div class="stat-card"><div class="n" id="statActive">0</div><div class="lbl" id="statActiveLbl"></div></div>
@@ -51,15 +52,15 @@
     <div id="assessmentList"></div>
   </section>
 </main>
-<script src="collector-client.js"></script>
+<script src="collector-client.js?v=20260821-roles1"></script>
 <script src="guardian-workspace.js"></script>
 <script>
 (function(){
   const C=window.Leadership360Collector,W=window.Leadership360Workspace;
   if(!C||!W)return;
   const COPY={
-    lt:{sub:'Sergėtojo darbo stalas',title:'Visi valdomi 360° vertinimai',note:'Šiame prototipo etape darbo stalas saugomas šiame įrenginyje. Vertintojų tapatybės ir jų atsakymai tebėra atskirti.',new:'＋ Naujas 360°',refresh:'↻ Atnaujinti visus',stats:['Vertinimai','Vyksta','Užbaigta','Laukiami atsakymai'],search:'Paieška',searchPh:'Lyderis, projektas arba Assessment ID',filter:'Rodyti',filters:['Visi','Vykstantys','Užbaigti','Reikia dėmesio'],list:'Vertinimai',loading:'Atnaujinama būsena…',empty:'Šiame įrenginyje dar nėra išsaugotų sergėtojo vertinimų.',noMatch:'Pagal pasirinktą filtrą nieko nerasta.',open:'Atidaryti ciklą →',report:'Ataskaita',hide:'Paslėpti iš darbo stalo',hideConfirm:'Paslėpti šį vertinimą tik iš šio įrenginio darbo stalo? Pats Assessment nebus ištrintas.',cycle:'Ciklas',completed:'užpildyta',status:{done:'Užbaigta',active:'Vyksta',attention:'Reikia dėmesio',offline:'Nepasiekiama'},unknown:'Neįvardytas vertinimas'},
-    en:{sub:'Guardian workspace',title:'All managed 360° assessments',note:'At this prototype stage the workspace is stored on this device. Evaluator identities and their responses remain separated.',new:'＋ New 360°',refresh:'↻ Refresh all',stats:['Assessments','Active','Completed','Responses waiting'],search:'Search',searchPh:'Leader, project or Assessment ID',filter:'Show',filters:['All','Active','Completed','Needs attention'],list:'Assessments',loading:'Refreshing status…',empty:'No guardian assessments are stored on this device yet.',noMatch:'Nothing matches the selected filter.',open:'Open cycle →',report:'Report',hide:'Hide from workspace',hideConfirm:'Hide this assessment only from this device workspace? The Assessment itself will not be deleted.',cycle:'Cycle',completed:'completed',status:{done:'Completed',active:'Active',attention:'Needs attention',offline:'Unavailable'},unknown:'Unnamed assessment'}
+    lt:{sub:'Sergėtojo administravimo stalas',title:'Man priskirti 360° vertinimai',note:'Šiame prototipo etape darbo stalo registras saugomas šiame įrenginyje. Vertintojų tapatybės ir atsakymai tebėra atskirti.',boundary:'Šiame darbo stale valdoma tik proceso eiga. Ataskaitos, individualūs atsakymai, 90 dienų planai ir C1–C2 rezultatų palyginimai Sergėtojo rolei neprieinami.',new:'＋ Naujas 360°',refresh:'↻ Atnaujinti visus',stats:['Vertinimai','Vyksta','Užbaigta','Laukiami atsakymai'],search:'Paieška',searchPh:'Lyderis, projektas arba Assessment ID',filter:'Rodyti',filters:['Visi','Vykstantys','Užbaigti','Reikia dėmesio'],list:'Vertinimai',loading:'Atnaujinama būsena…',empty:'Šiame įrenginyje dar nėra išsaugotų Sergėtojo vertinimų.',noMatch:'Pagal pasirinktą filtrą nieko nerasta.',open:'Administruoti ciklą →',hide:'Paslėpti iš darbo stalo',hideConfirm:'Paslėpti šį vertinimą tik iš šio įrenginio darbo stalo? Pats Assessment nebus ištrintas.',cycle:'Ciklas',completed:'užpildyta',status:{done:'Užbaigta',active:'Vyksta',attention:'Reikia dėmesio',offline:'Nepasiekiama'},unknown:'Neįvardytas vertinimas'},
+    en:{sub:'Guardian administration workspace',title:'360° assessments assigned to me',note:'At this prototype stage the workspace registry is stored on this device. Evaluator identities and responses remain separated.',boundary:'This workspace manages process flow only. Reports, individual answers, 90-day plans and C1–C2 result comparisons are not available to the Guardian role.',new:'＋ New 360°',refresh:'↻ Refresh all',stats:['Assessments','Active','Completed','Responses waiting'],search:'Search',searchPh:'Leader, project or Assessment ID',filter:'Show',filters:['All','Active','Completed','Needs attention'],list:'Assessments',loading:'Refreshing status…',empty:'No Guardian assessments are stored on this device yet.',noMatch:'Nothing matches the selected filter.',open:'Administer cycle →',hide:'Hide from workspace',hideConfirm:'Hide this assessment only from this device workspace? The Assessment itself will not be deleted.',cycle:'Cycle',completed:'completed',status:{done:'Completed',active:'Active',attention:'Needs attention',offline:'Unavailable'},unknown:'Unnamed assessment'}
   };
   let lang=(localStorage.getItem('leadership360_ui_lang')||document.documentElement.lang||'lt').startsWith('en')?'en':'lt';
   let models=[];
@@ -67,7 +68,7 @@
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
   function renderStatic(){
-    const x=t();document.documentElement.lang=lang;document.title='Leadership 360° – '+x.sub;document.getElementById('headSub').textContent=x.sub;document.getElementById('workspaceTitle').textContent=x.title;document.getElementById('workspaceNote').textContent=x.note;document.getElementById('newTop').textContent=x.new;document.getElementById('refreshBtn').textContent=x.refresh;document.getElementById('statTotalLbl').textContent=x.stats[0];document.getElementById('statActiveLbl').textContent=x.stats[1];document.getElementById('statDoneLbl').textContent=x.stats[2];document.getElementById('statWaitingLbl').textContent=x.stats[3];document.getElementById('searchLbl').textContent=x.search;document.getElementById('searchInput').placeholder=x.searchPh;document.getElementById('filterLbl').textContent=x.filter;document.getElementById('filterSelect').options[0].textContent=x.filters[0];document.getElementById('filterSelect').options[1].textContent=x.filters[1];document.getElementById('filterSelect').options[2].textContent=x.filters[2];document.getElementById('filterSelect').options[3].textContent=x.filters[3];document.getElementById('assessmentsTitle').textContent=x.list;document.getElementById('langToggle').textContent=lang==='lt'?'EN':'LT';renderList();
+    const x=t();document.documentElement.lang=lang;document.title='Leadership 360° – '+x.sub;document.getElementById('headSub').textContent=x.sub;document.getElementById('workspaceTitle').textContent=x.title;document.getElementById('workspaceNote').textContent=x.note;document.getElementById('boundaryNote').textContent=x.boundary;document.getElementById('newTop').textContent=x.new;document.getElementById('refreshBtn').textContent=x.refresh;document.getElementById('statTotalLbl').textContent=x.stats[0];document.getElementById('statActiveLbl').textContent=x.stats[1];document.getElementById('statDoneLbl').textContent=x.stats[2];document.getElementById('statWaitingLbl').textContent=x.stats[3];document.getElementById('searchLbl').textContent=x.search;document.getElementById('searchInput').placeholder=x.searchPh;document.getElementById('filterLbl').textContent=x.filter;document.getElementById('filterSelect').options[0].textContent=x.filters[0];document.getElementById('filterSelect').options[1].textContent=x.filters[1];document.getElementById('filterSelect').options[2].textContent=x.filters[2];document.getElementById('filterSelect').options[3].textContent=x.filters[3];document.getElementById('assessmentsTitle').textContent=x.list;document.getElementById('langToggle').textContent=lang==='lt'?'EN':'LT';renderList();
   }
 
   function classify(m){
@@ -84,18 +85,13 @@
     models=await Promise.all(entries.map(async item=>{
       const m={...item,total:0,completed:0,opened:0,waiting:0,error:false};
       try{
-        const data=await C.recoverInvites(item.assessmentId,item.cycle||1,item.manageToken);
-        const invites=data.invites||[];
-        m.leaderName=data.leaderName||item.leaderName||'';m.projectName=data.projectName||item.projectName||'';m.guardianName=data.guardianName||item.guardianName||'';
-        m.total=invites.length;m.completed=invites.filter(v=>v.status==='completed').length;m.opened=invites.filter(v=>v.status==='opened'||v.status==='submitting').length;m.waiting=Math.max(0,m.total-m.completed);
-        W.register(item,{leaderName:m.leaderName,projectName:m.projectName,guardianName:m.guardianName,createdAt:data.createdAt||item.createdAt||''});
-      }catch(_){
-        m.error=true;
-        try{
-          const s=await C.cycleStatus(item.assessmentId,item.cycle||1,item.manageToken);
-          const groups=s.groups||[];m.total=groups.reduce((n,g)=>n+Number(g.total||0),0);m.completed=groups.reduce((n,g)=>n+Number(g.completed||0),0);m.opened=groups.reduce((n,g)=>n+Number(g.opened||0),0);m.waiting=Math.max(0,m.total-m.completed);m.error=false;
-        }catch(__){}
-      }
+        const s=await C.cycleStatus(item.assessmentId,item.cycle||1,item.manageToken);
+        const groups=s.groups||[];
+        m.total=groups.reduce((n,g)=>n+Number(g.total||0),0);
+        m.completed=groups.reduce((n,g)=>n+Number(g.completed||0),0);
+        m.opened=groups.reduce((n,g)=>n+Number(g.opened||0),0);
+        m.waiting=Math.max(0,m.total-m.completed);
+      }catch(_){m.error=true}
       m.kind=classify(m);return m;
     }));
     models.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));
@@ -127,7 +123,7 @@
       const x=t(),kind=m.kind||classify(m),pct=m.total?Math.round(m.completed/m.total*100):0,name=m.leaderName||m.projectName||m.assessmentId||x.unknown;
       const auth={assessmentId:m.assessmentId,manageToken:m.manageToken,cycle:m.cycle||1,lang};
       const project=m.projectName?` · ${esc(m.projectName)}`:'';
-      return `<div class="assessment-row" data-aid="${esc(m.assessmentId)}"><div class="row-top"><div><div class="leader">${esc(name)}</div><div class="meta">${esc(m.assessmentId)}${project} · ${esc(x.cycle)} C${Number(m.cycle||1)}</div></div><span class="status-pill">${esc(x.status[kind]||kind)}</span></div><div class="meta" style="margin-top:10px"><strong>${m.completed}/${m.total}</strong> ${esc(x.completed)}</div><div class="progressline"><div style="width:${pct}%"></div></div><div class="row-actions"><a class="btn" href="${esc(C.guardianUrl(auth))}">${esc(x.open)}</a><a class="btn secondary" href="${esc(C.reportUrl(auth))}">${esc(x.report)}</a><button class="secondary hideBtn" type="button" data-aid="${esc(m.assessmentId)}">${esc(x.hide)}</button></div></div>`;
+      return `<div class="assessment-row" data-aid="${esc(m.assessmentId)}"><div class="row-top"><div><div class="leader">${esc(name)}</div><div class="meta">${esc(m.assessmentId)}${project} · ${esc(x.cycle)} C${Number(m.cycle||1)}</div></div><span class="status-pill">${esc(x.status[kind]||kind)}</span></div><div class="meta" style="margin-top:10px"><strong>${m.completed}/${m.total}</strong> ${esc(x.completed)}</div><div class="progressline"><div style="width:${pct}%"></div></div><div class="row-actions"><a class="btn" href="${esc(C.guardianUrl(auth))}">${esc(x.open)}</a><button class="secondary hideBtn" type="button" data-aid="${esc(m.assessmentId)}">${esc(x.hide)}</button></div></div>`;
     }).join('');
     list.querySelectorAll('.hideBtn').forEach(btn=>btn.onclick=()=>{if(confirm(t().hideConfirm)){W.remove(btn.dataset.aid);models=models.filter(m=>m.assessmentId!==btn.dataset.aid);renderList()}});
   }
