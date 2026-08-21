@@ -5,6 +5,7 @@ workers_dev = true
 
 [vars]
 PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey-v2.html"
+PUBLIC_GUARDIAN_BASE = "https://olemoz1977.github.io/gla360-personal-full/guardian.html"
 
 [[d1_databases]]
 binding = "IDENTITY_DB"
@@ -16,10 +17,11 @@ binding = "RESPONSE_DB"
 database_name = "leadership-360-responses"
 database_id = "fddd64fc-902b-4b1f-85aa-e2bc20a5a10e"
 
-# Enable after Cloudflare Email Service is onboarded for the sending domain:
+# Guardian and evaluator delivery becomes live after Cloudflare Email Service is
+# onboarded for the sending domain. Then enable this binding:
 # [[send_email]]
 # name = "EMAIL"
 # remote = true
 #
-# MAIL_FROM must then be configured as a Worker variable, for example:
+# MAIL_FROM must also be configured as a Worker variable, for example:
 # Leadership 360 <noreply@your-domain>
