@@ -41,7 +41,7 @@
       ['index.html','🏠 Pradžia'],['audit.html','🔍 3 min. auditas'],['setup-v2.html','📊 Pilnas 360°'],['plan-direct.html','🎯 Tik planas'],['README.html','📖 Aprašas'],['PRIVACY-v2.html','🔒 Privatumas']
     ]},
     en:{aria:'Main navigation',switchLabel:'LT',switchAria:'Perjungti į lietuvių kalbą',items:[
-      ['index.html','🏠 Home'],['audit.html','🔍 3 min. audit'],['setup-v2.html','📊 Full 360°'],['plan-direct.html','🎯 Plan only'],['README.html','📖 About'],['PRIVACY-v2.html','🔒 Privacy']
+      ['index.html','🏠 Home'],['audit.html','🔍 3 min. audit'],['setup-v2.html','📊 Full 360°'],['plan-en.html','🎯 Plan only'],['README.html','📖 About'],['PRIVACY-v2.html','🔒 Privacy']
     ]}
   };
 
