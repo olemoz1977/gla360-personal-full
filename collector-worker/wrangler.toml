@@ -6,6 +6,7 @@ workers_dev = true
 [vars]
 PUBLIC_SURVEY_BASE = "https://olemoz1977.github.io/gla360-personal-full/survey-v2.html"
 PUBLIC_GUARDIAN_BASE = "https://olemoz1977.github.io/gla360-personal-full/guardian.html"
+MAIL_FROM = "Leadership 360 <noreply@2rasi.com>"
 
 [[d1_databases]]
 binding = "IDENTITY_DB"
@@ -17,11 +18,11 @@ binding = "RESPONSE_DB"
 database_name = "leadership-360-responses"
 database_id = "fddd64fc-902b-4b1f-85aa-e2bc20a5a10e"
 
-# Guardian and evaluator delivery becomes live after Cloudflare Email Service is
-# onboarded for the sending domain. Then enable this binding:
+# Beta email transport: Resend API over HTTPS, so Workers Free is sufficient.
+# Configure RESEND_API_KEY as a Worker secret; never commit it to this file.
+# The 2rasi.com domain must be verified in Resend before production delivery.
+#
+# Optional future transport if Cloudflare Email Sending is enabled on Workers Paid:
 # [[send_email]]
 # name = "EMAIL"
 # remote = true
-#
-# MAIL_FROM must also be configured as a Worker variable, for example:
-# Leadership 360 <noreply@your-domain>
