@@ -22,6 +22,7 @@
 
   const enc = new TextEncoder();
   const ltComp = name => COMP_LT[name] || name || '';
+  const isEn = () => document.documentElement.lang === 'en';
 
   function readAuth(){
     const C=window.Leadership360Collector;
@@ -91,7 +92,7 @@
     let chunk='';
     let first=true;
     for(const ch of String(line)){
-      const limit=first?75:74; // continuation line includes the leading space
+      const limit=first?75:74;
       if(chunk && enc.encode(chunk+ch).length>limit){
         out+=chunk+'\r\n ';
         chunk=ch;
@@ -124,14 +125,12 @@
   function scheduleFor(freq,phase,startDate){
     const f=String(freq||'').toLowerCase();
     let offset=phaseOffset(phase);
-
     const explicitDay=f.match(/(\d+)\s*[-–]?ąją\s+dien/);
     if(explicitDay)offset=Math.max(0,Number(explicitDay[1])-1);
     else {
       const dayMatch=f.match(/^(?:per\s+)?(\d+)\s*d\.?$/);
       if(dayMatch)offset=Math.max(0,Number(dayMatch[1])-1);
     }
-
     const eventDate=addDays(startDate,offset);
     let rule='';
     if(f.includes('kas pirmadien')) rule='FREQ=WEEKLY;BYDAY=MO';
@@ -140,42 +139,22 @@
     else if(f.includes('kas savaitę')) rule=`FREQ=WEEKLY;BYDAY=${weekdayCode(eventDate)}`;
     else if(f.includes('kas mėnesį')) rule='FREQ=MONTHLY';
     else if(f.includes('kasdien')) rule='FREQ=DAILY';
-    // "kas susitikimą", "kiekvieną kartą", "nuolat" ir pan. nėra verčiami į dirbtinį kalendoriaus ritmą.
-
     return {eventDate,rule};
   }
 
   function buildIcs(items,startDate,leader){
     const end=addDays(startDate,90);
     const raw=[
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//Leadership 360°//Tobulėjimo planas//LT',
-      'CALSCALE:GREGORIAN',
-      'METHOD:PUBLISH',
-      `X-WR-CALNAME:${escText(`Leadership 360° - ${leader} 90d`)}`,
-      'X-WR-TIMEZONE:Europe/Vilnius'
+      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Leadership 360°//Tobulėjimo planas//LT','CALSCALE:GREGORIAN','METHOD:PUBLISH',
+      `X-WR-CALNAME:${escText(`Leadership 360° - ${leader} 90d`)}`,'X-WR-TIMEZONE:Europe/Vilnius'
     ];
-
     items.forEach((item,i)=>{
       const {eventDate,rule}=scheduleFor(item.freq,item.phase,startDate);
       const summary=`Leadership 360° · ${ltComp(item.comp)} · ${shortAction(item.text)}`;
       const description=`${ltComp(item.comp)}\n${item.freq}\n\n${item.text}`;
-      raw.push(
-        'BEGIN:VEVENT',
-        `UID:leadership360-${Date.now()}-${i}@2rasi`,
-        `DTSTART;VALUE=DATE:${icsDate(eventDate)}`,
-        `DTEND;VALUE=DATE:${icsDate(addDays(eventDate,1))}`
-      );
+      raw.push('BEGIN:VEVENT',`UID:leadership360-${Date.now()}-${i}@2rasi`,`DTSTART;VALUE=DATE:${icsDate(eventDate)}`,`DTEND;VALUE=DATE:${icsDate(addDays(eventDate,1))}`);
       if(rule)raw.push(`RRULE:${rule};UNTIL=${icsDate(end)}`);
-      raw.push(
-        `SUMMARY:${escText(summary)}`,
-        `DESCRIPTION:${escText(description)}`,
-        'CATEGORIES:Leadership 360,Lyderystė',
-        'STATUS:CONFIRMED',
-        `DTSTAMP:${icsStamp()}`,
-        'END:VEVENT'
-      );
+      raw.push(`SUMMARY:${escText(summary)}`,`DESCRIPTION:${escText(description)}`,'CATEGORIES:Leadership 360,Lyderystė','STATUS:CONFIRMED',`DTSTAMP:${icsStamp()}`,'END:VEVENT');
     });
     raw.push('END:VCALENDAR');
     return raw.map(foldLine).join('\r\n')+'\r\n';
@@ -187,15 +166,14 @@
 
   function exportSelected(){
     const checked=Array.from(document.querySelectorAll('.cal-cb:checked'));
-    if(!checked.length){
-      alert('Pažymėkite bent vieną veiksmą, kurį norite eksportuoti į kalendorių.');
+    if(checked.length < 1 || checked.length > 3){
+      alert(isEn()
+        ? 'Choose 1–3 actions to export to your calendar.'
+        : 'Pažymėkite 1–3 veiksmus, kuriuos norite eksportuoti į kalendorių.');
       return;
     }
     const items=checked.map(cb=>cb.closest('.action-item')).filter(Boolean).map(row=>({
-      text:row.dataset.text||'',
-      freq:row.dataset.freq||'Vieną kartą',
-      phase:row.dataset.phase||'p1',
-      comp:row.dataset.comp||''
+      text:row.dataset.text||'', freq:row.dataset.freq||'Vieną kartą', phase:row.dataset.phase||'p1', comp:row.dataset.comp||''
     }));
     const leader=(document.getElementById('leaderNamePlan')?.value||'Lyderis').trim()||'Lyderis';
     const startDate=new Date();
