@@ -202,7 +202,7 @@
   if(/\/survey-v2\.html$/i.test(location.pathname)){
     loadHelper('survey-recovery.js?v=20260820-1');
     loadHelper('survey-enhancements-safe.js?v=20260820-2');
-    loadHelper('survey-self-reflection.js?v=20260820-1');
+    loadHelper('survey-self-reflection.js?v=20260821-2');
   }
   if(/\/report-v2\.html$/i.test(location.pathname)){
     loadHelper('report-coverage.js?v=20260820-3');
