@@ -1,6 +1,6 @@
 import app from './bootstrap.js';
 
-const POLICY_VERSION='guardian-v3';
+const POLICY_VERSION='guardian-v4';
 const ALLOWED_ORIGINS=new Set([
   'https://olemoz1977.github.io',
   'https://2rasi.lt',
@@ -130,6 +130,23 @@ async function sendGuardianAccess(env,data,input){
   }
 }
 
+async function cleanupFailedAssessment(request,env,ctx,data){
+  if(!data?.assessmentId||!data?.manageToken)return false;
+  try{
+    const u=new URL('/api/manage/'+encodeURIComponent(data.assessmentId),request.url);
+    const headers=new Headers();
+    headers.set('authorization','Bearer '+data.manageToken);
+    const origin=request.headers.get('origin');
+    if(origin)headers.set('origin',origin);
+    const cleanupRequest=new Request(u.toString(),{method:'DELETE',headers});
+    const cleanupResponse=await app.fetch(cleanupRequest,env,ctx);
+    return cleanupResponse.ok;
+  }catch(error){
+    console.error('guardian_delivery_cleanup_failed',error);
+    return false;
+  }
+}
+
 async function withPolicyMarker(response,env){
   if(!response?.ok)return response;
   let data;
@@ -195,6 +212,9 @@ export default {
       if(guardianEmail&&selfEmail&&guardianEmail===selfEmail){
         return policyJson(request,{ok:false,error:'guardian_cannot_be_leader'},400);
       }
+      if(!explicitQa(request)&&emailProvider(env)==='none'){
+        return policyJson(request,{ok:false,error:'guardian_delivery_not_configured'},503);
+      }
     }
 
     let response=await app.fetch(request,env,ctx);
@@ -207,6 +227,14 @@ export default {
       let raw;
       try{raw=await response.clone().json()}catch(_){}
       const delivery=await sendGuardianAccess(env,raw,createInput);
+      if(!explicitQa(request)&&delivery.status!=='sent'){
+        const cleaned=await cleanupFailedAssessment(request,env,ctx,raw);
+        return policyJson(request,{
+          ok:false,
+          error:cleaned?'guardian_delivery_failed':'guardian_delivery_failed_cleanup_failed',
+          guardianEmailProvider:delivery.provider||emailProvider(env)
+        },cleaned?502:500);
+      }
       response=await withGuardianDelivery(response,delivery);
     }
 
