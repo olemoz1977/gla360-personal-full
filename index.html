@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Leadership 360°</title>
-  <meta name="description" content="Leadership 360°: trumpas auditas, pilnas 360° vertinimo ciklas arba savarankiškas 90 dienų veiksmų planas.">
+  <meta name="description" content="Leadership 360°: short audit, full 360° feedback cycle or a self-directed 90-day action plan.">
   <link rel="stylesheet" href="styles.css">
   <style>
     .flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
@@ -12,9 +12,6 @@
     .flow-step strong{display:block;color:var(--brand);margin-bottom:5px}
     .flow-step.conditional{border-style:dashed}
     .note{font-size:.84rem}
-    .navline{max-width:900px;margin:0 auto;padding:9px 20px;display:flex;gap:14px;flex-wrap:wrap}
-    .navline a{text-decoration:none;color:var(--muted);font-size:.88rem}
-    .navline a:first-child{color:var(--brand);font-weight:700}
     .entry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:16px}
     .entry-card{border:1px solid var(--border);border-radius:16px;background:var(--surface2);padding:18px;display:flex;flex-direction:column;gap:10px;min-height:220px}
     .entry-card h3{margin:0;font-size:1.05rem}
@@ -26,74 +23,56 @@
   </style>
 </head>
 <body>
-<nav style="background:var(--surface2);border-bottom:1px solid var(--border)">
-  <div class="navline">
-    <a href="index.html">🏠 Pradžia</a>
-    <a href="audit.html">🔍 3 min. auditas</a>
-    <a href="setup-v2.html">📊 Pilnas 360°</a>
-    <a href="plan-direct.html">🎯 Tik planas</a>
-    <a href="README.html">📖 Aprašas</a>
-    <a href="PRIVACY-v2.html">🔒 Privatumas</a>
-  </div>
-</nav>
-<header class="head">
-  <h1>Leadership 360°</h1>
-  <p>Pasirinkite tiek gylio, kiek jums dabar reikia.</p>
-</header>
-<main class="wrap">
-  <section class="card">
-    <h2>Nuo ko norite pradėti?</h2>
-    <p class="muted">Nebūtina iškart organizuoti pilno 360° vertinimo. Galite pradėti nuo trumpo audito, pilno grįžtamojo ryšio ciklo arba tiesiog nuo konkretaus 90 dienų veiksmų plano.</p>
-
-    <div class="entry-grid">
-      <div class="entry-card">
-        <div class="entry-kicker">Greitas įėjimas</div>
-        <h3>🔍 3 min. auditas</h3>
-        <p>Trumpai pasižiūrėkite, kur gali būti vadybinės trinties ar nepastebėtų spragų. Tai nėra mini 360° ir respondentų nereikia.</p>
-        <p class="muted note">Po audito galėsite nuspręsti, ar verta eiti giliau.</p>
-        <a class="btn secondary" href="audit.html">Atlikti auditą →</a>
+<script src="site-nav.js"></script>
+<header class="head"><h1>Leadership 360°</h1><p id="subtitle"></p></header>
+<main class="wrap" id="content"></main>
+<script>
+(function(){
+  const q=new URLSearchParams(location.search).get('lang');
+  let stored='';try{stored=localStorage.getItem('leadership360_ui_lang')||''}catch(_){}
+  const lang=String(q||stored||navigator.language||'lt').toLowerCase().startsWith('en')?'en':'lt';
+  try{localStorage.setItem('leadership360_ui_lang',lang)}catch(_){}
+  document.documentElement.lang=lang;
+  const C={
+    lt:{
+      subtitle:'Pasirinkite tiek gylio, kiek jums dabar reikia.',
+      start:'Nuo ko norite pradėti?',
+      intro:'Nebūtina iškart organizuoti pilno 360° vertinimo. Galite pradėti nuo trumpo audito, pilno grįžtamojo ryšio ciklo arba tiesiog nuo konkretaus 90 dienų veiksmų plano.',
+      quick:'Greitas įėjimas',auditTitle:'🔍 3 min. auditas',auditText:'Trumpai pasižiūrėkite, kur gali būti vadybinės trinties ar nepastebėtų spragų. Tai nėra mini 360° ir respondentų nereikia.',auditNote:'Po audito galėsite nuspręsti, ar verta eiti giliau.',auditBtn:'Atlikti auditą →',
+      full:'Pilnas ciklas',fullTitle:'📊 Leadership 360°',fullText:'Savivertinimas + kitų žmonių vertinimas, ataskaita, 90 dienų planas ir pakartotinis matavimas (C2).',fullNote:'Kai norite ne tik veiksmų, bet ir išorinio grįžtamojo ryšio bei pokyčio matavimo.',fullBtn:'Pradėti pilną 360° →',
+      noSurvey:'Be apklausų',planTitle:'🎯 Noriu tik veiksmų plano',planText:'Jau žinote, ką norite keisti? Pasirinkite iki 3 tobulinimo sričių ir sugeneruokite 90 dienų planą be savivertinimo ar kitų žmonių apklausų.',planNote:'Plane aiškiai pažymima, kad prioritetai pasirinkti savarankiškai, o vertinimas neatliktas.',planBtn:'Kurti 90 d. planą →',
+      cycleTitle:'Kaip atrodo pilnas Leadership 360° ciklas',cycleNote:'Trumpas auditas nėra privaloma šio ciklo dalis. Jis yra tik vienas galimų įėjimų.',
+      steps:[['1 · C1','Savivertinimas ir vertintojų atsakymai'],['2 · Rezultatas','Ataskaita ir savęs / kitų skirtumai'],['3 · 90 dienų','Pasirinkti prioritetai ir konkretūs veiksmai'],['4 · C2','Pakartotinis matavimas ir pokyčio palyginimas'],['5 · Refleksija, jei reikia','Tik toms sritims, kurios susilpnėjo'],['6 · Kitas planas','Pagal C2 rezultatą adaptuotas naujas 90 dienų ciklas']],
+      testTitle:'Dabartinė bandymo kryptis',testText:'Pirmiausia tikrinamas visas C1 → C2 procesas nuo realaus kvietimo iki pakartotinio matavimo. 90 dienų veiksmų turinys šiame prototipe orientuotas į Manufacturing / Operations kontekstą.',
+      legalTitle:'Teisinė pastaba',legalText:'Leadership 360° yra nepriklausomas prototipas. Tai nėra oficialus GLA360 produktas. Vertinimas skirtas ugdymui ir refleksijai, o ne diagnostikai ar automatiniams sprendimams apie žmogų.'
+    },
+    en:{
+      subtitle:'Choose the level of depth you need right now.',
+      start:'Where would you like to start?',
+      intro:'You do not have to organise a full 360° assessment immediately. Start with a short audit, a full feedback cycle, or go straight to a practical 90-day action plan.',
+      quick:'Quick entry',auditTitle:'🔍 3 min. audit',auditText:'Take a quick look at where management friction or unnoticed gaps may exist. This is not a mini 360° and requires no respondents.',auditNote:'After the audit, decide whether going deeper is worthwhile.',auditBtn:'Take the audit →',
+      full:'Full cycle',fullTitle:'📊 Leadership 360°',fullText:'Self-assessment + feedback from others, a report, a 90-day plan and a repeat measurement (C2).',fullNote:'For when you want external feedback and measurable change, not only a list of actions.',fullBtn:'Start full 360° →',
+      noSurvey:'No surveys',planTitle:'🎯 I only want an action plan',planText:'Already know what you want to change? Choose up to 3 development areas and generate a 90-day plan without self-assessment or surveys of other people.',planNote:'The plan clearly states that the priorities were self-selected and no assessment was performed.',planBtn:'Create a 90-day plan →',
+      cycleTitle:'What the full Leadership 360° cycle looks like',cycleNote:'The short audit is not a required part of this cycle. It is simply one possible entry point.',
+      steps:[['1 · C1','Self-assessment and evaluator responses'],['2 · Result','Report and self / others differences'],['3 · 90 days','Selected priorities and concrete actions'],['4 · C2','Repeat measurement and change comparison'],['5 · Reflection, if needed','Only for areas that declined'],['6 · Next plan','A new 90-day cycle adapted to the C2 result']],
+      testTitle:'Current prototype focus',testText:'The priority is validating the full C1 → C2 process from a real invitation to repeat measurement. The 90-day action content in this prototype is currently focused on Manufacturing / Operations.',
+      legalTitle:'Legal note',legalText:'Leadership 360° is an independent prototype. It is not an official GLA360 product. The assessment is intended for development and reflection, not diagnosis or automated decisions about a person.'
+    }
+  }[lang];
+  const href=p=>p+'?lang='+lang;
+  document.getElementById('subtitle').textContent=C.subtitle;
+  document.getElementById('content').innerHTML=`
+    <section class="card"><h2>${C.start}</h2><p class="muted">${C.intro}</p>
+      <div class="entry-grid">
+        <div class="entry-card"><div class="entry-kicker">${C.quick}</div><h3>${C.auditTitle}</h3><p>${C.auditText}</p><p class="muted note">${C.auditNote}</p><a class="btn secondary" href="${href('audit.html')}">${C.auditBtn}</a></div>
+        <div class="entry-card recommended"><div class="entry-kicker">${C.full}</div><h3>${C.fullTitle}</h3><p>${C.fullText}</p><p class="muted note">${C.fullNote}</p><a class="btn" href="${href('setup-v2.html')}">${C.fullBtn}</a></div>
+        <div class="entry-card"><div class="entry-kicker">${C.noSurvey}</div><h3>${C.planTitle}</h3><p>${C.planText}</p><p class="muted note">${C.planNote}</p><a class="btn secondary" href="${href('plan-direct.html')}">${C.planBtn}</a></div>
       </div>
-
-      <div class="entry-card recommended">
-        <div class="entry-kicker">Pilnas ciklas</div>
-        <h3>📊 Leadership 360°</h3>
-        <p>Savivertinimas + kitų žmonių vertinimas, ataskaita, 90 dienų planas ir pakartotinis matavimas (C2).</p>
-        <p class="muted note">Kai norite ne tik veiksmų, bet ir išorinio grįžtamojo ryšio bei pokyčio matavimo.</p>
-        <a class="btn" href="setup-v2.html">Pradėti pilną 360° →</a>
-      </div>
-
-      <div class="entry-card">
-        <div class="entry-kicker">Be apklausų</div>
-        <h3>🎯 Noriu tik veiksmų plano</h3>
-        <p>Jau žinote, ką norite keisti? Pasirinkite iki 3 tobulinimo sričių ir sugeneruokite 90 dienų planą be savivertinimo ar kitų žmonių apklausų.</p>
-        <p class="muted note">Plane aiškiai pažymima, kad prioritetai pasirinkti savarankiškai, o vertinimas neatliktas.</p>
-        <a class="btn secondary" href="plan-direct.html">Kurti 90 d. planą →</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Kaip atrodo pilnas Leadership 360° ciklas</h2>
-    <p class="muted">Trumpas auditas nėra privaloma šio ciklo dalis. Jis yra tik vienas galimų įėjimų.</p>
-    <div class="flow">
-      <div class="flow-step"><strong>1 · C1</strong>Savivertinimas ir vertintojų atsakymai</div>
-      <div class="flow-step"><strong>2 · Rezultatas</strong>Ataskaita ir savęs / kitų skirtumai</div>
-      <div class="flow-step"><strong>3 · 90 dienų</strong>Pasirinkti prioritetai ir konkretūs veiksmai</div>
-      <div class="flow-step"><strong>4 · C2</strong>Pakartotinis matavimas ir pokyčio palyginimas</div>
-      <div class="flow-step conditional"><strong>5 · Refleksija, jei reikia</strong>Tik toms sritims, kurios susilpnėjo</div>
-      <div class="flow-step"><strong>6 · Kitas planas</strong>Pagal C2 rezultatą adaptuotas naujas 90 dienų ciklas</div>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Dabartinė bandymo kryptis</h2>
-    <p class="muted">Pirmiausia tikrinamas visas C1 → C2 procesas nuo realaus kvietimo iki pakartotinio matavimo. 90 dienų veiksmų turinys šiame prototipe orientuotas į Manufacturing / Operations kontekstą.</p>
-  </section>
-
-  <section class="card">
-    <h2>Teisinė pastaba</h2>
-    <p class="muted">Leadership 360° yra nepriklausomas prototipas. Tai nėra oficialus GLA360 produktas. Vertinimas skirtas ugdymui ir refleksijai, o ne diagnostikai ar automatiniams sprendimams apie žmogų.</p>
-  </section>
-</main>
+    </section>
+    <section class="card"><h2>${C.cycleTitle}</h2><p class="muted">${C.cycleNote}</p><div class="flow">${C.steps.map((s,i)=>`<div class="flow-step${i===4?' conditional':''}"><strong>${s[0]}</strong>${s[1]}</div>`).join('')}</div></section>
+    <section class="card"><h2>${C.testTitle}</h2><p class="muted">${C.testText}</p></section>
+    <section class="card"><h2>${C.legalTitle}</h2><p class="muted">${C.legalText}</p></section>`;
+})();
+</script>
 </body>
 </html>
