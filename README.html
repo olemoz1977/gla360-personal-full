@@ -4,12 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Leadership 360° – Aprašas</title>
-  <meta name="description" content="Dabartinis Leadership 360° prototipo procesas: auditas, C1, ataskaita, 90 dienų planas, C2, palyginimas ir sąlyginė refleksija.">
+  <meta name="description" content="Current Leadership 360° prototype flow: audit, C1, report, 90-day plan, C2, comparison and conditional reflection.">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .navline{max-width:900px;margin:0 auto;padding:9px 20px;display:flex;gap:14px;flex-wrap:wrap}
-    .navline a{text-decoration:none;color:var(--muted);font-size:.88rem}
-    .navline a.active{color:var(--brand);font-weight:700}
     .flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
     .flow-step{padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);font-size:.88rem;line-height:1.5}
     .flow-step strong{display:block;color:var(--brand);margin-bottom:5px}
@@ -27,117 +24,73 @@
   </style>
 </head>
 <body>
-<nav style="background:var(--surface2);border-bottom:1px solid var(--border)">
-  <div class="navline">
-    <a href="index.html">🏠 Pradžia</a>
-    <a href="audit.html">🔍 3 min. auditas</a>
-    <a href="setup-v2.html">📊 Pilnas 360°</a>
-    <a href="plan-direct.html">🎯 Tik planas</a>
-    <a class="active" href="README.html">📖 Aprašas</a>
-    <a href="PRIVACY-v2.html">🔒 Privatumas</a>
-  </div>
-</nav>
-
-<header class="head">
-  <h1>Leadership 360° – Aprašas</h1>
-  <p>Dabartinis prototipo procesas nuo pirmo įėjimo iki pakartotinio matavimo.</p>
-</header>
-
-<main class="wrap">
-  <section class="card">
-    <h2>Trys skirtingi keliai</h2>
-    <p class="muted">Nebūtina pradėti nuo pilno 360°. Šie keliai yra atskiri ir jų duomenys automatiškai nesumaišomi.</p>
-    <div class="path-grid">
-      <div class="path"><strong>🔍 3 min. auditas</strong>Trumpas orientyras apie galimą vadybinę trintį. Tai nėra mini 360° ir respondentų nereikia.</div>
-      <div class="path"><strong>📊 Pilnas Leadership 360°</strong>Savivertinimas + kitų vertinimas → C1 ataskaita → 90 dienų planas → C2 → pokyčio palyginimas.</div>
-      <div class="path"><strong>🎯 Tik 90 d. planas</strong>Iki 3 sričių pasirenkamos savarankiškai. Vertinimas neatliekamas ir plane tai aiškiai pažymima.</div>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2>Pagrindiniai vertinimo parametrai</h2>
-    <table>
-      <tbody>
-        <tr><th>Lyderystės sritys</th><td>5 klasteriai</td></tr>
-        <tr><th>Gebėjimai</th><td>15 kompetencijų</td></tr>
-        <tr><th>Teiginiai</th><td>75, po 5 kiekvienai kompetencijai</td></tr>
-        <tr><th>Skalė</th><td>1–5 pagal stebimo elgesio dažnumą</td></tr>
-        <tr><th>„Negaliu įvertinti“</th><td>Nėra vertinimo balas ir į vidurkius neįtraukiama</td></tr>
-        <tr><th>Atviri komentarai</th><td>Savirefleksija ir vertintojų komentarai rodomi atskirai nuo skaitinių balų</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <section class="card">
-    <h2>Pilnas C1 → C2 ciklas</h2>
-    <div class="flow">
-      <div class="flow-step"><strong>1 · C1</strong>Sukuriamas vertinimas, savivertinimas ir vertintojų kvietimai.</div>
-      <div class="flow-step"><strong>2 · Rezultatas</strong>Ataskaita skaičiuojama iš saugaus surinkimo sluoksnio.</div>
-      <div class="flow-step"><strong>3 · 90 dienų</strong>Pasirenkami iki 3 prioritetų ir konkretūs veiksmai.</div>
-      <div class="flow-step"><strong>4 · C2</strong>Pakartotinis matavimas su naujais vienkartiniais kvietimais.</div>
-      <div class="flow-step"><strong>5 · Pokytis</strong>C1 ir C2 palyginami pagal kitų vertinimo pokytį.</div>
-      <div class="flow-step conditional"><strong>6 · Refleksija, jei reikia</strong>Tik pablogėjusioms sritims prieš naują planą.</div>
-    </div>
-
-    <div class="step">
-      <h3>1. Sukuriamas C1 vertinimas</h3>
-      <p>Lyderis arba Anonimiškumo sergėtojas nurodo lyderį, vertintojų sudėtį, jų el. paštus ir sergėtojo kontaktą. Kiekvienam dalyviui sukuriamas individualus vienkartinis kvietimas.</p>
-      <p><a class="btn" href="setup-v2.html">Pradėti pilną 360° →</a></p>
-    </div>
-
-    <div class="step">
-      <h3>2. Atsakymai surenkami atskirai nuo tapatybės</h3>
-      <p>Vertintojo el. paštas ir kvietimo būsena priklauso tapatybės sluoksniui. Apklausos atsakymai saugomi atsakymų sluoksnyje be vertintojo el. pašto.</p>
-      <p class="muted">Prototipo testavimo režime manualios kvietimų nuorodos dar gali būti naudojamos E2E patikrai. Produkciniame sraute sergėtojas neturi gauti vertintojo slapto kvietimo rakto.</p>
-    </div>
-
-    <div class="step">
-      <h3>3. Ataskaita</h3>
-      <p>Ataskaita atidaroma iš ciklo valdymo. JSON failų rankiniu būdu kelti nereikia. Rodomi savivertinimo ir kitų balai, 5 sričių vidurkiai, 15 kompetencijų, stebėjimo aprėptis, skirtumai ir atviri komentarai.</p>
-      <p class="muted">Vadovo vertinimas yra individualus. Anoniminėms grupėms ataskaitoje taikomos minimalaus dydžio taisyklės.</p>
-    </div>
-
-    <div class="step">
-      <h3>4. 90 dienų planas</h3>
-      <p>Plano puslapis automatiškai gauna aktyvaus ciklo rezultatą. Sistema pateikia duomenimis paremtas rekomendacijas, tačiau galutinį 1–3 sričių pasirinkimą palieka žmogui.</p>
-      <p>Kalendoriui ir Telegram pasirenkami tik 1–3 konkretūs veiksmai. PDF saugo visą planą.</p>
-    </div>
-
-    <div class="step">
-      <h3>5. C2 ir palyginimas</h3>
-      <p>Po veiksmų laikotarpio tame pačiame Assessment sukuriamas C2. Vertintojams generuojami nauji vienkartiniai kvietimai. C1 ir C2 palyginami tiesiai iš Collector, todėl dviejų JSON failų įkelti nereikia.</p>
-      <p><strong>Pokyčio taisyklė:</strong> Δ ≤ −0,20 laikoma pablogėjimu; −0,20 &lt; Δ &lt; +0,20 – be aiškaus pokyčio; nuo +0,20 – pagerėjimas.</p>
-    </div>
-
-    <div class="step conditional">
-      <h3>6. Refleksija – tik jei kažkas pablogėjo</h3>
-      <p>Refleksija nėra atskiras pagrindinės navigacijos įėjimas. Į ją pereinama iš C1/C2 palyginimo tik tada, kai bent viena kompetencija turi pablogėjimo signalą.</p>
-      <p>Kiekvienai pablogėjusiai sričiai pateikiami 4 klausimai. Norint tęsti reikia bent vieno konkretaus atsakymo ir pasirinkti pagrindinę priežastį: pasikeitusios aplinkybės, netinkamas planas, nevykdytas planas arba kita / mišri priežastis.</p>
-      <p class="muted">Refleksijos tekstas laikomas tik naršyklės sesijoje ir naudojamas kitam planui adaptuoti. Į Collector ar Telegram jis nesiunčiamas.</p>
-    </div>
-
-    <div class="note"><strong>Jei pablogėjusių sričių nėra:</strong> refleksijos etapas praleidžiamas ir iš palyginimo pereinama tiesiai į kitą 90 dienų planą.</div>
-  </section>
-
-  <section class="card">
-    <h2>Savarankiškas planas be apklausų</h2>
-    <p>Šis kelias nepriklauso C1/C2 procesui. Pasirenkama iki 3 kompetencijų, generuojamas standartinis 90 dienų planas ir aiškiai rodoma, kad prioritetai pasirinkti savarankiškai.</p>
-    <p><a class="btn secondary" href="plan-direct.html">🎯 Kurti 90 d. planą →</a></p>
-  </section>
-
-  <section class="card">
-    <h2>Dabartinės prototipo ribos</h2>
-    <ul style="padding-left:20px;line-height:1.8">
-      <li>90 dienų veiksmų turinys šiuo metu orientuotas į Manufacturing / Operations kontekstą. Platesnis universalumas numatytas prieš monetizacijos etapą.</li>
-      <li>Automatinis el. laiškų siuntimas dar nėra galutinai sukonfigūruotas; E2E bandymuose naudojamas testinis kvietimų režimas.</li>
-      <li>Produktas skirtas ugdymui ir refleksijai, o ne diagnozei ar automatiniams sprendimams apie žmogų.</li>
-    </ul>
-  </section>
-
-  <section class="card">
-    <h2>Teisinė pastaba</h2>
-    <p class="muted">Leadership 360° yra nepriklausomas prototipas ir nėra oficialus GLA360 produktas. Dabartinis sprendimas kuriamas kaip atskiras 2rasi / OMESG360 produktinis kelias.</p>
-  </section>
-</main>
+<script src="site-nav.js"></script>
+<header class="head"><h1 id="title"></h1><p id="subtitle"></p></header>
+<main class="wrap" id="content"></main>
+<script>
+(function(){
+  const q=new URLSearchParams(location.search).get('lang');let stored='';try{stored=localStorage.getItem('leadership360_ui_lang')||''}catch(_){}
+  const lang=String(q||stored||navigator.language||'lt').toLowerCase().startsWith('en')?'en':'lt';
+  try{localStorage.setItem('leadership360_ui_lang',lang)}catch(_){}
+  document.documentElement.lang=lang;
+  const href=p=>p+'?lang='+lang;
+  const T={
+    lt:{
+      title:'Leadership 360° – Aprašas',subtitle:'Dabartinis prototipo procesas nuo pirmo įėjimo iki pakartotinio matavimo.',
+      pathsTitle:'Trys skirtingi keliai',pathsIntro:'Nebūtina pradėti nuo pilno 360°. Šie keliai yra atskiri ir jų duomenys automatiškai nesumaišomi.',
+      paths:[['🔍 3 min. auditas','Trumpas orientyras apie galimą vadybinę trintį. Tai nėra mini 360° ir respondentų nereikia.'],['📊 Pilnas Leadership 360°','Savivertinimas + kitų vertinimas → C1 ataskaita → 90 dienų planas → C2 → pokyčio palyginimas.'],['🎯 Tik 90 d. planas','Iki 3 sričių pasirenkamos savarankiškai. Vertinimas neatliekamas ir plane tai aiškiai pažymima.']],
+      paramsTitle:'Pagrindiniai vertinimo parametrai',params:[['Lyderystės sritys','5 klasteriai'],['Gebėjimai','15 kompetencijų'],['Teiginiai','75, po 5 kiekvienai kompetencijai'],['Skalė','1–5 pagal stebimo elgesio dažnumą'],['„Negaliu įvertinti“','Nėra vertinimo balas ir į vidurkius neįtraukiama'],['Atviri komentarai','Savirefleksija ir vertintojų komentarai rodomi atskirai nuo skaitinių balų']],
+      cycleTitle:'Pilnas C1 → C2 ciklas',flow:[['1 · C1','Sukuriamas vertinimas, savivertinimas ir vertintojų kvietimai.'],['2 · Rezultatas','Ataskaita skaičiuojama iš saugaus surinkimo sluoksnio.'],['3 · 90 dienų','Pasirenkami iki 3 prioritetų ir konkretūs veiksmai.'],['4 · C2','Pakartotinis matavimas su naujais vienkartiniais kvietimais.'],['5 · Pokytis','C1 ir C2 palyginami pagal kitų vertinimo pokytį.'],['6 · Refleksija, jei reikia','Tik pablogėjusioms sritims prieš naują planą.']],
+      steps:[
+        ['1. Sukuriamas C1 vertinimas','Lyderis arba Anonimiškumo sergėtojas nurodo lyderį, vertintojų sudėtį, jų el. paštus ir sergėtojo kontaktą. Kiekvienam dalyviui sukuriamas individualus vienkartinis kvietimas.'],
+        ['2. Atsakymai surenkami atskirai nuo tapatybės','Vertintojo el. paštas ir kvietimo būsena priklauso tapatybės sluoksniui. Apklausos atsakymai saugomi atsakymų sluoksnyje be vertintojo el. pašto.'],
+        ['3. Ataskaita','Ataskaita atidaroma iš ciklo valdymo. JSON failų rankiniu būdu kelti nereikia. Rodomi savivertinimo ir kitų balai, 5 sričių vidurkiai, 15 kompetencijų, stebėjimo aprėptis, skirtumai ir atviri komentarai.'],
+        ['4. 90 dienų planas','Plano puslapis automatiškai gauna aktyvaus ciklo rezultatą. Sistema pateikia duomenimis paremtas rekomendacijas, tačiau galutinį 1–3 sričių pasirinkimą palieka žmogui. Kalendoriui ir Telegram pasirenkami tik 1–3 konkretūs veiksmai. PDF saugo visą planą.'],
+        ['5. C2 ir palyginimas','Po veiksmų laikotarpio tame pačiame Assessment sukuriamas C2. Vertintojams generuojami nauji vienkartiniai kvietimai. C1 ir C2 palyginami tiesiai iš Collector, todėl dviejų JSON failų įkelti nereikia.'],
+        ['6. Refleksija – tik jei kažkas pablogėjo','Refleksija nėra atskiras pagrindinės navigacijos įėjimas. Į ją pereinama iš C1/C2 palyginimo tik tada, kai bent viena kompetencija turi pablogėjimo signalą. Kiekvienai pablogėjusiai sričiai pateikiami 4 klausimai ir pasirenkama pagrindinė priežastis.']
+      ],
+      start360:'Pradėti pilną 360° →',testMode:'Prototipo testavimo režime manualios kvietimų nuorodos dar gali būti naudojamos E2E patikrai. Produkciniame sraute sergėtojas neturi gauti vertintojo slapto kvietimo rakto.',reportNote:'Vadovo vertinimas yra individualus. Anoniminėms grupėms ataskaitoje taikomos minimalaus dydžio taisyklės.',deltaRule:'Pokyčio taisyklė: Δ ≤ −0,20 laikoma pablogėjimu; −0,20 < Δ < +0,20 – be aiškaus pokyčio; nuo +0,20 – pagerėjimas.',reflectNote:'Refleksijos tekstas laikomas tik naršyklės sesijoje ir naudojamas kitam planui adaptuoti. Į Collector ar Telegram jis nesiunčiamas.',skip:'Jei pablogėjusių sričių nėra:',skipText:'refleksijos etapas praleidžiamas ir iš palyginimo pereinama tiesiai į kitą 90 dienų planą.',
+      selfTitle:'Savarankiškas planas be apklausų',selfText:'Šis kelias nepriklauso C1/C2 procesui. Pasirenkama iki 3 kompetencijų, generuojamas standartinis 90 dienų planas ir aiškiai rodoma, kad prioritetai pasirinkti savarankiškai.',selfBtn:'🎯 Kurti 90 d. planą →',
+      limitsTitle:'Dabartinės prototipo ribos',limits:['90 dienų veiksmų turinys šiuo metu orientuotas į Manufacturing / Operations kontekstą. Platesnis universalumas numatytas prieš monetizacijos etapą.','Automatinis el. laiškų siuntimas dar nėra galutinai sukonfigūruotas; E2E bandymuose naudojamas testinis kvietimų režimas.','Produktas skirtas ugdymui ir refleksijai, o ne diagnozei ar automatiniams sprendimams apie žmogų.'],
+      legalTitle:'Teisinė pastaba',legal:'Leadership 360° yra nepriklausomas prototipas ir nėra oficialus GLA360 produktas. Dabartinis sprendimas kuriamas kaip atskiras 2rasi / OMESG360 produktinis kelias.'
+    },
+    en:{
+      title:'Leadership 360° – About',subtitle:'The current prototype flow from first entry to repeat measurement.',
+      pathsTitle:'Three different paths',pathsIntro:'You do not have to start with a full 360°. These paths are separate and their data is not automatically mixed.',
+      paths:[['🔍 3 min. audit','A quick orientation to possible management friction. It is not a mini 360° and requires no respondents.'],['📊 Full Leadership 360°','Self-assessment + feedback from others → C1 report → 90-day plan → C2 → change comparison.'],['🎯 90-day plan only','Choose up to 3 areas yourself. No assessment is performed and the plan says so clearly.']],
+      paramsTitle:'Core assessment parameters',params:[['Leadership areas','5 clusters'],['Capabilities','15 competencies'],['Statements','75, five per competency'],['Scale','1–5 based on observed behaviour frequency'],['“Unable to assess”','Not a rating score and excluded from averages'],['Open comments','Self-reflection and evaluator comments are shown separately from numeric scores']],
+      cycleTitle:'Full C1 → C2 cycle',flow:[['1 · C1','Create the assessment, self-assessment and evaluator invitations.'],['2 · Result','The report is calculated from the secure collection layer.'],['3 · 90 days','Choose up to 3 priorities and concrete actions.'],['4 · C2','Repeat measurement with new one-time invitations.'],['5 · Change','Compare C1 and C2 using change in ratings from others.'],['6 · Reflection, if needed','Only for areas that declined before creating a new plan.']],
+      steps:[
+        ['1. Create the C1 assessment','The leader or assessment guardian enters the leader, evaluator composition, evaluator emails and guardian contact. Each participant receives an individual one-time invitation.'],
+        ['2. Responses are separated from identity','Evaluator email and invitation status belong to the identity layer. Survey responses are stored in the response layer without evaluator email.'],
+        ['3. Report','Open the report from cycle management. No manual JSON upload is required. It shows self and others scores, five cluster averages, 15 competencies, observation coverage, gaps and open comments.'],
+        ['4. 90-day plan','The plan page receives the active-cycle result automatically. The system offers data-informed recommendations, while the final choice of 1–3 areas remains with the person. Calendar and Telegram receive only 1–3 selected actions. PDF keeps the full plan.'],
+        ['5. C2 and comparison','After the action period, C2 is created under the same Assessment. Evaluators receive new one-time invitations. C1 and C2 are compared directly from Collector, so two JSON files are not required.'],
+        ['6. Reflection – only if something declined','Reflection is not a separate top-level navigation entry. It is reached from the C1/C2 comparison only when at least one competency has a decline signal. Four questions are shown for each declined area and a primary reason is selected.']
+      ],
+      start360:'Start full 360° →',testMode:'In prototype test mode, manual invitation links may still be used for E2E verification. In production, the guardian must not receive the evaluator’s secret invitation token.',reportNote:'A manager/boss rating is individual. Minimum group-size rules apply to anonymous groups in the report.',deltaRule:'Change rule: Δ ≤ −0.20 is treated as decline; −0.20 < Δ < +0.20 means no clear change; +0.20 or more means improvement.',reflectNote:'Reflection text is kept only in the browser session and is used to adapt the next plan. It is not sent to Collector or Telegram.',skip:'If no areas declined:',skipText:'the reflection step is skipped and the comparison goes directly to the next 90-day plan.',
+      selfTitle:'Self-directed plan without surveys',selfText:'This path is separate from the C1/C2 process. Choose up to 3 competencies, generate a standard 90-day plan, and clearly show that the priorities were self-selected.',selfBtn:'🎯 Create a 90-day plan →',
+      limitsTitle:'Current prototype limits',limits:['The 90-day action content is currently focused on Manufacturing / Operations. Broader universality is planned before monetisation.','Automatic email delivery is not yet fully configured; E2E testing uses a test invitation mode.','The product is for development and reflection, not diagnosis or automated decisions about a person.'],
+      legalTitle:'Legal note',legal:'Leadership 360° is an independent prototype and is not an official GLA360 product. The current solution is being developed as a separate 2rasi / OMESG360 product path.'
+    }
+  }[lang];
+  document.title=T.title;document.getElementById('title').textContent=T.title;document.getElementById('subtitle').textContent=T.subtitle;
+  document.getElementById('content').innerHTML=`
+    <section class="card"><h2>${T.pathsTitle}</h2><p class="muted">${T.pathsIntro}</p><div class="path-grid">${T.paths.map(p=>`<div class="path"><strong>${p[0]}</strong>${p[1]}</div>`).join('')}</div></section>
+    <section class="card"><h2>${T.paramsTitle}</h2><table><tbody>${T.params.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</tbody></table></section>
+    <section class="card"><h2>${T.cycleTitle}</h2><div class="flow">${T.flow.map((s,i)=>`<div class="flow-step${i===5?' conditional':''}"><strong>${s[0]}</strong>${s[1]}</div>`).join('')}</div>
+      <div class="step"><h3>${T.steps[0][0]}</h3><p>${T.steps[0][1]}</p><p><a class="btn" href="${href('setup-v2.html')}">${T.start360}</a></p></div>
+      <div class="step"><h3>${T.steps[1][0]}</h3><p>${T.steps[1][1]}</p><p class="muted">${T.testMode}</p></div>
+      <div class="step"><h3>${T.steps[2][0]}</h3><p>${T.steps[2][1]}</p><p class="muted">${T.reportNote}</p></div>
+      <div class="step"><h3>${T.steps[3][0]}</h3><p>${T.steps[3][1]}</p></div>
+      <div class="step"><h3>${T.steps[4][0]}</h3><p>${T.steps[4][1]}</p><p><strong>${T.deltaRule}</strong></p></div>
+      <div class="step conditional"><h3>${T.steps[5][0]}</h3><p>${T.steps[5][1]}</p><p class="muted">${T.reflectNote}</p></div>
+      <div class="note"><strong>${T.skip}</strong> ${T.skipText}</div>
+    </section>
+    <section class="card"><h2>${T.selfTitle}</h2><p>${T.selfText}</p><p><a class="btn secondary" href="${href('plan-direct.html')}">${T.selfBtn}</a></p></section>
+    <section class="card"><h2>${T.limitsTitle}</h2><ul style="padding-left:20px;line-height:1.8">${T.limits.map(x=>`<li>${x}</li>`).join('')}</ul></section>
+    <section class="card"><h2>${T.legalTitle}</h2><p class="muted">${T.legal}</p></section>`;
+})();
+</script>
 </body>
 </html>
