@@ -21,7 +21,7 @@
     } catch(_) {}
     try {
       const source = isEn ? 'plan-core-en.html' : 'plan-core.html';
-      const response = await fetch(source + '?v=20260821-direct-5', { cache:'no-store' });
+      const response = await fetch(source + '?v=20260821-direct-6', { cache:'no-store' });
       if(!response.ok) throw new Error('HTTP ' + response.status);
       let html = await response.text();
       const title = isEn ? '90-day development plan' : '90 dienų tobulėjimo planas';
@@ -36,6 +36,10 @@
       const sourceNote = isEn
         ? 'Source: self-selected development priorities. No assessment was performed.'
         : 'Duomenų šaltinis: savarankiškai pasirinktos tobulinimo sritys. Vertinimas neatliktas.';
+      const nav = isEn
+        ? `<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;"><div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;"><a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Home</a><a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Audit</a><a href="setup-v2.html?lang=en" style="color:var(--muted);text-decoration:none;">📊 Full 360°</a><a href="plan-direct.html?lang=en" style="color:var(--brand);text-decoration:none;font-weight:600;">🎯 Plan only</a><a href="README.html" style="color:var(--muted);text-decoration:none;">📖 About</a><a href="PRIVACY-v2.html?lang=en" style="color:var(--muted);text-decoration:none;">🔒 Privacy</a></div></nav>`
+        : `<nav style="background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 20px;font-size:.88rem;"><div style="max-width:900px;margin:0 auto;display:flex;gap:16px;flex-wrap:wrap;"><a href="index.html" style="color:var(--muted);text-decoration:none;">🏠 Pradžia</a><a href="audit.html" style="color:var(--muted);text-decoration:none;">🔍 Auditas</a><a href="setup-v2.html" style="color:var(--muted);text-decoration:none;">📊 Pilnas 360°</a><a href="plan-direct.html" style="color:var(--brand);text-decoration:none;font-weight:600;">🎯 Tik planas</a><a href="README.html" style="color:var(--muted);text-decoration:none;">📖 Aprašas</a><a href="PRIVACY-v2.html" style="color:var(--muted);text-decoration:none;">🔒 Privatumas</a></div></nav>`;
+      html = html.replace(/<nav[\s\S]*?<\/nav>/, nav);
       html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`);
       html = html.replace(/<header class="head">[\s\S]*?<\/header>/, `<header class="head"><h1>${title}</h1><p>${subtitle}</p></header>`);
       html = html.replace('<h2>Duomenų šaltinis</h2>', `<h2>${sourceTitle}</h2><p class="muted" style="margin:0 0 12px">${sourceNote}</p>`);
