@@ -65,6 +65,14 @@
     return u.pathname.split('/').pop()+u.search+u.hash;
   }
 
+  function removeLegacyLanguageToggle(){
+    const legacy=document.getElementById('langToggle');
+    if(!legacy) return;
+    const topbar=legacy.closest('.topbar');
+    if(topbar && topbar.children.length===1) topbar.remove();
+    else legacy.remove();
+  }
+
   function render(forcedLang){
     const lang=normalise(forcedLang||resolveLang());
     const copy=COPY[lang];
@@ -96,11 +104,18 @@
     });
 
     document.body.insertAdjacentElement('afterbegin',nav);
+    removeLegacyLanguageToggle();
   }
 
   window.addEventListener('leadership360:languagechange',event=>{
     if(event && event.detail && event.detail.lang) render(event.detail.lang);
   });
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',removeLegacyLanguageToggle,{once:true});
+  } else {
+    removeLegacyLanguageToggle();
+  }
 
   window.Leadership360SiteNav={render,setLanguage:render};
   render();
