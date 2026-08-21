@@ -120,10 +120,23 @@
     window.addEventListener('hashchange',()=>setTimeout(sync,50));
   }
 
+  function fixDashboardMobile(){
+    if(document.getElementById('workspaceMobileFix'))return;
+    const style=document.createElement('style');
+    style.id='workspaceMobileFix';
+    style.textContent=`
+      .controls label{min-width:0;display:block}
+      .controls input,.controls select{box-sizing:border-box;width:100%;max-width:100%;min-width:0;display:block;margin-top:6px}
+      @media(max-width:700px){.controls{grid-template-columns:minmax(0,1fr)!important}.controls input,.controls select{width:100%!important}}
+    `;
+    document.head.appendChild(style);
+  }
+
   if(/\/setup-v2\.html$/i.test(location.pathname))setupRegistration();
   if(/\/guardian\.html$/i.test(location.pathname))guardianRegistration();
   if(/\/guardian-dashboard\.html$/i.test(location.pathname)){
     const auth=currentAuth();
     if(auth)register(auth);
+    fixDashboardMobile();
   }
 })();
