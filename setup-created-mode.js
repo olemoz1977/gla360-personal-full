@@ -33,14 +33,24 @@
     if(show&&note){note.textContent=lang()==='en'?'Test environment only. These survey links are never part of the normal Guardian flow.':'Tik testavimo aplinkai. Šios apklausų nuorodos nėra normalios Sergėtojo darbo eigos dalis.'}
   }
 
-  function deliveryText(status){
+  function deliveryText(data){
+    const guardian=data?.guardianDelivery||'not_configured';
+    const invitations=data?.invitationDelivery||'unknown';
+    const sent=Number(data?.invitationsSent||0);
+    const failed=Number(data?.invitationsFailed||0);
     if(lang()==='en'){
-      if(status==='sent')return 'Guardian access was sent directly to the email address you provided. The assessed leader does not receive or see the Guardian management link.';
-      if(status==='failed')return 'The assessment was created, but the Guardian access email could not be delivered. Do not use this assessment for a live process until email delivery is restored.';
+      if(guardian==='sent'&&invitations==='sent')return `Guardian access was sent directly to the provided email. Initial SELF/evaluator invitations were also sent automatically (${sent} sent, ${failed} failed). The assessed leader does not receive or see the Guardian management link.`;
+      if(guardian==='sent'&&invitations==='partial')return `Guardian access was sent. Initial invitations were started automatically, but some deliveries failed (${sent} sent, ${failed} failed). The Guardian can resend failed invitations from the administration workspace.`;
+      if(guardian==='sent'&&invitations==='failed')return 'Guardian access was sent, but initial SELF/evaluator invitation delivery failed. The Guardian can resend invitations from the administration workspace.';
+      if(guardian==='sent')return 'Guardian access was sent directly to the email address you provided. The assessed leader does not receive or see the Guardian management link.';
+      if(guardian==='failed')return 'The assessment was created, but the Guardian access email could not be delivered. Do not use this assessment for a live process until email delivery is restored.';
       return 'The assessment was created, but automatic Guardian email delivery is not configured yet. Do not use this assessment for a live process until email sending is enabled.';
     }
-    if(status==='sent')return 'Sergėtojo prieigos nuoroda išsiųsta tiesiai į nurodytą el. paštą. Vertinamasis Sergėtojo valdymo nuorodos negauna ir nemato.';
-    if(status==='failed')return 'Vertinimas sukurtas, tačiau Sergėtojo prieigos laiško pristatyti nepavyko. Nenaudokite šio vertinimo realiam procesui, kol el. pašto siuntimas neatstatytas.';
+    if(guardian==='sent'&&invitations==='sent')return `Sergėtojo prieiga išsiųsta tiesiai į nurodytą el. paštą. SELF ir vertintojų pirminiai kvietimai taip pat išsiųsti automatiškai (${sent} išsiųsta, ${failed} nepavyko). Vertinamasis Sergėtojo valdymo nuorodos negauna ir nemato.`;
+    if(guardian==='sent'&&invitations==='partial')return `Sergėtojo prieiga išsiųsta. Pirminiai kvietimai pradėti siųsti automatiškai, tačiau dalies pristatyti nepavyko (${sent} išsiųsta, ${failed} nepavyko). Sergėtojas gali pakartoti kvietimus administravimo stale.`;
+    if(guardian==='sent'&&invitations==='failed')return 'Sergėtojo prieiga išsiųsta, tačiau SELF ir vertintojų pirminių kvietimų automatiškai išsiųsti nepavyko. Sergėtojas gali juos pakartoti administravimo stale.';
+    if(guardian==='sent')return 'Sergėtojo prieigos nuoroda išsiųsta tiesiai į nurodytą el. paštą. Vertinamasis Sergėtojo valdymo nuorodos negauna ir nemato.';
+    if(guardian==='failed')return 'Vertinimas sukurtas, tačiau Sergėtojo prieigos laiško pristatyti nepavyko. Nenaudokite šio vertinimo realiam procesui, kol el. pašto siuntimas neatstatytas.';
     return 'Vertinimas sukurtas, tačiau automatinis Sergėtojo laiškas dar nesukonfigūruotas. Nenaudokite šio vertinimo realiam procesui, kol el. pašto siuntimas neaktyvuotas.';
   }
 
@@ -54,7 +64,7 @@
     const topWorkspace=document.getElementById('guardianWorkspaceLink');
     [link,copy,open,openWorkspace,topWorkspace].filter(Boolean).forEach(el=>el.style.display='none');
     try{sessionStorage.removeItem('leadership360_last_manage')}catch(_){}
-    if(manageNote)manageNote.textContent=deliveryText(lastCreateResult?.guardianDelivery||'not_configured');
+    if(manageNote)manageNote.textContent=deliveryText(lastCreateResult||{});
   }
 
   function ensureNewButton(){
@@ -125,7 +135,7 @@
         lastCreateResult=data||null;
         document.getElementById('assessmentId').textContent=data?.assessmentId||'';
         document.getElementById('createdTitle').textContent=en?'Assessment created':'Vertinimas sukurtas';
-        document.getElementById('manageNote').textContent=deliveryText(data?.guardianDelivery||'not_configured');
+        document.getElementById('manageNote').textContent=deliveryText(data||{});
         card.style.display='block';
         apply();
         card.scrollIntoView({behavior:'smooth',block:'start'});
