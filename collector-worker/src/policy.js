@@ -1,6 +1,6 @@
 import app from './bootstrap.js';
 
-const POLICY_VERSION='guardian-v4';
+const POLICY_VERSION='guardian-v5';
 const ALLOWED_ORIGINS=new Set([
   'https://olemoz1977.github.io',
   'https://2rasi.lt',
@@ -102,6 +102,23 @@ async function sendViaResend(env,to,copy){
   throw new Error(`resend_${response.status}${detail?':'+detail.slice(0,500):''}`);
 }
 
+function appEnvWithEmailTransport(env){
+  if(env?.EMAIL || emailProvider(env)!=='resend')return env;
+  return {
+    ...env,
+    EMAIL:{
+      async send(message){
+        const recipient=Array.isArray(message?.to)?message.to[0]:message?.to;
+        if(!recipient)throw new Error('resend_recipient_missing');
+        await sendViaResend(env,String(recipient),{
+          subject:String(message?.subject||''),
+          text:String(message?.text||'')
+        });
+      }
+    }
+  };
+}
+
 async function sendGuardianAccess(env,data,input){
   const guardianEmail=normaliseEmail(input?.guardianEmail||input?.guardian_email);
   if(!guardianEmail||!data?.manageToken||!data?.assessmentId){
@@ -139,7 +156,7 @@ async function cleanupFailedAssessment(request,env,ctx,data){
     const origin=request.headers.get('origin');
     if(origin)headers.set('origin',origin);
     const cleanupRequest=new Request(u.toString(),{method:'DELETE',headers});
-    const cleanupResponse=await app.fetch(cleanupRequest,env,ctx);
+    const cleanupResponse=await app.fetch(cleanupRequest,appEnvWithEmailTransport(env),ctx);
     return cleanupResponse.ok;
   }catch(error){
     console.error('guardian_delivery_cleanup_failed',error);
@@ -156,7 +173,9 @@ async function withPolicyMarker(response,env){
     ...data,
     policy:POLICY_VERSION,
     guardianEmailReady:provider!=='none',
-    guardianEmailProvider:provider
+    guardianEmailProvider:provider,
+    invitationEmailReady:provider!=='none',
+    invitationEmailProvider:provider
   };
   const headers=new Headers(response.headers);
   headers.set('content-type','application/json; charset=utf-8');
@@ -217,7 +236,8 @@ export default {
       }
     }
 
-    let response=await app.fetch(request,env,ctx);
+    const appEnv=appEnvWithEmailTransport(env);
+    let response=await app.fetch(request,appEnv,ctx);
 
     if(url.pathname==='/health'&&request.method==='GET'){
       response=await withPolicyMarker(response,env);
