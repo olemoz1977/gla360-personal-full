@@ -1,6 +1,6 @@
 # Leadership 360° — Future Roadmap / Backlog
 
-Status: durable backlog for ideas and work explicitly discussed but intentionally not implemented now.
+Status: FROZEN after clean beta E2E PASS on 2026-08-22. Durable backlog for ideas and work explicitly discussed but intentionally not implemented now.
 
 Last updated: 2026-08-22
 
@@ -15,17 +15,20 @@ Implement now only when an item is:
 
 Everything else stays in this file until the project is intentionally reopened.
 
-## Current freeze gate
+## Current freeze gate — PASS
 
-Before freeze, confirm one clean C1 E2E test where:
-1. C1 is created.
-2. Guardian receives a separate magic-link email automatically.
-3. SELF and all evaluator invitations are sent automatically without Guardian pressing the send button.
-4. Guardian can open the administration workspace.
-5. Guardian sees process state only, not individual answers, comments, report, 90-day plan, or C1–C2 comparison.
-6. Survey links work for SELF and evaluator roles.
+Final clean C1 E2E test passed on 2026-08-22:
+1. C1 was created successfully.
+2. Guardian received a separate magic-link email automatically.
+3. SELF and evaluator invitations were sent automatically without Guardian pressing the send button.
+4. Guardian could open the administration workspace.
+5. Guardian remained process-only and had no access to individual answers, comments, report, 90-day plan, or C1–C2 comparison.
+6. Survey invitation links were delivered for SELF and evaluator roles.
+7. Worker health showed `policy: guardian-v6`, Guardian email ready via Resend, and invitation email ready via Resend.
 
-After this passes, stop feature work and return focus to 2rasi / 2Pair unless a critical bug appears.
+Observed deliverability note: the SELF invitation sent to Gmail was delivered but classified as Spam. This is treated as sender reputation/deliverability hardening, not a core functional failure.
+
+Result: stop feature work and return focus to 2rasi / 2Pair unless a critical bug appears.
 
 ## Organization Campaign mode — future
 
@@ -153,6 +156,9 @@ A queue/scheduler should handle mass sends instead of one synchronous request wh
 ## Email / deliverability — future hardening
 
 Current beta transport uses Resend with `noreply@omesg360.eu`.
+
+Known beta observation:
+- Gmail delivered a SELF invitation to Spam during the final E2E test even though sending succeeded.
 
 Future hardening:
 - monitor delivery/bounce/suppression status,
