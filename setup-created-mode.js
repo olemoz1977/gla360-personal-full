@@ -20,6 +20,7 @@
 
   function lang(){return document.documentElement.lang==='en'?'en':'lt'}
   function isQa(){return !!C?.qaMode?.()}
+  function validEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim())}
 
   function applyFallbackPolicy(){
     const title=document.getElementById('fallbackTitle');
@@ -80,6 +81,72 @@
     }
   }
 
+  function installGuardianV4Create(){
+    if(isQa())return;
+    const btn=document.getElementById('createBtn');
+    const status=document.getElementById('createStatus');
+    if(!btn||!status)return;
+
+    btn.onclick=async()=>{
+      const en=lang()==='en';
+      const leaderName=document.getElementById('leaderName')?.value.trim()||'';
+      const projectName=document.getElementById('projectName')?.value.trim()||'';
+      const selfEmail=(document.getElementById('selfEmail')?.value||'').trim().toLowerCase();
+      const guardianName=document.getElementById('guardianName')?.value.trim()||'';
+      const guardianEmail=(document.getElementById('guardianEmail')?.value||'').trim().toLowerCase();
+      const selfLanguage=document.getElementById('selfLang')?.value||'lt';
+      const raters=[...document.querySelectorAll('#roster .roster-row')].map(row=>({
+        email:(row.querySelector('.r-email')?.value||'').trim().toLowerCase(),
+        role:row.dataset.role||'other',
+        language:row.querySelector('.r-lang')?.value||'lt'
+      }));
+
+      if(!leaderName){status.textContent=en?'Enter the leader name.':'Įveskite lyderio vardą.';return}
+      if(!validEmail(selfEmail)){status.textContent=en?'Enter the SELF email.':'Įveskite SELF el. paštą.';return}
+      if(raters.length<1){status.textContent=en?'Specify at least one evaluator.':'Nurodykite bent vieną vertintoją.';return}
+      if(raters.length>49){status.textContent=en?'A cycle can include at most 49 evaluators, excluding SELF.':'Viename cikle galima nurodyti daugiausia 49 vertintojus, neskaičiuojant SELF.';return}
+      if(raters.some(r=>!validEmail(r.email))){status.textContent=en?'Enter a valid email address for every planned evaluator.':'Įveskite galiojantį el. paštą kiekvienam suplanuotam vertintojui.';return}
+      if(!guardianName||!validEmail(guardianEmail)){status.textContent=en?'Enter the guardian name and a valid email.':'Įveskite sergėtojo vardą ir galiojantį el. paštą.';return}
+      const participantEmails=[selfEmail,...raters.map(r=>r.email)];
+      if(new Set(participantEmails).size!==participantEmails.length){status.textContent=en?'The same email cannot be entered twice in one cycle.':'Tas pats el. paštas negali būti įrašytas du kartus tame pačiame cikle.';return}
+      if(!document.getElementById('privacyAck')?.checked){status.textContent=en?'Confirm the pseudonymity notice.':'Patvirtinkite pseudonimiškumo pastabą.';return}
+
+      btn.disabled=true;
+      btn.textContent=en?'Creating…':'Kuriama…';
+      status.textContent='';
+      try{
+        const data=await C.createAssessment({
+          leaderName,
+          projectName,
+          guardianName,
+          guardianEmail,
+          roster:[{email:selfEmail,role:'self',language:selfLanguage},...raters]
+        });
+        lastCreateResult=data||null;
+        document.getElementById('assessmentId').textContent=data?.assessmentId||'';
+        document.getElementById('createdTitle').textContent=en?'Assessment created':'Vertinimas sukurtas';
+        document.getElementById('manageNote').textContent=deliveryText(data?.guardianDelivery||'not_configured');
+        card.style.display='block';
+        apply();
+        card.scrollIntoView({behavior:'smooth',block:'start'});
+      }catch(e){
+        const map={
+          guardian_cannot_be_leader:en?'The Guardian cannot be the assessed leader in the same assessment.':'Sergėtojas negali būti vertinamasis tame pačiame vertinime.',
+          guardian_delivery_not_configured:en?'Guardian email delivery is not configured.':'Sergėtojo el. pašto siuntimas nesukonfigūruotas.',
+          guardian_delivery_failed:en?'Guardian email delivery failed.':'Nepavyko išsiųsti Sergėtojo prieigos laiško.',
+          guardian_delivery_failed_cleanup_failed:en?'Guardian email delivery failed and the failed assessment could not be cleaned up automatically.':'Nepavyko išsiųsti Sergėtojo laiško ir automatiškai pašalinti nepavykusio vertinimo.',
+          collector_unreachable:en?'Collector is not reachable.':'Collector nepasiekiamas.',
+          duplicate_email_in_cycle:en?'The same email cannot appear twice in one cycle.':'Tas pats el. paštas negali kartotis tame pačiame cikle.'
+        };
+        status.textContent=(en?'Error: ':'Klaida: ')+(map[e?.message]||e?.message||'unknown_error');
+      }finally{
+        btn.disabled=false;
+        btn.textContent=en?'Create assessment cycle':'Sukurti vertinimo ciklą';
+      }
+    };
+  }
+
+  installGuardianV4Create();
   const observer=new MutationObserver(apply);
   observer.observe(card,{attributes:true,attributeFilter:['style','class']});
   document.getElementById('langToggle')?.addEventListener('click',()=>setTimeout(apply,60));
