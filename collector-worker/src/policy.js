@@ -1,6 +1,6 @@
 import app from './bootstrap.js';
 
-const POLICY_VERSION='guardian-v5';
+const POLICY_VERSION='guardian-v6';
 const ALLOWED_ORIGINS=new Set([
   'https://olemoz1977.github.io',
   'https://2rasi.lt',
@@ -147,6 +147,29 @@ async function sendGuardianAccess(env,data,input){
   }
 }
 
+async function sendInitialInvitations(request,env,ctx,data){
+  if(!data?.assessmentId||!data?.manageToken)return {status:'invalid',sent:0,failed:0};
+  try{
+    const u=new URL(`/api/manage/${encodeURIComponent(data.assessmentId)}/cycles/${Number(data.cycle||1)}/send`,request.url);
+    const headers=new Headers({'content-type':'application/json'});
+    headers.set('authorization','Bearer '+data.manageToken);
+    const origin=request.headers.get('origin');
+    if(origin)headers.set('origin',origin);
+    const sendRequest=new Request(u.toString(),{method:'POST',headers,body:'{}'});
+    const sendResponse=await app.fetch(sendRequest,appEnvWithEmailTransport(env),ctx);
+    let result={};
+    try{result=await sendResponse.clone().json()}catch(_){}
+    if(!sendResponse.ok){
+      console.error('initial_invitation_send_failed',sendResponse.status,result);
+      return {status:'failed',sent:Number(result?.sent||0),failed:Number(result?.failed||0),error:result?.error||`http_${sendResponse.status}`};
+    }
+    return {status:Number(result?.failed||0)>0?'partial':'sent',sent:Number(result?.sent||0),failed:Number(result?.failed||0)};
+  }catch(error){
+    console.error('initial_invitation_send_failed',error);
+    return {status:'failed',sent:0,failed:0,error:error instanceof Error?error.message:String(error)};
+  }
+}
+
 async function cleanupFailedAssessment(request,env,ctx,data){
   if(!data?.assessmentId||!data?.manageToken)return false;
   try{
@@ -183,14 +206,17 @@ async function withPolicyMarker(response,env){
   return new Response(JSON.stringify(data),{status:response.status,headers});
 }
 
-async function withGuardianDelivery(response,delivery){
+async function withCreateDelivery(response,guardianDelivery,invitationDelivery){
   if(!response?.ok)return response;
   let data;
   try{data=await response.clone().json()}catch(_){return response}
   data={
     ...data,
-    guardianDelivery:delivery?.status||'unknown',
-    guardianEmailProvider:delivery?.provider||'none'
+    guardianDelivery:guardianDelivery?.status||'unknown',
+    guardianEmailProvider:guardianDelivery?.provider||'none',
+    invitationDelivery:invitationDelivery?.status||'unknown',
+    invitationsSent:Number(invitationDelivery?.sent||0),
+    invitationsFailed:Number(invitationDelivery?.failed||0)
   };
   const headers=new Headers(response.headers);
   headers.set('content-type','application/json; charset=utf-8');
@@ -246,16 +272,17 @@ export default {
     if(isCreate&&response.ok){
       let raw;
       try{raw=await response.clone().json()}catch(_){}
-      const delivery=await sendGuardianAccess(env,raw,createInput);
-      if(!explicitQa(request)&&delivery.status!=='sent'){
+      const guardianDelivery=await sendGuardianAccess(env,raw,createInput);
+      if(!explicitQa(request)&&guardianDelivery.status!=='sent'){
         const cleaned=await cleanupFailedAssessment(request,env,ctx,raw);
         return policyJson(request,{
           ok:false,
           error:cleaned?'guardian_delivery_failed':'guardian_delivery_failed_cleanup_failed',
-          guardianEmailProvider:delivery.provider||emailProvider(env)
+          guardianEmailProvider:guardianDelivery.provider||emailProvider(env)
         },cleaned?502:500);
       }
-      response=await withGuardianDelivery(response,delivery);
+      const invitationDelivery=await sendInitialInvitations(request,env,ctx,raw);
+      response=await withCreateDelivery(response,guardianDelivery,invitationDelivery);
     }
 
     if(!mayContainInviteSecrets(url.pathname,request.method))return response;
